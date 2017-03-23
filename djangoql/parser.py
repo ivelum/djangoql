@@ -1,8 +1,13 @@
+import sys
+
 import ply.yacc as yacc
 
 from .ast import *  # noqa
 from .exceptions import DjangoQLParserError
 from .lexer import DjangoQLLexer
+
+
+PY2 = sys.version_info.major == 2
 
 
 class DjangoQLParser(object):
@@ -131,7 +136,11 @@ class DjangoQLParser(object):
         """
         string : STRING_VALUE
         """
-        p[0] = Const(value=p[1])
+        if PY2:
+            value = p[1].decode('string_escape')
+        else:
+            value = bytes(p[1], 'utf8').decode('unicode_escape')
+        p[0] = Const(value=value)
 
     def p_none(self, p):
         """

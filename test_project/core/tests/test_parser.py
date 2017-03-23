@@ -36,6 +36,13 @@ class DjangoQLParseTest(TestCase):
             self.parser.parse('job.best.title > "none"')
         )
 
+    def test_escaped_chars(self):
+        self.assertEqual(
+            Expression(Name('name'), Comparison('~'),
+                       Const('Contains a "quoted" string')),
+            self.parser.parse('name ~ "Contains a \\"quoted\\" string"')
+        )
+
     def test_logical(self):
         self.assertEqual(
             Expression(
