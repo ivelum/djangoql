@@ -83,6 +83,29 @@ Django search functionality with DjangoQL search. Example:
         pass
 
 
+Language reference
+------------------
+
+DjangoQL looks close to Python syntax, however there're some minor 
+differences. Basically you just reference model fields like you do 
+it in Python code, apply comparison and logical operators and
+parenthesis. DjangoQL is case-sensitive.
+
+- model fields: exactly as they are defined in Python code. Access
+  nested properties via ``.``, for example ``author.last_name``;
+- strings must be double-quoted. Single quotes are not supported. 
+  To escape a double quote use ``\"``;
+- boolean and null values: ``True``, ``False``, ``None``. Please note
+  that they can be combined with equality operators only, so you can
+  write ``published = False or date_published = None``, but 
+  ``published > False`` will cause an error;
+- logical operators: ``and``, ``or``;
+- comparison operators: ``=``, ``!=``, ``<``, ``<=``, ``>``, ``>=``
+  - work as you expect. ``~`` and ``!~`` - test that a string contains
+  or not contains a substring (translated into ``__icontains``);
+- test that a value vs. list: ``in``, ``not in``. Example: 
+  ``pk in (2, 3)``.
+
 License
 -------
 
