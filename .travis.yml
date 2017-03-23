@@ -10,7 +10,8 @@ env:
   - DJANGO="Django>=1.10,<1.11"
 install:
   - export PYTHONPATH=./djangoql/:$PYTHONPATH
-  - pip install -U PLY $DJANGO
+  - pip install PLY
+  - pip install -U $DJANGO
 script: python test_project/manage.py test core.tests
 notifications:
   slack: ivelum:m5sGlwz1uEy5sQ32n0kg9lNh
