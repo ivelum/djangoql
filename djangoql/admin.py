@@ -10,6 +10,8 @@ class DjangoQLSearchMixin(object):
 
     def get_search_results(self, request, queryset, search_term):
         use_distinct = False
+        if not search_term:
+            return queryset, use_distinct
         catched = (DjangoQLSyntaxError, ValueError, FieldError, ValidationError)
         try:
             return apply_search(queryset, search_term), use_distinct
