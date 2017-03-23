@@ -1,3 +1,5 @@
+dist
+djangoql.egg-info
 .idea
-.py[co]
+*.py[co]
 test_project/db.sqlite3
