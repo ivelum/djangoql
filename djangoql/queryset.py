@@ -19,11 +19,13 @@ def build_filter(expr):
         '>=': '__gte',
         '<': '__lt',
         '<=': '__lte',
+        '~': '__icontains',
         'in': '__in',
     }.get(expr.operator.operator)
     if op is None:
         op = {
             '!=': '',
+            '!~': '__icontains',
             'not in': '__in',
         }[expr.operator.operator]
         invert = True

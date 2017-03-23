@@ -83,6 +83,8 @@ class DjangoQLLexer(object):
         'GREATER_EQUAL',
         'LESS',
         'LESS_EQUAL',
+        'CONTAINS',
+        'NOT_CONTAINS',
     ]
 
     t_DOT = r'\.'
@@ -94,6 +96,8 @@ class DjangoQLLexer(object):
     t_GREATER_EQUAL = '>='
     t_LESS = '<'
     t_LESS_EQUAL = '<='
+    t_CONTAINS = '~'
+    t_NOT_CONTAINS = '!~'
 
     t_NAME = r'[_A-Za-z][_0-9A-Za-z]*'
 

@@ -32,7 +32,8 @@ class DjangoQLParser(object):
 
     def p_expression_comparison(self, p):
         """
-        expression : name comparison number_or_string
+        expression : name comparison_number number
+                   | name comparison_string string
                    | name comparison_equality boolean_value
                    | name comparison_equality none
                    | name comparison_in_list const_list_value
@@ -62,10 +63,18 @@ class DjangoQLParser(object):
         """
         p[0] = Logical(operator=p[1])
 
-    def p_comparison(self, p):
+    def p_comparison_number(self, p):
         """
-        comparison : comparison_equality
-                   | comparison_greater_less
+        comparison_number : comparison_equality
+                          | comparison_greater_less
+        """
+        p[0] = p[1]
+
+    def p_comparison_string(self, p):
+        """
+        comparison_string : comparison_equality
+                          | comparison_greater_less
+                          | comparison_contains
         """
         p[0] = p[1]
 
@@ -85,6 +94,13 @@ class DjangoQLParser(object):
         """
         p[0] = Comparison(operator=p[1])
 
+    def p_comparison_contains(self, p):
+        """
+        comparison_contains : CONTAINS
+                            | NOT_CONTAINS
+        """
+        p[0] = Comparison(operator=p[1])
+
     def p_comparison_in_list(self, p):
         """
         comparison_in_list : IN
@@ -97,17 +113,23 @@ class DjangoQLParser(object):
 
     def p_const_value(self, p):
         """
-        const_value : number_or_string
+        const_value : number
+                    | string
                     | none
                     | boolean_value
         """
         p[0] = p[1]
 
-    def p_number_or_string(self, p):
+    def p_number(self, p):
         """
-        number_or_string : INT_VALUE
-                         | FLOAT_VALUE
-                         | STRING_VALUE
+        number : INT_VALUE
+               | FLOAT_VALUE
+        """
+        p[0] = Const(value=p[1])
+
+    def p_string(self, p):
+        """
+        string : STRING_VALUE
         """
         p[0] = Const(value=p[1])
 
