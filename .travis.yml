@@ -4,8 +4,13 @@ python:
   - "3.5"
   - "3.6"
   - "pypy"
+env:
+  - DJANGO="Django>=1.8,<1.9"
+  - DJANGO="Django>=1.9,<1.10"
+  - DJANGO="Django>=1.10,<1.11"
 install:
-  - pip install ply==3.10
-script: nosetests
+  - export PYTHONPATH=./djangoql/:$PYTHONPATH
+  - pip install -U PLY $DJANGO
+script: python test_project/manage.py test core.tests
 notifications:
   slack: ivelum:m5sGlwz1uEy5sQ32n0kg9lNh

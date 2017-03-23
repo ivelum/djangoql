@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from djangoql.ast import Expression, Name, Comparison, Logical, Const
+from djangoql.ast import Expression, Name, Comparison, Logical, Const, List
 from djangoql.exceptions import DjangoQLParserError
 from djangoql.parser import DjangoQLParser
 
@@ -23,7 +23,7 @@ class DjangoQLParseTest(TestCase):
         )
         self.assertEqual(
             Expression(Name('married'), Comparison('in'),
-                       [Const(True), Const(False)]),
+                       List([Const(True), Const(False)])),
             self.parser.parse('married in (True, False)')
         )
         self.assertEqual(

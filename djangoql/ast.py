@@ -47,6 +47,15 @@ class Const(Node):
         self.value = value
 
 
+class List(Node):
+    def __init__(self, items):
+        self.items = items
+
+    @property
+    def value(self):
+        return [i.value for i in self.items]
+
+
 class Operator(Node):
     def __init__(self, operator):
         self.operator = operator

@@ -140,7 +140,7 @@ class DjangoQLParser(object):
         """
         const_list_value : PAREN_L const_value_list PAREN_R
         """
-        p[0] = p[2]
+        p[0] = List(items=p[2])
 
     def p_const_value_list(self, p):
         """
