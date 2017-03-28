@@ -50,7 +50,6 @@ class DjangoQLLexer(object):
 
     whitespace = ' \t\v\f\u00A0'
     line_terminators = '\n\r\u2028\u2029'
-    comma = ','
 
     re_line_terminators = r'\n\r\u2028\u2029'
 
@@ -65,6 +64,7 @@ class DjangoQLLexer(object):
     tokens = [
         'NAME',
         'DOT',
+        'COMMA',
         'OR',
         'AND',
         'NOT',
@@ -88,6 +88,7 @@ class DjangoQLLexer(object):
     ]
 
     t_DOT = r'\.'
+    t_COMMA = ','
     t_PAREN_L = r'\('
     t_PAREN_R = r'\)'
     t_EQUALS = '='
@@ -101,7 +102,7 @@ class DjangoQLLexer(object):
 
     t_NAME = r'[_A-Za-z][_0-9A-Za-z]*'
 
-    t_ignore = whitespace + comma
+    t_ignore = whitespace
 
     @TOKEN(r'\"(' + re_escaped_char +
            '|' + re_escaped_unicode +

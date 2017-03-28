@@ -26,6 +26,8 @@ class DjangoQLLexerTest(TestCase):
     def test_punctuator(self):
         self.assert_output(self.lexer.input('('), [('PAREN_L', '(')])
         self.assert_output(self.lexer.input(')'), [('PAREN_R', ')')])
+        self.assert_output(self.lexer.input('.'), [('DOT', '.')])
+        self.assert_output(self.lexer.input(','), [('COMMA', ',')])
         self.assert_output(self.lexer.input('='), [('EQUALS', '=')])
         self.assert_output(self.lexer.input('!='), [('NOT_EQUALS', '!=')])
         self.assert_output(self.lexer.input('>'), [('GREATER', '>')])

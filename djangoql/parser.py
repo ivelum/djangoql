@@ -175,9 +175,9 @@ class DjangoQLParser(object):
 
     def p_const_value_list(self, p):
         """
-        const_value_list : const_value_list const_value
+        const_value_list : const_value_list COMMA const_value
         """
-        p[0] = p[1] + [p[2]]
+        p[0] = p[1] + [p[3]]
 
     def p_const_value_list_single(self, p):
         """
