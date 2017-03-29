@@ -1,7 +1,5 @@
 from __future__ import unicode_literals
 
-from decimal import Decimal
-
 import ply.lex as lex
 from ply.lex import TOKEN
 
@@ -62,8 +60,6 @@ class DjangoQLLexer(object):
     re_exponent_part = r'[eE][\+-]?[0-9]+'
 
     tokens = [
-        'NAME',
-        'DOT',
         'COMMA',
         'OR',
         'AND',
@@ -72,6 +68,7 @@ class DjangoQLLexer(object):
         'TRUE',
         'FALSE',
         'NONE',
+        'NAME',
         'STRING_VALUE',
         'FLOAT_VALUE',
         'INT_VALUE',
@@ -87,7 +84,6 @@ class DjangoQLLexer(object):
         'NOT_CONTAINS',
     ]
 
-    t_DOT = r'\.'
     t_COMMA = ','
     t_PAREN_L = r'\('
     t_PAREN_R = r'\)'
@@ -100,7 +96,7 @@ class DjangoQLLexer(object):
     t_CONTAINS = '~'
     t_NOT_CONTAINS = '!~'
 
-    t_NAME = r'[_A-Za-z][_0-9A-Za-z]*'
+    t_NAME = r'[_A-Za-z][_0-9A-Za-z]*(\.[_A-Za-z][_0-9A-Za-z]*)*'
 
     t_ignore = whitespace
 

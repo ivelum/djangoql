@@ -48,19 +48,9 @@ class DjangoQLParser(object):
 
     def p_name(self, p):
         """
-        name : name_parts
+        name : NAME
         """
-        p[0] = Name(parts=p[1])
-
-    def p_name_parts(self, p):
-        """
-        name_parts : name_parts DOT NAME
-                   | NAME
-        """
-        if len(p) == 2:
-            p[0] = [p[1]]
-        else:
-            p[0] = p[1] + [p[3]]
+        p[0] = Name(parts=p[1].split('.'))
 
     def p_logical(self, p):
         """

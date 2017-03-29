@@ -26,7 +26,6 @@ class DjangoQLLexerTest(TestCase):
     def test_punctuator(self):
         self.assert_output(self.lexer.input('('), [('PAREN_L', '(')])
         self.assert_output(self.lexer.input(')'), [('PAREN_R', ')')])
-        self.assert_output(self.lexer.input('.'), [('DOT', '.')])
         self.assert_output(self.lexer.input(','), [('COMMA', ',')])
         self.assert_output(self.lexer.input('='), [('EQUALS', '=')])
         self.assert_output(self.lexer.input('!='), [('NOT_EQUALS', '!=')])
@@ -40,6 +39,19 @@ class DjangoQLLexerTest(TestCase):
     def test_name(self):
         for name in ('a', 'myVar_42', '__LOL__', '_', '_0'):
             self.assert_output(self.lexer.input(name), [('NAME', name)])
+
+    def test_entity_props(self):
+        self.assert_output(self.lexer.input('a.b.c'), [('NAME', 'a.b.c')])
+        try:
+            list(self.lexer.input('user . group . id'))
+            self.fail('Whitespace around dots must raise an exception')
+        except DjangoQLLexerError:
+            pass
+        try:
+            list(self.lexer.input('user..id'))
+            self.fail('Two dots in a row must raise an exception')
+        except DjangoQLLexerError:
+            pass
 
     def test_reserved_words(self):
         reserved = ('True', 'False', 'None', 'or', 'and', 'in')

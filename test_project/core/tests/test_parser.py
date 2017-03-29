@@ -1,8 +1,13 @@
+import unittest.util
 from unittest import TestCase
 
 from djangoql.ast import Expression, Name, Comparison, Logical, Const, List
 from djangoql.exceptions import DjangoQLParserError
 from djangoql.parser import DjangoQLParser
+
+
+# Show full contents in assertions when comparing long text strings
+unittest.util._MAX_LENGTH = 2000
 
 
 class DjangoQLParseTest(TestCase):
@@ -83,3 +88,10 @@ class DjangoQLParseTest(TestCase):
     def test_invalid_comparison(self):
         for expr in ('foo > None', 'b <= True', 'c in False', '1 = 1', 'a > b'):
             self.assertRaises(DjangoQLParserError, self.parser.parse, expr)
+
+    def test_entity_props(self):
+        self.assertEqual(
+            Expression(Name(['user', 'group', 'id']), Comparison('='),
+                       Const(5)),
+            self.parser.parse('user.group.id = 5'),
+        )
