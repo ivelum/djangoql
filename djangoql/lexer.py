@@ -115,12 +115,10 @@ class DjangoQLLexer(object):
            re_int_value + re_fraction_part + '|' +
            re_int_value + re_exponent_part)
     def t_FLOAT_VALUE(self, t):
-        t.value = Decimal(t.value)
         return t
 
     @TOKEN(re_int_value)
     def t_INT_VALUE(self, t):
-        t.value = int(t.value)
         return t
 
     not_followed_by_name = '(?![_0-9A-Za-z])'

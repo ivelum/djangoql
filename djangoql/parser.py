@@ -1,4 +1,5 @@
 import sys
+from decimal import Decimal
 
 import ply.yacc as yacc
 
@@ -125,12 +126,17 @@ class DjangoQLParser(object):
         """
         p[0] = p[1]
 
-    def p_number(self, p):
+    def p_number_int(self, p):
         """
         number : INT_VALUE
-               | FLOAT_VALUE
         """
-        p[0] = Const(value=p[1])
+        p[0] = Const(value=int(p[1]))
+
+    def p_number_float(self, p):
+        """
+        number : FLOAT_VALUE
+        """
+        p[0] = Const(value=Decimal(p[1]))
 
     def p_string(self, p):
         """

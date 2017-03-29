@@ -43,6 +43,16 @@ class DjangoQLParseTest(TestCase):
             self.parser.parse('name ~ "Contains a \\"quoted\\" string"')
         )
 
+    def test_numbers(self):
+        self.assertEqual(
+            Expression(Name('pk'), Comparison('>'), Const(5)),
+            self.parser.parse('pk > 5')
+        )
+        self.assertEqual(
+            Expression(Name('rating'), Comparison('<='), Const(523)),
+            self.parser.parse('rating <= 5.23e2')
+        )
+
     def test_logical(self):
         self.assertEqual(
             Expression(

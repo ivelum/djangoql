@@ -51,17 +51,11 @@ class DjangoQLLexerTest(TestCase):
 
     def test_int(self):
         for val in ('0', '-0', '42', '-42'):
-            self.assert_output(
-                self.lexer.input(val),
-                [('INT_VALUE', int(val))],
-            )
+            self.assert_output(self.lexer.input(val), [('INT_VALUE', val)])
 
     def test_float(self):
         for val in ('-0.5e+42', '42.0', '2E64', '2.71e-0002'):
-            self.assert_output(
-                self.lexer.input(val),
-                [('FLOAT_VALUE', Decimal(val))],
-            )
+            self.assert_output(self.lexer.input(val), [('FLOAT_VALUE', val)])
 
     def test_string(self):
         for s in ('""', u'""', '"42"', r'"\t\n\u0042 ^"'):
