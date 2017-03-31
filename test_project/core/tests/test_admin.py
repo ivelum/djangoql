@@ -19,7 +19,7 @@ class DjangoQLAdminTest(TestCase):
         # authorized request should be served
         response = self.client.get(url)
         self.assertEqual(200, response.status_code)
-        introspections = json.loads(response.content)
+        introspections = json.loads(response.content.decode('utf8'))
         self.assertEqual('core.book', introspections['current_model'])
         for model in ('core.book', 'auth.user', 'auth.group'):
             self.assertIn(model, introspections['models'])
