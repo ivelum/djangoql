@@ -1,6 +1,8 @@
+import json
+
 from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
 from django.test import TestCase
-from django.urls import reverse
 
 
 class DjangoQLAdminTest(TestCase):
@@ -17,7 +19,7 @@ class DjangoQLAdminTest(TestCase):
         # authorized request should be served
         response = self.client.get(url)
         self.assertEqual(200, response.status_code)
-        introspections = response.json()
+        introspections = json.loads(response.content)
         self.assertEqual('core.book', introspections['current_model'])
         for model in ('core.book', 'auth.user', 'auth.group'):
             self.assertIn(model, introspections['models'])

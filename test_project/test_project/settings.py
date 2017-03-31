@@ -47,12 +47,12 @@ INSTALLED_APPS = [
 ]
 
 if DJDT:
-    MIDDLEWARE = ['debug_toolbar.middleware.DebugToolbarMiddleware']
+    MIDDLEWARE_CLASSES = ['debug_toolbar.middleware.DebugToolbarMiddleware']
     INSTALLED_APPS += ['debug_toolbar']
 else:
-    MIDDLEWARE = []
+    MIDDLEWARE_CLASSES = []
 
-MIDDLEWARE += [
+MIDDLEWARE_CLASSES += [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',

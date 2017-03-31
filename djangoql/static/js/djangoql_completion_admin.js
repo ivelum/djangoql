@@ -12,6 +12,7 @@
     textarea.value = input.value;
     textarea.id = input.id;
     textarea.name = input.name;
+    textarea.rows = 1;
     textarea.setAttribute('maxlength', 2000);
     input.parentNode.insertBefore(textarea, input);
     input.parentNode.removeChild(input);
