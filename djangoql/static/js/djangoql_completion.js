@@ -511,6 +511,10 @@
     generateSuggestions: function (input) {
       var context;
 
+      if (!this.currentModel) {
+        // Introspections are not loaded yet
+        return;
+      }
       if (input.selectionStart !== input.selectionEnd) {
         // We shouldn't show suggestions when something is selected
         this.prefix = '';
