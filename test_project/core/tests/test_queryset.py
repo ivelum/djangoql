@@ -6,7 +6,7 @@ from djangoql.queryset import apply_search
 from ..models import Book
 
 
-class DjangoQLQuerySetText(TestCase):
+class DjangoQLQuerySetTest(TestCase):
     def test_simple_query(self):
         qs = Book.objects.djangoql('name = "foo" and author.email = "bar@baz"')
         where_clause = str(qs.query).split('WHERE')[1].strip()
