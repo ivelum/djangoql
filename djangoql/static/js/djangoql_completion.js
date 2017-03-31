@@ -510,6 +510,7 @@
 
     generateSuggestions: function (input) {
       var context;
+      var field;
 
       if (!this.currentModel) {
         // Introspections are not loaded yet
@@ -524,6 +525,7 @@
 
       context = this.getContext(input.value, input.selectionStart);
       this.prefix = context.prefix;
+      field = context.field && this.models[context.model][context.field];
       switch (context.scope) {
         case 'field':
           this.suggestions = Object.keys(this.models[context.model]);
@@ -531,8 +533,8 @@
 
         case 'comparison':
           this.suggestions = ['=', '!='];
-          if (context.field && context.field.type !== 'bool') {
-            if (context.field.type === 'str') {
+          if (field && field.type !== 'bool') {
+            if (field.type === 'str') {
               this.suggestions.push('~');
               this.suggestions.push('!~');
             }
