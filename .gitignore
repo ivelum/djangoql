@@ -3,6 +3,7 @@
 
 test_project/db.sqlite3
 
+build
 dist
 djangoql.egg-info
 

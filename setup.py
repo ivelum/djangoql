@@ -22,6 +22,7 @@ setup(
     author_email='support@ivelum.com',
     url='https://github.com/ivelum/djangoql/',
     packages=packages,
+    include_package_data=True,
     install_requires=requires,
     license=open('LICENSE').read(),
     zip_safe=False,
