@@ -27,7 +27,7 @@ DEBUG = True
 
 DJDT = False
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0', 'ci.ivelum.com']
 INTERNAL_IPS = ['127.0.0.1']
 
 
@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'djangoql',
 
     'core',
 ]

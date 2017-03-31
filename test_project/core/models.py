@@ -11,5 +11,7 @@ class Book(models.Model):
     author = models.ForeignKey('auth.User')
     written = models.DateTimeField(default=now)
     is_published = models.BooleanField(default=False)
+    rating = models.FloatField(null=True)
+    price = models.DecimalField(max_digits=7, decimal_places=2, null=True)
 
     objects = DjangoQLQuerySet.as_manager()

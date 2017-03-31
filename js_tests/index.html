@@ -1,0 +1,32 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../node_modules/mocha/mocha.css" />
+    <link rel="stylesheet" href="../djangoql/static/css/djangoql_completion.css" />
+    <style type="text/css">
+      textarea {
+        font-size: 13px;
+        margin: 10px;
+        width: 50%;
+      }
+    </style>
+  </head>
+  <body>
+    <form>
+      <textarea name="test" rows="1"></textarea>
+    </form>
+    <script src="../djangoql/static/js/lib/lexer.js"></script>
+    <script src="../djangoql/static/js/djangoql_completion.js"></script>
+
+    <div id="mocha"></div>
+    <script src="../node_modules/mocha/mocha.js"></script>
+    <script src="../node_modules/expect.js/index.js"></script>
+    <script>
+      mocha.ui('bdd');
+    </script>
+    <script src="tests.js"></script>
+    <script>
+      mocha.run()
+    </script>
+  </body>
+</html>

@@ -1,0 +1,23 @@
+.djangoql-completion {
+  position: absolute;
+  display: none;
+  border: solid 1px gray;
+  border-radius: 4px;
+  background: white;
+}
+
+.djangoql-completion .active {
+  background-color: #79aec8;
+  color: white;
+}
+
+.djangoql-completion ul {
+  padding: 2px 0;
+  margin: 0;
+}
+
+.djangoql-completion li {
+  list-style: none;
+  padding: 4px 10px;
+  cursor: pointer;
+}
