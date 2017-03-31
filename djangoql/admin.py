@@ -66,6 +66,9 @@ class DjangoQLSearchMixin(object):
                 fields = {}
                 for field in model._meta.get_fields():
                     if field.is_relation:
+                        if not field.related_model:
+                            # GenericForeignKey
+                            continue
                         field_type = 'relation'
                         relation = str(field.related_model._meta)
                     else:
