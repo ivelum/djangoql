@@ -298,6 +298,14 @@
           this.hideCompletion();
           break;
 
+        case 16:  // Shift
+        case 17:  // Ctrl
+        case 18:  // Alt
+        case 91:  // Windows Key or Left Cmd on Mac
+        case 93:  // Windows Menu or Right Cmd on Mac
+          // Control keys shouldn't trigger completion popup
+          break;
+
         default:
           // When keydown is fired input value has not been updated yet,
           // so we need to wait
