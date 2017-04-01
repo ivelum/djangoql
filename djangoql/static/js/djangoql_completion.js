@@ -397,7 +397,8 @@
       }
 
       inputRect = this.textarea.getBoundingClientRect();
-      this.completion.style.top = inputRect.top + inputRect.height + 'px';
+      this.completion.style.top = window.pageYOffset + inputRect.top +
+          inputRect.height + 'px';
       this.completion.style.left = inputRect.left + 'px';
       this.completion.style.display = 'block';
     },
