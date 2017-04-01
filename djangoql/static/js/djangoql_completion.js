@@ -567,6 +567,8 @@
               suggestions.push('~');
               suggestions.push('!~');
               snippet = ' "|"';
+            } else if (field.type === 'date' || field.type === 'datetime') {
+              snippet = ' "|"';
             }
             Array.prototype.push.apply(suggestions, ['>', '>=', '<', '<=']);
           }
@@ -574,7 +576,11 @@
             return suggestion(s, snippet);
           });
           if (field && field.type !== 'bool') {
-            snippet = field.type === 'str' ? ' ("|")' : ' (|)';
+            if (['str', 'date', 'datetime'].indexOf(field.type) >= 0) {
+              snippet = ' ("|")';
+            } else {
+              snippet = ' (|)';
+            }
             this.suggestions.push(suggestion('in', snippet));
             this.suggestions.push(suggestion('not in', snippet));
           }
