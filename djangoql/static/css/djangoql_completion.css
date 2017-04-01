@@ -4,6 +4,7 @@
   border: solid 1px gray;
   border-radius: 4px;
   background: white;
+  min-width: 70px;
 }
 
 .djangoql-completion .active {

@@ -98,6 +98,14 @@
     return result;
   };
 
+  function suggestion(text, snippet) {
+    // text is being displayed in completion box and pasted when you hit Enter.
+    // snippet is an optional extra text to be appended after the main text.
+    // it may include "|" symbol to designate desired cursor position after
+    // pasting a snippet.
+    return { text: text, snippet: snippet || '' };
+  }
+
   // Main DjangoQL object
   return {
     currentModel: null,
@@ -295,7 +303,6 @@
           // so we need to wait
           window.setTimeout(function (input) {
             this.generateSuggestions(input);
-            this.selected = null;
             this.renderCompletion();
           }.bind(this, e.target));
           break;
@@ -318,14 +325,20 @@
       var startPos = this.textarea.selectionStart;
       var textAfter = this.textarea.value.slice(startPos);
       var textBefore = this.textarea.value.slice(0, startPos);
-      var textToPaste = this.suggestions[index].slice(this.prefix.length);
+
+      var snippetParts = this.suggestions[index].snippet.split('|');
+      var textToPaste = this.suggestions[index].text.slice(this.prefix.length) +
+          snippetParts.join('');
       var cursorPosAfter = textBefore.length + textToPaste.length;
+      if (snippetParts.length > 1) {
+        cursorPosAfter -= snippetParts[1].length;
+      }
+
       this.textarea.value = textBefore + textToPaste + textAfter;
       this.textarea.focus();
       this.textarea.setSelectionRange(cursorPosAfter, cursorPosAfter);
-      // Just calling .hideCompletion() here is not enough for mouse clicks,
-      // we need to clear them explicitly.
-      this.suggestions = [];
+      this.selected = null;
+      this.generateSuggestions(this.textarea);
       this.renderCompletion();
     },
 
@@ -370,7 +383,7 @@
           currentLi.addEventListener('mouseover', this.onCompletionMouseOver);
         }
         currentLi.innerHTML = '<b>' + this.prefix + '</b>' +
-            this.suggestions[i].slice(this.prefix.length);
+            this.suggestions[i].text.slice(this.prefix.length);
         currentLi.className = (i === this.selected) ? 'active' : '';
       }
       // Remove redundant elements
@@ -510,7 +523,10 @@
 
     generateSuggestions: function (input) {
       var context;
+      var model;
       var field;
+      var suggestions;
+      var snippet;
 
       if (!this.currentModel) {
         // Introspections are not loaded yet
@@ -525,27 +541,38 @@
 
       context = this.getContext(input.value, input.selectionStart);
       this.prefix = context.prefix;
-      field = context.field && this.models[context.model][context.field];
+      model = this.models[context.model];
+      field = context.field && model[context.field];
       switch (context.scope) {
         case 'field':
-          this.suggestions = Object.keys(this.models[context.model]);
+          this.suggestions = Object.keys(model).map(function (f) {
+            return suggestion(f, model[f].type === 'relation' ? '.' : ' ');
+          });
           break;
 
         case 'comparison':
-          this.suggestions = ['=', '!='];
+          suggestions = ['=', '!='];
+          snippet = ' ';
           if (field && field.type !== 'bool') {
             if (field.type === 'str') {
-              this.suggestions.push('~');
-              this.suggestions.push('!~');
+              suggestions.push('~');
+              suggestions.push('!~');
+              snippet = ' "|"';
             }
-            Array.prototype.push.apply(
-                this.suggestions,
-                ['>', '>=', '<', '<=', 'in', 'not in']);
+            Array.prototype.push.apply(suggestions, ['>', '>=', '<', '<=']);
+          }
+          this.suggestions = suggestions.map(function (s) {
+            return suggestion(s, snippet);
+          });
+          if (field && field.type !== 'bool') {
+            snippet = field.type === 'str' ? ' ("|")' : ' (|)';
+            this.suggestions.push(suggestion('in', snippet));
+            this.suggestions.push(suggestion('not in', snippet));
           }
           break;
 
         case 'logical':
-          this.suggestions = ['and', 'or'];
+          this.suggestions = [suggestion('and', ' '), suggestion('or', ' ')];
           break;
 
         default:
@@ -554,8 +581,13 @@
       }
       this.suggestions = this.suggestions.filter(function (item) {
         // See http://stackoverflow.com/a/4579228
-        return item.lastIndexOf(this.prefix, 0) === 0;
+        return item.text.lastIndexOf(this.prefix, 0) === 0;
       }.bind(this));
+      if (this.suggestions.length === 1) {
+        this.selected = 0;  // auto-select the only suggested item
+      } else {
+        this.selected = null;
+      }
     }
 
   };
