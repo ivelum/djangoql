@@ -334,13 +334,12 @@
     },
 
     selectCompletion: function (index) {
-      var startPos = this.textarea.selectionStart;
-      var textAfter = this.textarea.value.slice(startPos);
+      var startPos = this.textarea.selectionStart - this.prefix.length;
+      var textAfter = this.textarea.value.slice(startPos + this.prefix.length);
       var textBefore = this.textarea.value.slice(0, startPos);
 
       var snippetParts = this.suggestions[index].snippet.split('|');
-      var textToPaste = this.suggestions[index].text.slice(this.prefix.length) +
-          snippetParts.join('');
+      var textToPaste = this.suggestions[index].text + snippetParts.join('');
       var cursorPosAfter = textBefore.length + textToPaste.length;
       if (snippetParts.length > 1) {
         cursorPosAfter -= snippetParts[1].length;
@@ -394,8 +393,12 @@
           currentLi.addEventListener('mouseout', this.onCompletionMouseOut);
           currentLi.addEventListener('mouseover', this.onCompletionMouseOver);
         }
-        currentLi.innerHTML = '<b>' + this.prefix + '</b>' +
-            this.suggestions[i].text.slice(this.prefix.length);
+        if (this.prefix) {
+          currentLi.innerHTML = this.suggestions[i].text.split(this.prefix)
+              .join('<b>' + this.prefix + '</b>');
+        } else {
+          currentLi.innerHTML = this.suggestions[i].text;
+        }
         currentLi.className = (i === this.selected) ? 'active' : '';
       }
       // Remove redundant elements
@@ -600,8 +603,7 @@
           this.suggestions = [];
       }
       this.suggestions = this.suggestions.filter(function (item) {
-        // See http://stackoverflow.com/a/4579228
-        return item.text.lastIndexOf(this.prefix, 0) === 0;
+        return item.text.indexOf(this.prefix) >= 0;
       }.bind(this));
       if (this.suggestions.length === 1) {
         this.selected = 0;  // auto-select the only suggested item
