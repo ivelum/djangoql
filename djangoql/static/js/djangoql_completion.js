@@ -544,6 +544,7 @@
       var field;
       var suggestions;
       var snippet;
+      var searchFilter;
 
       if (!this.currentModel) {
         // Introspections are not loaded yet
@@ -555,6 +556,11 @@
         this.suggestions = [];
         return;
       }
+
+      // default search filter - find anywhere in the string
+      searchFilter = function (item) {
+        return item.text.indexOf(this.prefix) >= 0;
+      }.bind(this);
 
       context = this.getContext(input.value, input.selectionStart);
       this.prefix = context.prefix;
@@ -592,6 +598,11 @@
             this.suggestions.push(suggestion('in', snippet));
             this.suggestions.push(suggestion('not in', snippet));
           }
+          // use "starts with" search filter instead of default
+          searchFilter = function (item) {
+            // See http://stackoverflow.com/a/4579228
+            return item.text.lastIndexOf(this.prefix, 0) === 0;
+          }.bind(this);
           break;
 
         case 'logical':
@@ -602,9 +613,7 @@
           this.prefix = '';
           this.suggestions = [];
       }
-      this.suggestions = this.suggestions.filter(function (item) {
-        return item.text.indexOf(this.prefix) >= 0;
-      }.bind(this));
+      this.suggestions = this.suggestions.filter(searchFilter);
       if (this.suggestions.length === 1) {
         this.selected = 0;  // auto-select the only suggested item
       } else {
