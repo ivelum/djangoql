@@ -140,10 +140,19 @@
         return;
       }
 
+      // these handlers are re-used more than once in the code below,
+      // so it's handy to have them already bound
+      this.onCompletionMouseClick = this.onCompletionMouseClick.bind(this);
+      this.onCompletionMouseDown = this.onCompletionMouseDown.bind(this);
+      this.onCompletionMouseOut = this.onCompletionMouseOut.bind(this);
+      this.onCompletionMouseOver = this.onCompletionMouseOver.bind(this);
+      this.popupCompletion = this.popupCompletion.bind(this);
+
       // Bind event handlers and initialize completion & textSize containers
       this.textarea.setAttribute('autocomplete', 'off');
       this.textarea.addEventListener('keydown', this.onKeydown.bind(this));
       this.textarea.addEventListener('blur', this.hideCompletion.bind(this));
+      this.textarea.addEventListener('click', this.popupCompletion);
       if (options.autoresize) {
         this.textarea.style.resize = 'none';
         this.textarea.style.overflow = 'hidden';
@@ -162,13 +171,6 @@
       document.querySelector('body').appendChild(this.completion);
       this.completionUL = document.createElement('ul');
       this.completion.appendChild(this.completionUL);
-
-      // .renderCompletion() re-uses these handlers many times when adding and
-      // removing event listeners, so it's handy to have them already bound
-      this.onCompletionMouseClick = this.onCompletionMouseClick.bind(this);
-      this.onCompletionMouseDown = this.onCompletionMouseDown.bind(this);
-      this.onCompletionMouseOut = this.onCompletionMouseOut.bind(this);
-      this.onCompletionMouseOver = this.onCompletionMouseOver.bind(this);
     },
 
     loadIntrospections: function (introspections) {
@@ -309,10 +311,7 @@
         default:
           // When keydown is fired input value has not been updated yet,
           // so we need to wait
-          window.setTimeout(function (input) {
-            this.generateSuggestions(input);
-            this.renderCompletion();
-          }.bind(this, e.target));
+          window.setTimeout(this.popupCompletion);
           break;
       }
     },
@@ -327,6 +326,11 @@
       // Ping me if you know how to get rid of "+1"
       this.textarea.style.height = (this.textarea.scrollHeight - heightOffset) +
           1 + 'px';
+    },
+
+    popupCompletion: function () {
+      this.generateSuggestions();
+      this.renderCompletion();
     },
 
     selectCompletion: function (index) {
@@ -530,7 +534,8 @@
       return { prefix: prefix, scope: scope, model: model, field: field };
     },
 
-    generateSuggestions: function (input) {
+    generateSuggestions: function () {
+      var input = this.textarea;
       var context;
       var model;
       var field;
