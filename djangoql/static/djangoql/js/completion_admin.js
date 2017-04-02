@@ -20,8 +20,9 @@
 
     DjangoQL.init({
       introspections: 'introspect/',
+      syntaxHelp: 'djangoql-syntax/',
       selector: 'textarea[name=q]',
-      autoresize: true
+      autoResize: true
     });
   });
 }(window.DjangoQL));

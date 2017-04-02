@@ -1,0 +1,399 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block title %}DjangoQL search syntax{% endblock %}
+
+{% block extrahead %}
+  <link rel="stylesheet" type="text/css" href="{% block syntax_stylesheet %}{% static "djangoql/css/syntax_help.css" %}{% endblock %}" />
+{% endblock %}
+
+{% block coltype %}colSM{% endblock %}
+
+{% block content_title %}<h1>DjangoQL search syntax</h1>{% endblock %}
+
+{% block sidebar %}
+  <div id="content-related" class="sidebar">
+    <div class="module">
+      <h2>Contents</h2>
+      <ul>
+        <li><a href="#search-conditions">Search conditions</a></li>
+        <li>
+          <a href="#multiple-search-conditions">Multiple search conditions</a>
+        </li>
+        <li><a href="#fields">Fields</a></li>
+        <li><a href="#related-models">Related models</a></li>
+        <li><a href="#comparison-operators">Comparison operators</a></li>
+        <li><a href="#values">Values</a></li>
+      </ul>
+    </div>
+  </div>
+{% endblock %}
+
+{% block content %}
+  <div id="content-main">
+
+  {% block search_conditions %}
+    <div class="module">
+      <h2 id="search-conditions">Search conditions</h2>
+      <p>
+        Search condition is a basic search query building block. It always
+        consists of 3 elements: <code>field</code>,
+        <code>comparison operator</code> and <code>value</code>, placed exactly
+        in this order from left to right.
+      </p>
+      {% block search_condition_examples %}
+        <p>
+          Here's an example - looking for users with first name "John". In the
+          example below <code>first_name</code> is a <code>field</code>,
+          <code>=</code> is a <code>comparison operator</code> and
+          <code>"John"</code> is a <code>value</code>:
+        </p>
+        <pre>first_name = "John"</pre>
+        <p>Another example, looking for users who registered in 2017 or later:</p>
+        <pre>date_joined >= "2017-01-01"</pre>
+        <p>One more example, looking for super-users:</p>
+        <pre>is_superuser = True</pre>
+        <p>And one more - find all users who's names are in a given list:</p>
+        <pre>first_name in ("John", "Jack", "Jason")</pre>
+      {% endblock %}
+    </div>
+  {% endblock %}
+
+  {% block multiple_search_conditions %}
+    <div class="module">
+      <h2 id="multiple-search-conditions">Multiple search conditions</h2>
+
+      <p>
+        You can combine multiple search conditions together using logical
+        operators <code>and</code> (both conditions must be true) and
+        <code>or</code> (at least one of conditions must be true, no matter
+        which one). Important - logical operators must be written in lowercase:
+        <code>and</code> and <code>or</code> is correct, and <code>AND</code> or
+        <code>OR</code> is incorrect and will cause an error.
+      </p>
+
+      {% block multiple_search_condition_examples %}
+        <p>
+          Example: looking for users with first name "John" <code>and</code>
+          registered in 2017 or later. Please note that we have 2 search
+          conditions here, joined with <code>and</code>:
+        </p>
+        <pre>first_name = "John" and date_joined >= "2017-01-01"</pre>
+        <p>
+          One more example, looking for users who are either super-users
+          <code>or</code> marked with "Staff" flag:
+        </p>
+        <pre>is_superuser = True or is_staff = True</pre>
+        <p>
+          Logical operators can be quite powerful, they let you to build complex
+          search queries. If you're building a complex query there's an
+          important tip to keep in mind: if your query contains both
+          <code>and</code> and <code>or</code> operators, we strongly encourage
+          you to use parenthesis to specify the precedence of operators. Here's
+          an example to illustrate why this is important. Let's assume that you
+          want to pull users who are either super-users <code>or</code> marked
+          with Staff flag, <code>and</code> registered in 2017 or later. It
+          might be tempting to write a query like this:
+        </p>
+        <pre>is_superuser = True or is_staff = True and date_joined > "2017-01-01"</pre>
+        <p>
+          The problem with query above is that it won't do what you expect,
+          because <code>and</code> operator is evaluated first. In fact it pulls
+          users who are either super-users (no matter when they registered)
+          <code>or</code> users who are both Staff <code>and</code> registered
+          after 2017. This problem can be fixed with parenthesis, just put it
+          around search conditions that must be evaluated first, like this:
+        </p>
+        <pre>(is_superuser = True or is_staff = True) and date_joined > "2017-01-01"</pre>
+        <p>
+          Using parenthesis is recommended only when your query mixes both
+          <code>and</code> and <code>or</code> operators. If your query contains
+          multiple logical operators of only one kind (either <code>and</code>
+          or <code>or</code>) you can safely omit parenthesis and it would work
+          as expected.
+        </p>
+      {% endblock %}
+    </div>
+  {% endblock %}
+
+  {% block fields %}
+    <div class="module">
+      <h2 id="fields">Fields</h2>
+
+      <p>
+        In a search query you should reference fields of current model exactly
+        as they're defined in Python code for this particular Django model.
+        Search query input has an auto-completion feature that popups
+        automatically and suggests all available options. If you're not sure
+        what the field name is, then pick one of the options displayed
+        (example):
+      </p>
+
+      {% block field_completion_example %}
+      <img
+          src="{% static 'djangoql/img/completion_example.png' %}"
+          width="508"
+          alt="DjangoQL completion example">
+      {% endblock %}
+
+      {% block field_naming %}
+      <p>
+        In most cases internal Django model fields look similar to what you see
+        in Django admin interface, just in lowercase and with <code>_</code>
+        instead of spaces. For example, in standard Users admin interface
+        internal <code>first_name</code> field is displayed as
+        <code>First name</code>, <code>email</code> field is displayed as
+        <code>Email address</code> and so on. However there could be exceptions
+        from this, if developers have defined custom display names that look
+        very different from their internal representation. In such cases it
+        could be a good idea to ask developers to override this help template
+        and provide an "internal name -> display name" fields mapping right
+        here.
+      </p>
+      {% endblock %}
+
+      <p>
+        Note that some fields which you see in Django admin may not be
+        searchable. This includes computed fields, i.e. fields which are not
+        stored in the database as a plain value, but rather calculated from
+        other values in the code.
+      </p>
+    </div>
+  {% endblock %}
+
+  {% block related_models %}
+    <div class="module">
+      <h2 id="related-models">Related models</h2>
+
+      <p>
+        DjangoQL allows you to search by related models as well (it
+        automatically converts relations to SQL joins under the hood). Use
+        <code>.</code> dot separator to designate related models and their
+        fields. For example:
+      </p>
+
+      <pre>groups.name in ("Marketing", "Support")</pre>
+
+      <p>
+        See the <code>.</code> in the example above? It means that
+        <code>groups</code> is a related model and <code>name</code> is a field
+        of that model. As usual, DjangoQL auto-completion provides suggestions
+        for all available related models and their fields. For complex data
+        structures you can use multiple levels of relation, i.e. specifying a
+        related model, then its related model, and so on.
+      </p>
+
+      <p>
+        In most cases search condition with a related model must specify
+        exact field of that model, but not a related model itself. For example,
+        <code>groups in ("Marketing", "Support")</code> won't work, because
+        <code>groups</code> is a model and not a field. Models could have many
+        fields, and the server doesn't know against which field would you like
+        to perform a comparison. However there's one notable exception from
+        this - when you'd like to find records which are linked (or not linked)
+        to any related models of that kind. In such case you should compare
+        related model to a special <code>None</code> value, like this:
+      </p>
+
+      <pre>groups = None</pre>
+
+      <p>
+        The example above would search for users that don't belong to any
+        groups. If you'd to find all users that belong to at least any group
+        instead, use <code>!= None</code>:
+      </p>
+
+      <pre>groups != None</pre>
+    </div>
+  {% endblock %}
+
+  {% block comparison_operators %}
+    <div class="module">
+      <h2 id="comparison-operators">Comparison operators</h2>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Operator</th>
+            <th>Meaning</th>
+            <th>Example</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>=</td>
+            <td>equals</td>
+            <td>first_name = "John"</td>
+          </tr>
+          <tr>
+            <td>!=</td>
+            <td>not equals</td>
+            <td>id != 42</td>
+          </tr>
+          <tr>
+            <td>~</td>
+            <td>contains a substring</td>
+            <td>email ~ "@gmail.com"</td>
+          </tr>
+          <tr>
+            <td>!~</td>
+            <td>not contains a substring</td>
+            <td>username !~ "test"</td>
+          </tr>
+          <tr>
+            <td>&gt;</td>
+            <td>greater</td>
+            <td>date_joined > "2017-02-28"</td>
+          </tr>
+          <tr>
+            <td>&gt;=</td>
+            <td>greater or equal</td>
+            <td>id >= 9000</td>
+          </tr>
+          <tr>
+            <td>&lt;</td>
+            <td>less</td>
+            <td>id < 9000</td>
+          </tr>
+          <tr>
+            <td>&lt;=</td>
+            <td>less or equal</td>
+            <td>last_login <= "2017-02-28 14:53"</td>
+          </tr>
+          <tr>
+            <td>in</td>
+            <td>value is in the list</td>
+            <td>first_name in ("John", "Jack", "Jason")</td>
+          </tr>
+          <tr>
+            <td>not in</td>
+            <td>value is not in the list</td>
+            <td>id not in (42, 9000)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>Notes:</p>
+      <ol>
+        <li>
+          <code>~</code> and <code>!~</code> operators can be applied to string
+          fields only;
+        </li>
+        <li>
+          <code>True</code>, <code>False</code> and <code>None</code> values can
+          be combined with <code>=</code> and <code>!=</code> only;
+        </li>
+        <li>
+          <code>in</code> and <code>not in</code> operators must be written in
+          lowercase. <code>IN</code> or <code>NOT IN</code> is incorrect and
+          will cause an error.
+        </li>
+      </ol>
+    </div>
+  {% endblock %}
+
+  {% block values %}
+    <div class="module">
+      <h2 id="values">Values</h2>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Type</th>
+            <th>Examples</th>
+            <th>Comments</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>string</td>
+            <td nowrap><code>"this is a string"</code></td>
+            <td>
+              Strings must be enclosed in double quotes, like
+              <code>"this"</code>. If your string contains double quote
+              symbols in it, you should escape them with a backslash,
+              like this: <code>"this is a string with \"quoted\" text"</code>.
+            </td>
+          </tr>
+          <tr>
+            <td>int</td>
+            <td nowrap><code>42</code>, <code>0</code>, <code>-9000</code></td>
+            <td>
+              Integer numbers are just digits with optional unary minus. If
+              you're typing big numbers please don't use thousand separators,
+              DjangoQL doesn't understand them.
+            </td>
+          </tr>
+          <tr>
+            <td>float</td>
+            <td nowrap>
+              <code>3.14</code>, <code>-0.5</code>, <code>5.972e24</code>
+            </td>
+            <td>
+              Floating point numbers look like integer numbers with optional
+              fractional part separated with dot. You can also use
+              <code>e</code> notation to specify power of ten. For example,
+              <code>5.972e24</code> means <code>5.972 * 10<sup>24</sup></code>.
+            </td>
+          </tr>
+          <tr>
+            <td>bool</td>
+            <td nowrap>
+              <code>True</code>, <code>False</code>
+            </td>
+            <td>
+              Boolean is a special type that accepts only two values:
+              <code>True</code> or <code>False</code>. These values are
+              case-sensitive, you should write <code>True</code> or
+              <code>False</code> exactly like this, with the first letter in
+              uppercase and others in lowercase, without quotes.
+            </td>
+          </tr>
+          <tr>
+            <td>date</td>
+            <td nowrap>
+              <code>"2017-02-28"</code>
+            </td>
+            <td>
+              Dates are represented as strings in <code>"YYYY-MM-DD"</code>
+              format.
+            </td>
+          </tr>
+          <tr>
+            <td>datetime</td>
+            <td nowrap>
+              <code>"2017-02-28 14:53"</code><br>
+              <code>"2017-02-28 14:53:07"</code>
+            </td>
+            <td>
+              Date and time can be represented as a string in
+              <code>"YYYY-MM-DD HH:MM"</code> format, or optionally with seconds
+              in  <code>"YYYY-MM-DD HH:MM:SS"</code> format (24-hour clock).
+              Please note that comparisons with date and time are performed in
+              a server timezone, which is usually UTC.
+            </td>
+          </tr>
+          <tr>
+            <td>null</td>
+            <td nowrap>
+              <code>None</code>
+            </td>
+            <td>
+              This is a special value that represents an absense of any value:
+              <code>None</code>. It should be written exactly like this, with
+              the first letter in uppercase and others in lowercase, without
+              quotes. When to use it - when some field in the database is
+              nullable (i.e. can contain NULL in SQL terms) and you'd like to
+              search for records which either have no value
+              (<code>some_field = None</code>) or have some value
+              (<code>some_field != None</code>).
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  {% endblock %}
+
+  </div>
+
+{% endblock %}

@@ -123,6 +123,8 @@
     completionUL: null,
 
     init: function (options) {
+      var syntaxHelp;
+
       // Initialization
       if (!this.isObject(options)) {
         this.logError('Please pass an object with initialization parameters');
@@ -153,7 +155,7 @@
       this.textarea.addEventListener('keydown', this.onKeydown.bind(this));
       this.textarea.addEventListener('blur', this.hideCompletion.bind(this));
       this.textarea.addEventListener('click', this.popupCompletion);
-      if (options.autoresize) {
+      if (options.autoResize) {
         this.textarea.style.resize = 'none';
         this.textarea.style.overflow = 'hidden';
         this.textarea.addEventListener('input', this.textareaResize.bind(this));
@@ -171,6 +173,19 @@
       document.querySelector('body').appendChild(this.completion);
       this.completionUL = document.createElement('ul');
       this.completion.appendChild(this.completionUL);
+      if (typeof options.syntaxHelp === 'string') {
+        syntaxHelp = document.createElement('p');
+        syntaxHelp.className = 'syntax-help';
+        syntaxHelp.innerHTML = '<a href="' + options.syntaxHelp +
+            '" target="_blank">Syntax Help</a>';
+        syntaxHelp.addEventListener('mousedown', function (e) {
+          // This is needed to prevent conflict with textarea.onblur event
+          // handler, which tries to hide the completion box and therefore
+          // makes Syntax Help link malfunctional.
+          e.preventDefault();
+        });
+        this.completion.appendChild(syntaxHelp);
+      }
     },
 
     loadIntrospections: function (introspections) {

@@ -9,6 +9,7 @@ from django.db.models import AutoField, BooleanField, CharField, DateField, \
     DateTimeField, DecimalField, FloatField, IntegerField, NullBooleanField, \
     TextField
 from django.http import HttpResponse
+from django.views.generic import TemplateView
 
 from .exceptions import DjangoQLSyntaxError
 from .queryset import apply_search
@@ -17,6 +18,7 @@ from .queryset import apply_search
 class DjangoQLSearchMixin(object):
     search_fields = ('_djangoql',)  # just a stub to have search input displayed
     djangoql_completion = True
+    djangoql_syntax_help_template = 'djangoql/syntax_help.html'
 
     def get_search_results(self, request, queryset, search_term):
         use_distinct = False
@@ -36,13 +38,13 @@ class DjangoQLSearchMixin(object):
         media = super(DjangoQLSearchMixin, self).media
         if self.djangoql_completion:
             media.add_js((
-                'js/lib/lexer.js',
-                'js/djangoql_completion.js',
-                'js/djangoql_completion_admin.js',
+                'djangoql/js/lib/lexer.js',
+                'djangoql/js/completion.js',
+                'djangoql/js/completion_admin.js',
             ))
             media.add_css({'': (
-                'css/djangoql_completion.css',
-                'css/djangoql_completion_admin.css',
+                'djangoql/css/completion.css',
+                'djangoql/css/completion_admin.css',
             )})
         return media
 
@@ -57,6 +59,13 @@ class DjangoQLSearchMixin(object):
                         self.model._meta.app_label,
                         self.model._meta.model_name,
                     ),
+                ),
+                url(
+                    r'^djangoql-syntax/$',
+                    TemplateView.as_view(
+                        template_name=self.djangoql_syntax_help_template,
+                    ),
+                    name='djangoql_syntax_help',
                 ),
             ]
         return custom_urls + super(DjangoQLSearchMixin, self).get_urls()

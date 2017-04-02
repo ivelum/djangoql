@@ -1,0 +1,14 @@
+code {
+  background-color: rgba(27, 31, 35, 0.05);
+  padding: 0.2em;
+}
+
+pre {
+  background-color: rgba(27, 31, 35, 0.05);
+  padding: 5px 40px;
+  margin: 0 0 10px 0;
+}
+
+table {
+  margin: 10px 0;
+}
