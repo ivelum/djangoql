@@ -1,2 +1,3 @@
 recursive-include djangoql/static *
+recursive-include djangoql/templates *
 include README.rst LICENSE
