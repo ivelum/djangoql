@@ -1,12 +1,12 @@
-class DjangoQLSyntaxError(Exception):
+class DjangoQLError(Exception):
     def __init__(self, message=None, value=None, line=None, column=None):
         self.value = value
         self.line = line
         self.column = column
-        super(DjangoQLSyntaxError, self).__init__(message)
+        super(DjangoQLError, self).__init__(message)
 
     def __str__(self):
-        message = super(DjangoQLSyntaxError, self).__str__()
+        message = super(DjangoQLError, self).__str__()
         if self.line:
             position_info = 'Line %s' % self.line
             if self.column:
@@ -16,9 +16,17 @@ class DjangoQLSyntaxError(Exception):
             return message
 
 
+class DjangoQLSyntaxError(DjangoQLError):
+    pass
+
+
 class DjangoQLLexerError(DjangoQLSyntaxError):
     pass
 
 
 class DjangoQLParserError(DjangoQLSyntaxError):
+    pass
+
+
+class DjangoQLSchemaError(DjangoQLError):
     pass

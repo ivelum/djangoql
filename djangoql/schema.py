@@ -1,17 +1,39 @@
+import inspect
 from collections import OrderedDict
 
 from django.db.models import AutoField, BooleanField, CharField, DateField, \
     DateTimeField, DecimalField, FloatField, IntegerField, Model, \
     NullBooleanField, TextField
 
+from .exceptions import DjangoQLSchemaError
+
 
 class DjangoQLSchema(object):
+    include = ()  # models to include into introspection
     exclude = ()  # models to exclude from introspection
 
     def __init__(self, model):
-        assert issubclass(model, Model), 'Subclass of Django Model is expected'
+        if not inspect.isclass(model) or not issubclass(model, Model):
+            raise DjangoQLSchemaError(
+                'Schema must be initialized with a subclass of Django model'
+            )
+        if self.include and self.exclude:
+            raise DjangoQLSchemaError(
+                'Either include or exclude can be specified, but not both'
+            )
+        if self.excluded(model):
+            raise DjangoQLSchemaError(
+                "%s can't be used with %s because it's excluded from it" % (
+                    model,
+                    self.__class__,
+                )
+            )
         self.current_model = model
         self._models = None
+
+    def excluded(self, model):
+        return model in self.exclude or \
+               (self.include and model not in self.include)
 
     @property
     def models(self):
@@ -39,7 +61,7 @@ class DjangoQLSchema(object):
                 if not field.related_model:
                     # GenericForeignKey
                     continue
-                if field.related_model in self.exclude:
+                if self.excluded(field.related_model):
                     continue
                 field_type = 'relation'
                 relation = self.model_label(field.related_model)
