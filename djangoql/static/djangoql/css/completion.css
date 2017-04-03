@@ -4,7 +4,7 @@
   border: solid 1px #ccc;
   border-radius: 4px;
   background: white;
-  min-width: 90px;
+  min-width: 183px;
   font-size: 13px;
 }
 
@@ -16,6 +16,8 @@
 .djangoql-completion ul {
   padding: 2px 0;
   margin: 0;
+  max-height: 295px;
+  overflow: auto;
 }
 
 .djangoql-completion li {
