@@ -16,8 +16,14 @@ class DjangoQLSchema(object):
     @property
     def models(self):
         if not self._models:
-            self._models = self.introspect(self.current_model, self.exclude)
+            self._models = self.introspect(
+                model=self.current_model,
+                exclude=tuple(self.model_label(m) for m in self.exclude),
+            )
         return self._models
+
+    def model_label(self, model):
+        return str(model._meta)
 
     def introspect(self, model, exclude=()):
         """
@@ -26,21 +32,22 @@ class DjangoQLSchema(object):
         Returns a dict with all model labels and their fields found.   
         """
         fields = OrderedDict()
-        result = {str(model._meta): fields}
+        result = {self.model_label(model): fields}
         for field_name in self.get_fields(model):
             field = model._meta.get_field(field_name)
             if field.is_relation:
                 if not field.related_model:
                     # GenericForeignKey
                     continue
-                if field.related_model in exclude:
+                if field.related_model in self.exclude:
                     continue
-                result.update(self.introspect(
-                    model=field.related_model,
-                    exclude=tuple(exclude) + (model,)
-                ))
                 field_type = 'relation'
-                relation = str(field.related_model._meta)
+                relation = self.model_label(field.related_model)
+                if relation not in exclude:
+                    result.update(self.introspect(
+                        model=field.related_model,
+                        exclude=tuple(exclude) + tuple(result.keys()),
+                    ))
             else:
                 field_type = self.get_field_type(field)
                 relation = None
@@ -79,6 +86,6 @@ class DjangoQLSchema(object):
 
     def as_dict(self):
         return {
-            'current_model': str(self.current_model._meta),
+            'current_model': self.model_label(self.current_model),
             'models': self.models,
         }
