@@ -149,6 +149,7 @@
       this.onCompletionMouseOut = this.onCompletionMouseOut.bind(this);
       this.onCompletionMouseOver = this.onCompletionMouseOver.bind(this);
       this.popupCompletion = this.popupCompletion.bind(this);
+      this.textareaResize = this.textareaResize.bind(this);
 
       // Bind event handlers and initialize completion & textSize containers
       this.textarea.setAttribute('autocomplete', 'off');
@@ -158,7 +159,13 @@
       if (options.autoResize) {
         this.textarea.style.resize = 'none';
         this.textarea.style.overflow = 'hidden';
-        this.textarea.addEventListener('input', this.textareaResize.bind(this));
+        this.textarea.addEventListener('input', this.textareaResize);
+        this.textareaResize();
+        // There could be a situation when fonts are not loaded yet at this
+        // point. When fonts are finally loaded it could make textarea looking
+        // weird - for example in Django 1.9+ last line won't fit. To fix this
+        // we call .textareaResize() once again when window is fully loaded.
+        window.addEventListener('load', this.textareaResize);
       } else {
         // Catch resize events and re-position completion box.
         // See http://stackoverflow.com/a/7055239
