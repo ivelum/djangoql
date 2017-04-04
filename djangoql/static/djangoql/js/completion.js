@@ -342,7 +342,7 @@
         default:
           // When keydown is fired input value has not been updated yet,
           // so we need to wait
-          window.setTimeout(this.popupCompletion);
+          window.setTimeout(this.popupCompletion, 10);
           break;
       }
     },
