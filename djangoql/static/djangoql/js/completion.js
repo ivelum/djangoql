@@ -121,6 +121,8 @@
     prefix: '',
     suggestions: [],
     selected: null,
+    valuesCaseSensitive: false,
+    highlightCaseSensitive: true,
 
     textarea: null,
     completion: null,
@@ -144,6 +146,9 @@
         this.logError('selector must be pointing to <textarea> element, but ' +
             this.textarea.tagName + ' was found');
         return;
+      }
+      if (options.valuesCaseSensitive) {
+        this.valuesCaseSensitive = true;
       }
 
       // these handlers are re-used more than once in the code below,
@@ -388,6 +393,23 @@
       }
     },
 
+    escapeRegExp: function (str) {
+      // http://stackoverflow.com
+      // /questions/3446170/escape-string-for-use-in-javascript-regex
+      return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');  // eslint-disable-line
+    },
+
+    highlight: function (text, highlight) {
+      if (!highlight || !text) {
+        return text;
+      } else if (this.highlightCaseSensitive) {
+        return text.split(highlight).join('<b>' + highlight + '</b>');
+      }
+      return text.replace(
+          new RegExp('(' + this.escapeRegExp(highlight) + ')', 'ig'),
+          '<b>$1</b>');
+    },
+
     renderCompletion: function (dontForceDisplay) {
       var currentLi;
       var i;
@@ -421,12 +443,9 @@
           currentLi.addEventListener('mouseout', this.onCompletionMouseOut);
           currentLi.addEventListener('mouseover', this.onCompletionMouseOver);
         }
-        if (this.prefix) {
-          currentLi.innerHTML = this.suggestions[i].text.split(this.prefix)
-              .join('<b>' + this.prefix + '</b>');
-        } else {
-          currentLi.innerHTML = this.suggestions[i].text;
-        }
+        currentLi.innerHTML = this.highlight(
+            this.suggestions[i].text,
+            this.prefix);
         currentLi.className = (i === this.selected) ? 'active' : '';
       }
       // Remove redundant elements
@@ -549,6 +568,9 @@
           scope = 'value';
           model = resolvedName.model;
           field = resolvedName.field;
+          if (prefix[0] === '"' && this.models[model][field].type === 'str') {
+            prefix = prefix.slice(1);
+          }
         }
       } else if (lastToken && whitespace && lastToken.name === 'NAME') {
         resolvedName = this.resolveName(lastToken.value);
@@ -571,8 +593,10 @@
       var model;
       var field;
       var suggestions;
+      var snippetBefore;
       var snippetAfter;
       var searchFilter;
+      var textBefore;
       var textAfter;
 
       if (!this.currentModel) {
@@ -586,17 +610,22 @@
         return;
       }
 
-      textAfter = input.value.slice(input.selectionStart);
-
-      // default search filter - find anywhere in the string
+      // default search filter - find anywhere in the string, case-sensitive
       searchFilter = function (item) {
         return item.text.indexOf(this.prefix) >= 0;
       }.bind(this);
+      // default highlight mode - case sensitive
+      this.highlightCaseSensitive = true;
 
       context = this.getContext(input.value, input.selectionStart);
       this.prefix = context.prefix;
       model = this.models[context.model];
       field = context.field && model[context.field];
+
+      textBefore = input.value.slice(
+          0, input.selectionStart - this.prefix.length);
+      textAfter = input.value.slice(input.selectionStart);
+
       switch (context.scope) {
         case 'field':
           this.suggestions = Object.keys(model).map(function (f) {
@@ -637,26 +666,26 @@
           break;
 
         case 'value':
+          if (textBefore && textBefore[textBefore.length - 1] === '"') {
+            snippetBefore = '';
+          } else {
+            snippetBefore = '"';
+          }
           if (textAfter[0] !== '"') {
             snippetAfter = '" ';
           } else {
             snippetAfter = '';
           }
-          if (this.prefix[0] === '"') {
+          if (!this.valuesCaseSensitive) {
             searchFilter = function (item) {
-              // Ignore leading double quote, case-insensitive
-              return item.text.toLowerCase()
-                      .indexOf(this.prefix.slice(1).toLowerCase()) >= 0;
-            }.bind(this);
-          } else {
-            searchFilter = function (item) {
-              // Just case-insensitive
+              // Case-insensitive
               return item.text.toLowerCase()
                       .indexOf(this.prefix.toLowerCase()) >= 0;
             }.bind(this);
           }
+          this.highlightCaseSensitive = this.valuesCaseSensitive;
           this.suggestions = field.options.map(function (f) {
-            return suggestion(f, '"', snippetAfter);
+            return suggestion(f, snippetBefore, snippetAfter);
           });
           break;
 
