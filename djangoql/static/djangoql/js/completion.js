@@ -98,12 +98,16 @@
     return result;
   };
 
-  function suggestion(text, snippet) {
+  function suggestion(text, snippetBefore, snippetAfter) {
     // text is being displayed in completion box and pasted when you hit Enter.
-    // snippet is an optional extra text to be appended after the main text.
-    // it may include "|" symbol to designate desired cursor position after
-    // pasting a snippet.
-    return { text: text, snippet: snippet || '' };
+    // snippetBefore is an optional extra text to be pasted before main text.
+    // snippetAfter is an optional text to be pasted after. It may also include
+    // "|" symbol to designate desired cursor position after paste.
+    return {
+      text: text,
+      snippetBefore: snippetBefore || '',
+      snippetAfter: snippetAfter || ''
+    };
   }
 
   // Main DjangoQL object
@@ -360,11 +364,13 @@
       var textAfter = this.textarea.value.slice(startPos + this.prefix.length);
       var textBefore = this.textarea.value.slice(0, startPos);
 
-      var snippetParts = this.suggestions[index].snippet.split('|');
-      var textToPaste = this.suggestions[index].text + snippetParts.join('');
+      var snippetAfterParts = this.suggestions[index].snippetAfter.split('|');
+      var textToPaste = this.suggestions[index].snippetBefore +
+          this.suggestions[index].text +
+          snippetAfterParts.join('');
       var cursorPosAfter = textBefore.length + textToPaste.length;
-      if (snippetParts.length > 1) {
-        cursorPosAfter -= snippetParts[1].length;
+      if (snippetAfterParts.length > 1) {
+        cursorPosAfter -= snippetAfterParts[1].length;
       }
 
       this.textarea.value = textBefore + textToPaste + textAfter;
@@ -565,8 +571,9 @@
       var model;
       var field;
       var suggestions;
-      var snippet;
+      var snippetAfter;
       var searchFilter;
+      var textAfter;
 
       if (!this.currentModel) {
         // Introspections are not loaded yet
@@ -578,6 +585,8 @@
         this.suggestions = [];
         return;
       }
+
+      textAfter = input.value.slice(input.selectionStart);
 
       // default search filter - find anywhere in the string
       searchFilter = function (item) {
@@ -591,34 +600,34 @@
       switch (context.scope) {
         case 'field':
           this.suggestions = Object.keys(model).map(function (f) {
-            return suggestion(f, model[f].type === 'relation' ? '.' : ' ');
+            return suggestion(f, '', model[f].type === 'relation' ? '.' : ' ');
           });
           break;
 
         case 'comparison':
           suggestions = ['=', '!='];
-          snippet = ' ';
+          snippetAfter = ' ';
           if (field && field.type !== 'bool') {
             if (field.type === 'str') {
               suggestions.push('~');
               suggestions.push('!~');
-              snippet = ' "|"';
+              snippetAfter = ' "|"';
             } else if (field.type === 'date' || field.type === 'datetime') {
-              snippet = ' "|"';
+              snippetAfter = ' "|"';
             }
             Array.prototype.push.apply(suggestions, ['>', '>=', '<', '<=']);
           }
           this.suggestions = suggestions.map(function (s) {
-            return suggestion(s, snippet);
+            return suggestion(s, '', snippetAfter);
           });
           if (field && field.type !== 'bool') {
             if (['str', 'date', 'datetime'].indexOf(field.type) >= 0) {
-              snippet = ' ("|")';
+              snippetAfter = ' ("|")';
             } else {
-              snippet = ' (|)';
+              snippetAfter = ' (|)';
             }
-            this.suggestions.push(suggestion('in', snippet));
-            this.suggestions.push(suggestion('not in', snippet));
+            this.suggestions.push(suggestion('in', '', snippetAfter));
+            this.suggestions.push(suggestion('not in', '', snippetAfter));
           }
           // use "starts with" search filter instead of default
           searchFilter = function (item) {
@@ -627,8 +636,35 @@
           }.bind(this);
           break;
 
+        case 'value':
+          if (textAfter[0] !== '"') {
+            snippetAfter = '" ';
+          } else {
+            snippetAfter = '';
+          }
+          if (this.prefix[0] === '"') {
+            searchFilter = function (item) {
+              // Ignore leading double quote, case-insensitive
+              return item.text.toLowerCase()
+                      .indexOf(this.prefix.slice(1).toLowerCase()) >= 0;
+            }.bind(this);
+          } else {
+            searchFilter = function (item) {
+              // Just case-insensitive
+              return item.text.toLowerCase()
+                      .indexOf(this.prefix.toLowerCase()) >= 0;
+            }.bind(this);
+          }
+          this.suggestions = field.options.map(function (f) {
+            return suggestion(f, '"', snippetAfter);
+          });
+          break;
+
         case 'logical':
-          this.suggestions = [suggestion('and', ' '), suggestion('or', ' ')];
+          this.suggestions = [
+            suggestion('and', '', ' '),
+            suggestion('or', '', ' ')
+          ];
           break;
 
         default:

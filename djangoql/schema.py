@@ -73,9 +73,14 @@ class DjangoQLSchema(object):
             else:
                 field_type = self.get_field_type(field)
                 relation = None
+            if field_type == 'str':
+                options = self.get_options(model, field_name) or []
+            else:
+                options = []
             fields[field.name] = {
                 'type': field_type,
                 'relation': relation,
+                'options': list(options),
             }
         return result
 
@@ -105,6 +110,17 @@ class DjangoQLSchema(object):
         elif isinstance(field, DateField):
             return 'date'
         return 'unknown'
+
+    def get_options(self, model, field_name):
+        """
+        Override this method to provide suggestion options for model fields.
+         
+        It should return a list of string values. Quick example:
+        
+        if model == Group and field_name == 'name':
+            return Group.objects.order_by('name').values_list('name', flat=True)
+        
+        """
 
     def as_dict(self):
         return {

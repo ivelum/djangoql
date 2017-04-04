@@ -25,6 +25,10 @@ class UserQLSchema(DjangoQLSchema):
             return ['name']
         return super(UserQLSchema, self).get_fields(model)
 
+    def get_options(self, model, field_name):
+        if model == Group and field_name == 'name':
+            return Group.objects.order_by('name').values_list('name', flat=True)
+
 
 @admin.register(User)
 class CustomUserAdmin(DjangoQLSearchMixin, UserAdmin):
