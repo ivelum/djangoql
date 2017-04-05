@@ -2,8 +2,8 @@ import inspect
 from collections import OrderedDict
 
 from django.db.models import AutoField, BooleanField, CharField, DateField, \
-    DateTimeField, DecimalField, FloatField, IntegerField, Model, \
-    NullBooleanField, TextField
+    DateTimeField, DecimalField, FloatField, IntegerField, ManyToOneRel, \
+    ManyToManyRel, Model, NullBooleanField, TextField
 
 from .exceptions import DjangoQLSchemaError
 
@@ -77,10 +77,15 @@ class DjangoQLSchema(object):
                 options = self.get_options(model, field_name) or []
             else:
                 options = []
+            if isinstance(field, (ManyToOneRel, ManyToManyRel)):
+                # Django 1.8 doesn't have .null attribute for these fields
+                nullable = True
+            else:
+                nullable = field.null
             fields[field.name] = {
                 'type': field_type,
                 'relation': relation,
-                'nullable': field.null,
+                'nullable': nullable,
                 'options': list(options),
             }
         return result
