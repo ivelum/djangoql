@@ -80,6 +80,7 @@ class DjangoQLSchema(object):
             fields[field.name] = {
                 'type': field_type,
                 'relation': relation,
+                'nullable': field.null,
                 'options': list(options),
             }
         return result

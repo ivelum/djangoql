@@ -666,27 +666,37 @@
           break;
 
         case 'value':
-          if (textBefore && textBefore[textBefore.length - 1] === '"') {
-            snippetBefore = '';
-          } else {
-            snippetBefore = '"';
+          if (field.type === 'str') {
+            if (textBefore && textBefore[textBefore.length - 1] === '"') {
+              snippetBefore = '';
+            } else {
+              snippetBefore = '"';
+            }
+            if (textAfter[0] !== '"') {
+              snippetAfter = '" ';
+            } else {
+              snippetAfter = '';
+            }
+            if (!this.valuesCaseSensitive) {
+              searchFilter = function (item) {
+                // Case-insensitive
+                return item.text.toLowerCase()
+                        .indexOf(this.prefix.toLowerCase()) >= 0;
+              }.bind(this);
+            }
+            this.highlightCaseSensitive = this.valuesCaseSensitive;
+            this.suggestions = field.options.map(function (f) {
+              return suggestion(f, snippetBefore, snippetAfter);
+            });
+          } else if (field.type === 'bool') {
+            this.suggestions = [
+              suggestion('True', '', ' '),
+              suggestion('False', '', ' ')
+            ];
+            if (field.nullable) {
+              this.suggestions.push(suggestion('None', '', ' '));
+            }
           }
-          if (textAfter[0] !== '"') {
-            snippetAfter = '" ';
-          } else {
-            snippetAfter = '';
-          }
-          if (!this.valuesCaseSensitive) {
-            searchFilter = function (item) {
-              // Case-insensitive
-              return item.text.toLowerCase()
-                      .indexOf(this.prefix.toLowerCase()) >= 0;
-            }.bind(this);
-          }
-          this.highlightCaseSensitive = this.valuesCaseSensitive;
-          this.suggestions = field.options.map(function (f) {
-            return suggestion(f, snippetBefore, snippetAfter);
-          });
           break;
 
         case 'logical':
