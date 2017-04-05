@@ -413,6 +413,8 @@
     renderCompletion: function (dontForceDisplay) {
       var currentLi;
       var i;
+      var completionRect;
+      var currentLiRect;
       var inputRect;
       var li;
       var liLen;
@@ -429,6 +431,9 @@
       suggestionsLen = this.suggestions.length;
       li = [].slice.call(this.completionUL.querySelectorAll('li'));
       liLen = li.length;
+      if (this.selected === null) {
+        this.completionUL.scrollTop = 0;
+      }
 
       // Update or create necessary elements
       for (i = 0; i < suggestionsLen; i++) {
@@ -446,7 +451,20 @@
         currentLi.innerHTML = this.highlight(
             this.suggestions[i].text,
             this.prefix);
-        currentLi.className = (i === this.selected) ? 'active' : '';
+        if (i === this.selected) {
+          currentLi.className = 'active';
+          currentLiRect = currentLi.getBoundingClientRect();
+          completionRect = this.completionUL.getBoundingClientRect();
+          if (currentLiRect.bottom > completionRect.bottom) {
+            this.completionUL.scrollTop = this.completionUL.scrollTop + 2 +
+                (currentLiRect.bottom - completionRect.bottom);
+          } else if (currentLiRect.top < completionRect.top) {
+            this.completionUL.scrollTop = this.completionUL.scrollTop - 2 -
+                (completionRect.top - currentLiRect.top);
+          }
+        } else {
+          currentLi.className = '';
+        }
       }
       // Remove redundant elements
       while (liLen > suggestionsLen) {
