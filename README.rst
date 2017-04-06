@@ -4,9 +4,11 @@ DjangoQL
 .. image:: https://travis-ci.org/ivelum/djangoql.svg?branch=master
         :target: https://travis-ci.org/ivelum/djangoql
 
-Query mini-language that translates into Django ORM. Supports logical operators,
-parenthesis, table joins, works with any Django models. Tested vs. Python 2.7,
-3.5 and 3.6, Django 1.8, 1.9, 1.10.
+Advanced search language for Django, with auto-completion. Supports logical
+operators, parenthesis, table joins, works with any Django models. Tested vs.
+Python 2.7, 3.5 and 3.6, Django 1.8 - 1.11. Auto-completion feature tested
+in Chrome, Firefox, Safari, IE9+.
+
 
 Installation
 ------------
@@ -24,6 +26,7 @@ Add ``'djangoql'`` to ``INSTALLED_APPS`` in your ``settings.py``:
         'djangoql',
         ...
     ]
+
 
 Add it to your Django admin
 ---------------------------
@@ -43,6 +46,62 @@ Django search functionality with DjangoQL search. Example:
     @admin.register(Book)
     class BookAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
         pass
+     
+
+DjangoQL Schema
+---------------
+
+Schema defines limitations - what you can do with a DjangoQL query.
+If you don't specify any schema, DjangoQL will provide a default 
+schema for you. It would recursively walk though all model fields and 
+relations and include everything it could find in the schema, so
+users would be able to search through everything. However sometimes
+this is not what you want, either due to DB performance or security 
+concerns. If you'd like to limit search models or fields, you should 
+define a schema. Here's an example:
+
+.. code:: python
+
+    class UserQLSchema(DjangoQLSchema):
+        exclude = (Book,)
+
+        def get_fields(self, model):
+            if model == Group:
+                return ['name']
+            return super(UserQLSchema, self).get_fields(model)
+
+
+    @admin.register(Book)
+    class BookAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
+        djangoql_schema = UserQLSchema
+        
+In the example above we created a schema that excludes Book model
+from search, and also limits available search fields for Group model 
+to ``name`` only. Instead of ``exclude`` you may also use ``include``, 
+it would limit search to listed models only.
+
+Another use case for schemas is values auto-completion. You can 
+optionally override ``.get_options()`` method to provide value 
+options for auto-completion widget. In the example below we use this
+feature to provide options for Group names:
+
+.. code:: python
+
+    class UserQLSchema(DjangoQLSchema):
+        include = (User, Group)
+
+        def get_options(self, model, field_name):
+            if model == Group and field_name == 'name':
+                return Group.objects.order_by('name').values_list('name', flat=True)
+
+
+    @admin.register(Book)
+    class BookAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
+        djangoql_schema = UserQLSchema
+        
+Please note that all value options are loaded synchronously, so you
+should avoid large lists there.
+
 
 Can I use it outside of Django admin?
 -------------------------------------
@@ -91,9 +150,39 @@ even if it's not an instance of DjangoQLQuerySet:
     qs = apply_search(qs, 'groups = None')
     print(qs.exists())
 
+Schemas can be specified either as a queryset option, or passed
+to ``.djangoql()`` queryset method directly:
+
+.. code:: python
+
+    class BookQuerySet(DjangoQLQuerySet):
+        djangoql_schema = BookSchema
+
+    class Book(models.Model):
+        ...
+
+        objects = BookQuerySet.as_manager()
+        
+    # Now, Book.objects.djangoql() will use BookSchema by default:
+    Book.objects.djangoql('name ~ "Peace")  # uses BookSchema
+    
+    # Overriding default queryset schema with AnotherSchema:
+    Book.objects.djangoql('name ~ "Peace", schema=AnotherSchema)
+    
+You can also provide schema as an option for ``apply_search()``
+
+.. code:: python
+
+    qs = User.objects.all()
+    qs = apply_search(qs, 'groups = None', schema=CustomSchema)
+
 
 Language reference
 ------------------
+
+DjangoQL is shipped with comprehensive Syntax Help, which is
+available in Django admin (see Syntax Help link in auto-completion
+popup). Here's a quick summary:
 
 DjangoQL looks close to Python syntax, however there're some minor
 differences. Basically you just reference model fields like you do
@@ -114,6 +203,7 @@ parenthesis. DjangoQL is case-sensitive.
   or not contains a substring (translated into ``__icontains``);
 - test a value vs. list: ``in``, ``not in``. Example:
   ``pk in (2, 3)``.
+
 
 License
 -------
