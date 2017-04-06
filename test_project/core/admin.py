@@ -33,3 +33,9 @@ class UserQLSchema(DjangoQLSchema):
 @admin.register(User)
 class CustomUserAdmin(DjangoQLSearchMixin, UserAdmin):
     djangoql_schema = UserQLSchema
+
+    list_display = ('username', 'first_name', 'last_name', 'is_staff', 'group')
+
+    def group(self, obj):
+        return ', '.join([g.name for g in obj.groups.all()])
+    group.short_description = 'Groups'
