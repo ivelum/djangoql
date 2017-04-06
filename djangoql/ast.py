@@ -41,6 +41,10 @@ class Name(Node):
         else:
             self.parts = [parts]
 
+    @property
+    def value(self):
+        return '.'.join(self.parts)
+
 
 class Const(Node):
     def __init__(self, value):

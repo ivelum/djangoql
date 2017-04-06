@@ -1,10 +1,12 @@
 import inspect
 from collections import OrderedDict
+from datetime import datetime
 
 from django.db.models import AutoField, BooleanField, CharField, DateField, \
     DateTimeField, DecimalField, FloatField, IntegerField, ManyToOneRel, \
     ManyToManyRel, Model, NullBooleanField, TextField
 
+from .ast import Comparison, Const, List, Logical, Name, Node
 from .exceptions import DjangoQLSchemaError
 
 
@@ -133,3 +135,112 @@ class DjangoQLSchema(object):
             'current_model': self.model_label(self.current_model),
             'models': self.models,
         }
+
+    def validate(self, node):
+        """
+        Validate DjangoQL AST tree vs. current schema 
+        """
+        assert isinstance(node, Node)
+        if isinstance(node.operator, Logical):
+            self.validate(node.left)
+            self.validate(node.right)
+            return
+        assert isinstance(node.left, Name)
+        assert isinstance(node.operator, Comparison)
+        assert isinstance(node.right, (Const, List))
+
+        # resolve name
+        model = self.model_label(self.current_model)
+        field = None
+        for name_part in node.left.parts:
+            field = self.models[model].get(name_part)
+            if not field:
+                raise DjangoQLSchemaError(
+                    'Unknown field: %s. Possible choices are: %s' % (
+                        name_part,
+                        ', '.join(sorted(self.models[model].keys())),
+                    )
+                )
+            if field['type'] == 'relation':
+                model = field['relation']
+                field = None
+
+        # Check that field and value types are compatible
+        value = node.right.value
+        if field is None:
+            if value is not None:
+                raise DjangoQLSchemaError(
+                    'Related model %s can be compared to None only, but not to '
+                    '%s' % (node.left.value, type(value).__name__)
+                )
+        else:
+            if not field['nullable'] and value is None:
+                raise DjangoQLSchemaError(
+                    'Field %s is not nullable, '
+                    'can\'t compare it to None' % node.left.value
+                )
+            possible_types = {
+                'int': ['int'],
+                'float': ['int', 'float', 'Decimal'],
+                'str': ['str'],
+                'bool': ['bool'],
+                'date': ['str'],
+                'datetime': ['str'],
+            }[field['type']]
+            possible_values = {
+                'int': 'integer numbers',
+                'float': 'floating point numbers',
+                'str': 'strings',
+                'bool': 'True or False',
+                'date': 'dates in "YYYY-MM-DD" format',
+                'datetime': 'timestamps in "YYYY-MM-DD HH:MM" format',
+            }[field['type']]
+            values = value if isinstance(node.right, List) else [value]
+            for v in values:
+                if v is not None and type(v).__name__ not in possible_types:
+                    if field['nullable']:
+                        msg = (
+                            'Field "{field}" has "nullable {field_type}" type. '
+                            'It can be compared to {possible_values} or None, '
+                            'but not to {value}'
+                        )
+                    else:
+                        msg = (
+                            'Field "{field}" has "{field_type}" type. It can '
+                            'be compared to {possible_values}, '
+                            'but not to {value}'
+                        )
+                    raise DjangoQLSchemaError(msg.format(
+                        field=node.left.value,
+                        field_type=field['type'],
+                        possible_values=possible_values,
+                        value=repr(v),
+                    ))
+                # validate dates
+                if field['type'] == 'date':
+                    try:
+                        datetime.strptime(v, '%Y-%m-%d')
+                    except ValueError:
+                        raise DjangoQLSchemaError(
+                            'Field "%s" can be compared to dates in '
+                            '"YYYY-MM-DD" format, but not to %s' % (
+                                node.left.value,
+                                repr(v),
+                            )
+                        )
+                elif field['type'] == 'datetime':
+                    mask = '%Y-%m-%d'
+                    if len(v) > 10:
+                        mask += ' %H:%M'
+                    if len(v) > 16:
+                        mask += ':%S'
+                    try:
+                        datetime.strptime(v, mask)
+                    except ValueError:
+                        raise DjangoQLSchemaError(
+                            'Field "%s" can be compared to timestamps in '
+                            '"YYYY-MM-DD HH:MM" format, but not to %s' % (
+                                node.left.value,
+                                repr(v),
+                            )
+                        )

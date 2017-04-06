@@ -3,6 +3,7 @@ from django.contrib.auth.models import Group, User
 from django.test import TestCase
 
 from djangoql.exceptions import DjangoQLSchemaError
+from djangoql.parser import DjangoQLParser
 from djangoql.schema import DjangoQLSchema
 
 from ..models import Book
@@ -97,3 +98,40 @@ class DjangoQLSchemaTest(TestCase):
             self.fail('Schema was initialized with an instance of a model')
         except DjangoQLSchemaError:
             pass
+
+    def test_validation_pass(self):
+        samples = [
+            'first_name = "Lolita"',
+            'groups.id < 42',
+            'groups = None',  # that's ok to compare a model to None
+            'groups != None',
+            'groups.name in ("Stoics") and is_staff = False',
+            'date_joined > "1753-01-01"',
+            'date_joined > "1753-01-01 01:24"',
+            'date_joined > "1753-01-01 01:24:42"',
+        ]
+        for query in samples:
+            ast = DjangoQLParser().parse(query)
+            try:
+                IncludeUserGroupSchema(User).validate(ast)
+            except DjangoQLSchemaError as e:
+                self.fail(e)
+
+    def test_validation_fail(self):
+        samples = [
+            'gav = 1',                      # unknown field
+            'groups.gav > 1',               # unknown related field
+            'groups = "lol"',               # can't compare model to a value
+            'groups.name != 1',             # bad value type
+            'is_staff = True and gav < 2',  # complex expression with valid part
+            'date_joined < "1753-30-01"',   # bad timestamps
+            'date_joined < "1753-01-01 12"',
+            'date_joined < "1753-01-01 12AM"',
+        ]
+        for query in samples:
+            ast = DjangoQLParser().parse(query)
+            try:
+                IncludeUserGroupSchema(User).validate(ast)
+                self.fail('This query should\'t pass validation: %s' % query)
+            except DjangoQLSchemaError as e:
+                pass

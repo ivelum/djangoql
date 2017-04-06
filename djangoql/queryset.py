@@ -2,6 +2,7 @@ from django.db.models import Q, QuerySet
 
 from .ast import Logical
 from .parser import DjangoQLParser
+from .schema import DjangoQLSchema
 
 
 def build_filter(expr):
@@ -33,13 +34,18 @@ def build_filter(expr):
     return ~q if invert else q
 
 
-def apply_search(queryset, search):
+def apply_search(queryset, search, schema=None):
     """
     Applies search written in DjangoQL mini-language to given queryset
     """
-    return queryset.filter(build_filter(DjangoQLParser().parse(search)))
+    ast = DjangoQLParser().parse(search)
+    schema = schema or DjangoQLSchema
+    schema(queryset.model).validate(ast)
+    return queryset.filter(build_filter(ast))
 
 
 class DjangoQLQuerySet(QuerySet):
-    def djangoql(self, search):
-        return apply_search(self, search)
+    djangoql_schema = None
+
+    def djangoql(self, search, schema=None):
+        return apply_search(self, search, schema=schema or self.djangoql_schema)
