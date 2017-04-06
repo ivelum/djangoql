@@ -16,7 +16,7 @@ requires = ['ply>=3.8']
 setup(
     name='djangoql',
     version=djangoql.__version__,
-    description='DjangoQL: query mini-language that translates to Django ORM',
+    description='DjangoQL: Advanced search language for Django',
     long_description=open('README.rst').read(),
     author='Denis Stebunov',
     author_email='support@ivelum.com',
