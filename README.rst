@@ -9,6 +9,7 @@ operators, parenthesis, table joins, works with any Django models. Tested vs.
 Python 2.7, 3.5 and 3.6, Django 1.8 - 1.11. Auto-completion feature tested
 in Chrome, Firefox, Safari, IE9+.
 
+.. image:: https://raw.githubusercontent.com/ivelum/djangoql/master/djangoql/static/djangoql/img/completion_example_scaled.png
 
 Installation
 ------------
