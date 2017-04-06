@@ -27,6 +27,7 @@ class DjangoQLSearchMixin(object):
             msg = str(e)
         except ValidationError as e:
             msg = e.messages[0]
+        queryset = queryset.none()
         messages.add_message(request, messages.WARNING, msg)
         return queryset, use_distinct
 
