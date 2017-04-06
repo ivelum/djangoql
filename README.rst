@@ -158,6 +158,7 @@ to ``.djangoql()`` queryset method directly:
     class BookQuerySet(DjangoQLQuerySet):
         djangoql_schema = BookSchema
 
+
     class Book(models.Model):
         ...
 
