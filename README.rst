@@ -49,18 +49,18 @@ Django search functionality with DjangoQL search. Example:
     @admin.register(Book)
     class BookAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
         pass
-     
+
 
 DjangoQL Schema
 ---------------
 
 Schema defines limitations - what you can do with a DjangoQL query.
-If you don't specify any schema, DjangoQL will provide a default 
-schema for you. It would recursively walk though all model fields and 
+If you don't specify any schema, DjangoQL will provide a default
+schema for you. It would recursively walk though all model fields and
 relations and include everything it could find in the schema, so
 users would be able to search through everything. However sometimes
-this is not what you want, either due to DB performance or security 
-concerns. If you'd like to limit search models or fields, you should 
+this is not what you want, either due to DB performance or security
+concerns. If you'd like to limit search models or fields, you should
 define a schema. Here's an example:
 
 .. code:: python
@@ -77,14 +77,14 @@ define a schema. Here's an example:
     @admin.register(Book)
     class BookAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
         djangoql_schema = UserQLSchema
-        
+
 In the example above we created a schema that excludes Book model
-from search, and also limits available search fields for Group model 
-to ``name`` only. Instead of ``exclude`` you may also use ``include``, 
+from search, and also limits available search fields for Group model
+to ``name`` only. Instead of ``exclude`` you may also use ``include``,
 it would limit search to listed models only.
 
-Another use case for schemas is values auto-completion. You can 
-optionally override ``.get_options()`` method to provide value 
+Another use case for schemas is values auto-completion. You can
+optionally override ``.get_options()`` method to provide value
 options for auto-completion widget. In the example below we use this
 feature to provide options for Group names:
 
@@ -101,7 +101,7 @@ feature to provide options for Group names:
     @admin.register(Book)
     class BookAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
         djangoql_schema = UserQLSchema
-        
+
 Please note that all value options are loaded synchronously, so you
 should avoid large lists there.
 
@@ -166,19 +166,113 @@ to ``.djangoql()`` queryset method directly:
         ...
 
         objects = BookQuerySet.as_manager()
-        
+
     # Now, Book.objects.djangoql() will use BookSchema by default:
     Book.objects.djangoql('name ~ "Peace")  # uses BookSchema
-    
+
     # Overriding default queryset schema with AnotherSchema:
     Book.objects.djangoql('name ~ "Peace", schema=AnotherSchema)
-    
+
 You can also provide schema as an option for ``apply_search()``
 
 .. code:: python
 
     qs = User.objects.all()
     qs = apply_search(qs, 'groups = None', schema=CustomSchema)
+
+
+Using completion widget outside of Django admin
+-----------------------------------------------
+
+Completion widget is not tightly coupled to Django admin, so you can easily
+use it outside of admin if you want. Here is an example:
+
+Template code, ``completion_demo.html``:
+
+.. code:: html
+
+    {% load static %}
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <title>DjangoQL completion demo</title>
+      <link rel="stylesheet" type="text/css" href="{% static 'djangoql/css/completion.css' %}" />
+      <script src="{% static 'djangoql/js/lib/lexer.js' %}"></script>
+      <script src="{% static 'djangoql/js/completion.js' %}"></script>
+    </head>
+    <body>
+
+      <form action="" method="get">
+        <p style="color: red">{{ error }}</p>
+        <textarea name="q" cols="40" rows="1">{{ q }}</textarea>
+      </form>
+
+      <ul>
+      {% for item in search_results %}
+        <li>{{ item }}</li>
+      {% endfor %}
+      </ul>
+
+      <script>
+        DjangoQL.init({
+          // either JS object that contains result of DjangoQLSchema.as_dict(),
+          // or an URL from which this information could be loaded asynchronously
+          introspections: {{ introspections|safe }},
+
+          // css selector for query input. It should be a textarea
+          selector: 'textarea[name=q]',
+
+          // optional, you can provide URL for Syntax Help link here.
+          // If not specified, Syntax Help link will be hidden.
+          syntaxHelp: null,
+
+          // optional, enable textarea auto-resize feature. If enabled,
+          // textarea will automatically grow its height when entered text
+          // doesn't fit, and shrink back when text is removed. The purpose
+          // of this is to see full search query without scrolling, could be
+          // helpful for really long queries.
+          autoResize: true
+        });
+      </script>
+    </body>
+    </html>
+
+And in your ``views.py``:
+
+.. code:: python
+
+    import json
+
+    from django.contrib.auth.models import Group, User
+    from django.shortcuts import render_to_response
+    from django.views.decorators.http import require_GET
+
+    from djangoql.exceptions import DjangoQLError
+    from djangoql.queryset import apply_search
+    from djangoql.schema import DjangoQLSchema
+
+
+    class UserQLSchema(DjangoQLSchema):
+        include = (User, Group)
+
+
+    @require_GET
+    def completion_demo(request):
+        q = request.GET.get('q', '')
+        error = ''
+        base_query = User.objects.all()
+        try:
+            search_results = apply_search(base_query, q, schema=UserQLSchema)
+        except DjangoQLError as e:
+            search_results = base_query.none()
+            error = str(e)
+        return render_to_response('completion_demo.html', {
+            'q': q,
+            'error': error,
+            'search_results': search_results,
+            'introspections': json.dumps(UserQLSchema(base_query.model).as_dict()),
+        })
 
 
 Language reference
