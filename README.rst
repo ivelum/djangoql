@@ -102,8 +102,8 @@ define a schema. Here's an example:
             return super(UserQLSchema, self).get_fields(model)
 
 
-    @admin.register(Book)
-    class BookAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
+    @admin.register(User)
+    class CustomUserAdmin(DjangoQLSearchMixin, UserAdmin):
         djangoql_schema = UserQLSchema
 
 In the example above we created a schema that excludes Book model
@@ -126,8 +126,8 @@ feature to provide options for Group names:
                 return Group.objects.order_by('name').values_list('name', flat=True)
 
 
-    @admin.register(Book)
-    class BookAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
+    @admin.register(User)
+    class CustomUserAdmin(DjangoQLSearchMixin, UserAdmin):
         djangoql_schema = UserQLSchema
 
 Please note that all value options are loaded synchronously, so you
