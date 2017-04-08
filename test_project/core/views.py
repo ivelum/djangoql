@@ -17,15 +17,16 @@ class UserQLSchema(DjangoQLSchema):
 def completion_demo(request):
     q = request.GET.get('q', '')
     error = ''
-    base_query = User.objects.all()
-    try:
-        search_results = apply_search(base_query, q, schema=UserQLSchema)
-    except DjangoQLError as e:
-        search_results = base_query.none()
-        error = str(e)
+    query = User.objects.all().order_by('username')
+    if q:
+        try:
+            query = apply_search(query, q, schema=UserQLSchema)
+        except DjangoQLError as e:
+            query = query.none()
+            error = str(e)
     return render_to_response('completion_demo.html', {
         'q': q,
         'error': error,
-        'search_results': search_results,
-        'introspections': json.dumps(UserQLSchema(base_query.model).as_dict()),
+        'search_results': query,
+        'introspections': json.dumps(UserQLSchema(query.model).as_dict()),
     })

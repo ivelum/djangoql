@@ -12,7 +12,7 @@
 
   <form action="" method="get">
     <p style="color: red">{{ error }}</p>
-    <textarea name="q" cols="40" rows="1">{{ q }}</textarea>
+    <textarea name="q" cols="40" rows="1" autofocus>{{ q }}</textarea>
   </form>
 
   <ul>
@@ -22,24 +22,26 @@
   </ul>
 
   <script>
-    DjangoQL.init({
-      // either JS object that contains result of DjangoQLSchema.as_dict(),
-      // or an URL from which this information could be loaded asynchronously
-      introspections: {{ introspections|safe }},
+    DjangoQL.DOMReady(function () {
+      DjangoQL.init({
+        // either JS object with a result of DjangoQLSchema(MyModel).as_dict(),
+        // or an URL from which this information could be loaded asynchronously
+        introspections: {{ introspections|safe }},
 
-      // css selector for query input. It should be a textarea
-      selector: 'textarea[name=q]',
+        // css selector for query input. It should be a textarea
+        selector: 'textarea[name=q]',
 
-      // optional, you can provide URL for Syntax Help link here.
-      // If not specified, Syntax Help link will be hidden.
-      syntaxHelp: null,
+        // optional, you can provide URL for Syntax Help link here.
+        // If not specified, Syntax Help link will be hidden.
+        syntaxHelp: null,
 
-      // optional, enable textarea auto-resize feature. If enabled,
-      // textarea will automatically grow its height when entered text
-      // doesn't fit, and shrink back when text is removed. The purpose
-      // of this is to see full search query without scrolling, could be
-      // helpful for really long queries.
-      autoResize: true
+        // optional, enable textarea auto-resize feature. If enabled,
+        // textarea will automatically grow its height when entered text
+        // doesn't fit, and shrink back when text is removed. The purpose
+        // of this is to see full search query without scrolling, could be
+        // helpful for really long queries.
+        autoResize: true
+      });
     });
   </script>
 </body>

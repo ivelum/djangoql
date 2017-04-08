@@ -233,7 +233,7 @@ Template code, ``completion_demo.html``:
 
       <form action="" method="get">
         <p style="color: red">{{ error }}</p>
-        <textarea name="q" cols="40" rows="1">{{ q }}</textarea>
+        <textarea name="q" cols="40" rows="1" autofocus>{{ q }}</textarea>
       </form>
 
       <ul>
@@ -243,24 +243,26 @@ Template code, ``completion_demo.html``:
       </ul>
 
       <script>
-        DjangoQL.init({
-          // either JS object that contains result of DjangoQLSchema.as_dict(),
-          // or an URL from which this information could be loaded asynchronously
-          introspections: {{ introspections|safe }},
+        DjangoQL.DOMReady(function () {
+          DjangoQL.init({
+            // either JS object with a result of DjangoQLSchema(MyModel).as_dict(),
+            // or an URL from which this information could be loaded asynchronously
+            introspections: {{ introspections|safe }},
 
-          // css selector for query input. It should be a textarea
-          selector: 'textarea[name=q]',
+            // css selector for query input. It should be a textarea
+            selector: 'textarea[name=q]',
 
-          // optional, you can provide URL for Syntax Help link here.
-          // If not specified, Syntax Help link will be hidden.
-          syntaxHelp: null,
+            // optional, you can provide URL for Syntax Help link here.
+            // If not specified, Syntax Help link will be hidden.
+            syntaxHelp: null,
 
-          // optional, enable textarea auto-resize feature. If enabled,
-          // textarea will automatically grow its height when entered text
-          // doesn't fit, and shrink back when text is removed. The purpose
-          // of this is to see full search query without scrolling, could be
-          // helpful for really long queries.
-          autoResize: true
+            // optional, enable textarea auto-resize feature. If enabled,
+            // textarea will automatically grow its height when entered text
+            // doesn't fit, and shrink back when text is removed. The purpose
+            // of this is to see full search query without scrolling, could be
+            // helpful for really long queries.
+            autoResize: true
+          });
         });
       </script>
     </body>
@@ -289,17 +291,18 @@ And in your ``views.py``:
     def completion_demo(request):
         q = request.GET.get('q', '')
         error = ''
-        base_query = User.objects.all()
-        try:
-            search_results = apply_search(base_query, q, schema=UserQLSchema)
-        except DjangoQLError as e:
-            search_results = base_query.none()
-            error = str(e)
+        query = User.objects.all().order_by('username')
+        if q:
+            try:
+                query = apply_search(query, q, schema=UserQLSchema)
+            except DjangoQLError as e:
+                query = query.none()
+                error = str(e)
         return render_to_response('completion_demo.html', {
             'q': q,
             'error': error,
-            'search_results': search_results,
-            'introspections': json.dumps(UserQLSchema(base_query.model).as_dict()),
+            'search_results': query,
+            'introspections': json.dumps(UserQLSchema(query.model).as_dict()),
         })
 
 
