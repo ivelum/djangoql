@@ -12,6 +12,7 @@ env:
 install:
   - pip install PLY
   - pip install -U $DJANGO
+  - pip install -e .
 script: python test_project/manage.py test core.tests
 notifications:
   slack: ivelum:m5sGlwz1uEy5sQ32n0kg9lNh
