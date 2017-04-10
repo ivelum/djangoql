@@ -12,6 +12,6 @@ env:
 install:
   - pip install PLY
   - pip install -U $DJANGO
-script: PYTHONPATH=./djangoql/:$PYTHONPATH python test_project/manage.py test core.tests
+script: PYTHONPATH=$PYTHONPATH:./djangoql/ python test_project/manage.py test core.tests
 notifications:
   slack: ivelum:m5sGlwz1uEy5sQ32n0kg9lNh
