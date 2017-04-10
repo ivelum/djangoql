@@ -7,6 +7,7 @@ from django.db.models import AutoField, BooleanField, CharField, DateField, \
     ManyToManyRel, Model, NullBooleanField, TextField
 
 from .ast import Comparison, Const, List, Logical, Name, Node
+from .compat import text_type
 from .exceptions import DjangoQLSchemaError
 
 
@@ -47,7 +48,7 @@ class DjangoQLSchema(object):
         return self._models
 
     def model_label(self, model):
-        return str(model._meta)
+        return text_type(model._meta)
 
     def introspect(self, model, exclude=()):
         """
@@ -182,10 +183,10 @@ class DjangoQLSchema(object):
             possible_types = {
                 'int': ['int'],
                 'float': ['int', 'float', 'Decimal'],
-                'str': ['str'],
+                'str': [text_type.__name__],
                 'bool': ['bool'],
-                'date': ['str'],
-                'datetime': ['str'],
+                'date': [text_type.__name__],
+                'datetime': [text_type.__name__],
             }[field['type']]
             possible_values = {
                 'int': 'integer numbers',

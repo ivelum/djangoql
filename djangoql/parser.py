@@ -1,14 +1,34 @@
-import sys
+from __future__ import unicode_literals
+
+import re
 from decimal import Decimal
 
 import ply.yacc as yacc
 
 from .ast import *  # noqa
+from .compat import binary_type, text_type
 from .exceptions import DjangoQLParserError
 from .lexer import DjangoQLLexer
 
 
-PY2 = sys.version_info.major == 2
+unescape_pattern = re.compile(
+    '(' +  DjangoQLLexer.re_escaped_char + '|' +
+    DjangoQLLexer.re_escaped_unicode + ')'
+)
+
+
+def unescape_repl(m):
+    contents = m.group(1)
+    if len(contents) == 2:
+        return contents[1]
+    else:
+        return contents.encode('utf8').decode('unicode_escape')
+
+
+def unescape(value):
+    if isinstance(value, binary_type):
+        value = value.decode('utf8')
+    return re.sub(unescape_pattern, unescape_repl, value)
 
 
 class DjangoQLParser(object):
@@ -132,11 +152,7 @@ class DjangoQLParser(object):
         """
         string : STRING_VALUE
         """
-        if PY2:
-            value = p[1].decode('string_escape')
-        else:
-            value = bytes(p[1], 'utf8').decode('unicode_escape')
-        p[0] = Const(value=value)
+        p[0] = Const(value=unescape(p[1]))
 
     def p_none(self, p):
         """
@@ -185,7 +201,7 @@ class DjangoQLParser(object):
         if token is None:
             self.raise_syntax_error('Unexpected end of input')
         else:
-            fragment = str(token.value)
+            fragment = text_type(token.value)
             if len(fragment) > 20:
                 fragment = fragment[:17] + '...'
             self.raise_syntax_error(

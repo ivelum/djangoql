@@ -6,6 +6,7 @@ from django.core.exceptions import FieldError, ValidationError
 from django.http import HttpResponse
 from django.views.generic import TemplateView
 
+from .compat import text_type
 from .exceptions import DjangoQLError
 from .queryset import apply_search
 from .schema import DjangoQLSchema
@@ -27,7 +28,7 @@ class DjangoQLSearchMixin(object):
                 use_distinct,
             )
         except (DjangoQLError, ValueError, FieldError) as e:
-            msg = str(e)
+            msg = text_type(e)
         except ValidationError as e:
             msg = e.messages[0]
         queryset = queryset.none()

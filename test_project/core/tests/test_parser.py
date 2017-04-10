@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import unittest.util
 from unittest import TestCase
 
@@ -44,8 +45,12 @@ class DjangoQLParseTest(TestCase):
     def test_escaped_chars(self):
         self.assertEqual(
             Expression(Name('name'), Comparison('~'),
-                       Const('Contains a "quoted" string')),
-            self.parser.parse('name ~ "Contains a \\"quoted\\" string"')
+                       Const(u'Contains a "quoted" str, 年年有余')),
+            self.parser.parse(u'name ~ "Contains a \\"quoted\\" str, 年年有余"')
+        )
+        self.assertEqual(
+            Expression(Name('options'), Comparison('='), Const(u'П и Щ')),
+            self.parser.parse(u'options = "\\u041f \\u0438 \\u0429"')
         )
 
     def test_numbers(self):
