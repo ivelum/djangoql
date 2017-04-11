@@ -4,7 +4,7 @@ from django.test import TestCase
 
 from djangoql.exceptions import DjangoQLSchemaError
 from djangoql.parser import DjangoQLParser
-from djangoql.schema import DjangoQLSchema
+from djangoql.schema import DjangoQLSchema, DjangoQLField
 
 from ..models import Book
 
@@ -27,6 +27,29 @@ class BookCustomFieldsSchema(DjangoQLSchema):
         if model == Book:
             return ['name', 'is_published']
         return super(BookCustomFieldsSchema, self).get_fields(model)
+
+
+class WrittenInYearSearch(DjangoQLField):
+    def __init__(self):
+        super(WrittenInYearSearch, self).__init__(
+            name='written_in_year',
+            type='str',
+            relation=None,
+            related_model=None,
+            nullable=False,
+            options=[]
+        )
+
+        def search(self, queryset, operator, value):
+            return
+
+
+class BookCustomSearchSchema(DjangoQLSchema):
+    def get_fields(self, model):
+        if model == Book:
+            return [
+                WrittenInYearSearch()
+            ]
 
 
 class DjangoQLSchemaTest(TestCase):
@@ -81,6 +104,10 @@ class DjangoQLSchemaTest(TestCase):
             'written',
         ])
         self.assertListEqual(list(custom.keys()), ['name', 'is_published'])
+
+    def test_custom_search(self):
+        custom = BookCustomSearchSchema(Book).as_dict()['models']['core.book']
+        self.assertListEqual(list(custom.keys()), ['written_in_year'])
 
     def test_invalid_config(self):
         try:
