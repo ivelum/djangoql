@@ -5,14 +5,21 @@ from .parser import DjangoQLParser
 from .schema import DjangoQLSchema
 
 
-def build_filter(expr):
+def build_filter(expr, schema, queryset):
     if isinstance(expr.operator, Logical):
-        left, right = Q(build_filter(expr.left)), Q(build_filter(expr.right))
+        left, queryset = build_filter(expr.left, schema, queryset)
+        right, queryset = build_filter(expr.right, schema, queryset)
         if expr.operator.operator == 'or':
-            return left | right
+            return Q(left) | Q(right), queryset
         else:
-            return left & right
+            return Q(left) & Q(right), queryset
     search = '__'.join(expr.left.parts)
+    field = schema.path_to_field(
+        expr.left.parts
+    )
+    if field:
+        queryset = field.add_search_target(queryset)
+
     invert = False
     op = {
         '=': '',
@@ -31,7 +38,7 @@ def build_filter(expr):
         }[expr.operator.operator]
         invert = True
     q = Q(**{'%s%s' % (search, op): expr.right.value})
-    return ~q if invert else q
+    return ~q if invert else q, queryset
 
 
 def apply_search(queryset, search, schema=None):
@@ -40,8 +47,10 @@ def apply_search(queryset, search, schema=None):
     """
     ast = DjangoQLParser().parse(search)
     schema = schema or DjangoQLSchema
-    schema(queryset.model).validate(ast)
-    return queryset.filter(build_filter(ast))
+    schema = schema(queryset.model)
+    schema.validate(ast)
+    filters, queryset = build_filter(ast, schema, queryset)
+    return queryset.filter(filters)
 
 
 class DjangoQLQuerySet(QuerySet):
