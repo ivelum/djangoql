@@ -2,6 +2,14 @@ import inspect
 from collections import OrderedDict
 from datetime import datetime
 
+
+try:
+    # Django 1.7
+    from django.contrib.contenttypes.fields import GenericRel
+except ImportError:
+    from django.contrib.contenttypes.generic import GenericRel
+
+    
 from django.db.models import AutoField, BooleanField, CharField, DateField, \
     DateTimeField, DecimalField, FloatField, IntegerField, ManyToOneRel, \
     ManyToManyRel, Model, NullBooleanField, TextField
