@@ -80,7 +80,7 @@ class DjangoQLSchema(object):
                 options = self.get_options(model, field_name) or []
             else:
                 options = []
-            if isinstance(field, (ManyToOneRel, ManyToManyRel)):
+            if isinstance(field, (ManyToOneRel, ManyToManyRel, GenericRel)):
                 # Django 1.8 doesn't have .null attribute for these fields
                 nullable = True
             else:
