@@ -13,6 +13,17 @@ See a video: `DjangoQL demo <https://youtu.be/oKVff4dHZB8>`_
 
 .. image:: https://raw.githubusercontent.com/ivelum/djangoql/master/djangoql/static/djangoql/img/completion_example_scaled.png
 
+Contents
+--------
+
+* `Installation`_
+* `Add it to your Django admin`_
+* `Language reference`_
+* `DjangoQL Schema`_
+* `Custom search fields`_
+* `Can I use it outside of Django admin?`_
+* `Using completion widget outside of Django admin`_
+
 Installation
 ------------
 
@@ -110,12 +121,13 @@ define a schema. Here's an example:
         djangoql_schema = UserQLSchema
 
 In the example above we created a schema that does 3 things:
- - excludes Book model from search via ``exclude`` option. Instead of 
-   ``exclude`` you may also use ``include``, it would limit search to 
-   listed models only;
- - limits available search fields for Group model to ``name`` field 
-   only, in ``.get_fields()`` method;
- - enables completion options for Group names via ``suggest_options``.
+
+- excludes Book model from search via ``exclude`` option. Instead of 
+  ``exclude`` you may also use ``include``, it would limit search to 
+  listed models only;
+- limits available search fields for Group model to ``name`` field 
+  only, in ``.get_fields()`` method;
+- enables completion options for Group names via ``suggest_options``.
 
 Important note about ``suggest_options``: it synchronously pulls all values 
 for given models and fields, so you should avoid large querysets there. If
