@@ -95,6 +95,9 @@ define a schema. Here's an example:
 
     class UserQLSchema(DjangoQLSchema):
         exclude = (Book,)
+        suggest_options = {
+            Group: ['name'],
+        }
 
         def get_fields(self, model):
             if model == Group:
@@ -106,32 +109,219 @@ define a schema. Here's an example:
     class CustomUserAdmin(DjangoQLSearchMixin, UserAdmin):
         djangoql_schema = UserQLSchema
 
-In the example above we created a schema that excludes Book model
-from search, and also limits available search fields for Group model
-to ``name`` only. Instead of ``exclude`` you may also use ``include``,
-it would limit search to listed models only.
+In the example above we created a schema that does 3 things:
+ - excludes Book model from search via ``exclude`` option. Instead of 
+   ``exclude`` you may also use ``include``, it would limit search to 
+   listed models only;
+ - limits available search fields for Group model to ``name`` field 
+   only, in ``.get_fields()`` method;
+ - enables completion options for Group names via ``suggest_options``.
 
-Another use case for schemas is values auto-completion. You can
-optionally override ``.get_options()`` method to provide value
-options for auto-completion widget. In the example below we use this
-feature to provide options for Group names:
+Important note about ``suggest_options``: it synchronously pulls all values 
+for given models and fields, so you should avoid large querysets there. If
+you'd like to define custom suggestion options, see below.
+
+Custom search fields
+--------------------
+
+Sometimes you may want deeper customization, and here custom search fields
+come into play. You may use them to search by annotations, or to define 
+custom suggestion options, or define fully custom search logic. DjangoQL
+defines the following base field classes in ``djangoql.schema`` that you may 
+subclass to define your own behavior:
+
+* ``IntField``
+* ``FloatField``
+* ``StrField``
+* ``BoolField``
+* ``DateField``
+* ``DateTimeField``
+* ``RelationField``
+
+Here are examples for common use cases:
+
+**Search by queryset annotations:**
 
 .. code:: python
 
-    class UserQLSchema(DjangoQLSchema):
-        include = (User, Group)
+    from djangoql.schema import DjangoQLSchema, IntField
 
-        def get_options(self, model, field_name):
-            if model == Group and field_name == 'name':
-                return Group.objects.order_by('name').values_list('name', flat=True)
+
+    class UserQLSchema(DjangoQLSchema):
+        def get_fields(self, model):
+            fields = super(UserQLSchema, self).get_fields(model)
+            if model == User:
+                fields = [IntField(name='groups_count')] + fields
+            return fields
 
 
     @admin.register(User)
     class CustomUserAdmin(DjangoQLSearchMixin, UserAdmin):
         djangoql_schema = UserQLSchema
 
-Please note that all value options are loaded synchronously, so you
-should avoid large lists there.
+        def get_queryset(self, request):
+            qs = super(CustomUserAdmin, self).get_queryset(request)
+            return qs.annotate(groups_count=Count('groups'))
+
+Let's take a closer look what's happening in the example above. First, we
+add ``groups_count`` annotation to queryset that is used by Django admin 
+in ``CustomUserAdmin.get_queryset()`` method. It would contain no. of groups
+user belongs to. As our queryset now pulls this column, we can now filter by
+it, we just need to include it into the schema. In 
+``UserQLSchema.get_fields()`` we define a custom integer search field for
+``User`` model. It's name should match the name of the column in our queryset.
+
+**Custom suggesiton options**
+
+.. code:: python
+
+    from djangoql.schema import DjangoQLSchema, StrField
+
+
+    class GroupNameField(StrField):
+        model = Group
+        name = 'name'
+        suggest_options = True
+
+        def get_options(self):
+            return super(GroupNameField, self).get_options().\
+                annotate(users_count=Count('user')).\
+                order_by('-users_count')
+                
+                
+    class UserQLSchema(DjangoQLSchema):
+        def get_fields(self, model):
+            if model == Group:
+                return ['id', GroupNameField()]
+            return super(UserQLSchema, self).get_fields(model)
+
+
+    @admin.register(User)
+    class CustomUserAdmin(DjangoQLSearchMixin, UserAdmin):
+        djangoql_schema = UserQLSchema
+
+In this example we've defined a custom GroupNameField that sorts suggestions
+for group names by popularity (no. of users in a group) instead of default
+alphabetical sorting.
+
+**Custom search lookup**
+
+DjangoQL base fields provide two basic methods that you can override to 
+substitute either search column, or search value, or both - 
+``.get_lookup_name()`` and ``.get_lookup_value(value)``:
+
+.. code:: python
+
+    class UserDateJoinedYear(IntField):
+        name = 'date_joined_year'
+
+        def get_lookup_name(self):
+            return 'date_joined__year'
+
+
+    class UserQLSchema(DjangoQLSchema):
+        def get_fields(self, model):
+            fields = super(UserQLSchema, self).get_fields(model)
+            if model == User:
+                fields = [UserDateJoinedYear()] + fields
+            return fields
+
+
+    @admin.register(User)
+    class CustomUserAdmin(DjangoQLSearchMixin, UserAdmin):
+        djangoql_schema = UserQLSchema
+
+In this example we've defined custom ``date_joined_year`` search field for
+users, and used built-in Django ``__year`` filter option in 
+``.get_lookup_name()`` to filter by date year only. Similarly you can use
+``.get_lookup_value(value)`` hook to modify search value before it's used in
+the filter.
+
+**Fully custom search lookup**
+
+``.get_lookup_name()`` and ``.get_lookup_value(value)`` hooks can cover many
+simple use cases, but sometimes they're not enough and you want fully custom 
+search logic. In such cases you can override main ``.get_lookup()`` method of 
+a field. Example below demonstrates User ``age`` search:
+
+.. code:: python
+
+    from djangoql.schema import DjangoQLSchema, IntField
+
+
+    class UserAgeField(IntField):
+        """
+        Search by given number of full years  
+        """
+        model = User
+        name = 'age'
+
+        def get_lookup_name(self):
+            """
+            We'll be doing comparisons vs. this model field 
+            """
+            return 'date_joined'
+
+        def get_lookup(self, path, operator, value):
+            """
+            The lookup should support with all operators compatible with IntField
+            """
+            if operator == 'in':
+                result = None
+                for year in value:
+                    condition = self.get_lookup(path, '=', year)
+                    result = condition if result is None else result | condition
+                return result
+            elif operator == 'not in':
+                result = None
+                for year in value:
+                    condition = self.get_lookup(path, '!=', year)
+                    result = condition if result is None else result & condition
+                return result
+
+            value = self.get_lookup_value(value)
+            search_field = '__'.join(path + [self.get_lookup_name()])
+            year_start = self.years_ago(value + 1)
+            year_end = self.years_ago(value)
+            if operator == '=':
+                return (
+                    Q(**{'%s__gt' % search_field: year_start}) &
+                    Q(**{'%s__lte' % search_field: year_end})
+                )
+            elif operator == '!=':
+                return (
+                    Q(**{'%s__lte' % search_field: year_start}) |
+                    Q(**{'%s__gt' % search_field: year_end})
+                )
+            elif operator == '>':
+                return Q(**{'%s__lt' % search_field: year_start})
+            elif operator == '>=':
+                return Q(**{'%s__lt' % search_field: year_end})
+            elif operator == '<':
+                return Q(**{'%s__gt' % search_field: year_end})
+            elif operator == '<=':
+                return Q(**{'%s__gte' % search_field: year_start})
+
+        def years_ago(self, n):
+            timestamp = now()
+            try:
+                return timestamp.replace(year=timestamp.year - n)
+            except ValueError:
+                # February 29
+                return timestamp.replace(month=2, day=28, year=timestamp.year - n)
+
+
+    class UserQLSchema(DjangoQLSchema):
+        def get_fields(self, model):
+            fields = super(UserQLSchema, self).get_fields(model)
+            if model == User:
+                fields = [UserAgeField()] + fields
+            return fields
+
+
+    @admin.register(User)
+    class CustomUserAdmin(DjangoQLSearchMixin, UserAdmin):
+        djangoql_schema = UserQLSchema
 
 
 Can I use it outside of Django admin?
