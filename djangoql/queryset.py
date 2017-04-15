@@ -1,37 +1,32 @@
-from django.db.models import Q, QuerySet
+from django.db.models import QuerySet
 
 from .ast import Logical
 from .parser import DjangoQLParser
-from .schema import DjangoQLSchema
+from .schema import DjangoQLField, DjangoQLSchema
 
 
-def build_filter(expr):
+def build_filter(expr, schema_instance):
     if isinstance(expr.operator, Logical):
-        left, right = Q(build_filter(expr.left)), Q(build_filter(expr.right))
+        left = build_filter(expr.left, schema_instance)
+        right = build_filter(expr.right, schema_instance)
         if expr.operator.operator == 'or':
             return left | right
         else:
             return left & right
-    search = '__'.join(expr.left.parts)
-    invert = False
-    op = {
-        '=': '',
-        '>': '__gt',
-        '>=': '__gte',
-        '<': '__lt',
-        '<=': '__lte',
-        '~': '__icontains',
-        'in': '__in',
-    }.get(expr.operator.operator)
-    if op is None:
-        op = {
-            '!=': '',
-            '!~': '__icontains',
-            'not in': '__in',
-        }[expr.operator.operator]
-        invert = True
-    q = Q(**{'%s%s' % (search, op): expr.right.value})
-    return ~q if invert else q
+
+    field = schema_instance.resolve_name(expr.left)
+    if not field:
+        # That must be a reference to a model without specifying a field.
+        # Let's construct an abstract lookup field for it
+        field = DjangoQLField(
+            name=expr.left.parts[-1],
+            nullable=True,
+        )
+    return field.get_lookup(
+        path=expr.left.parts[:-1],
+        operator=expr.operator.operator,
+        value=expr.right.value,
+    )
 
 
 def apply_search(queryset, search, schema=None):
@@ -40,8 +35,9 @@ def apply_search(queryset, search, schema=None):
     """
     ast = DjangoQLParser().parse(search)
     schema = schema or DjangoQLSchema
-    schema(queryset.model).validate(ast)
-    return queryset.filter(build_filter(ast))
+    schema_instance = schema(queryset.model)
+    schema_instance.validate(ast)
+    return queryset.filter(build_filter(ast, schema_instance))
 
 
 class DjangoQLQuerySet(QuerySet):

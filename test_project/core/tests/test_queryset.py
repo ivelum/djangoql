@@ -2,8 +2,25 @@ from django.contrib.auth.models import User
 from django.test import TestCase
 
 from djangoql.queryset import apply_search
+from djangoql.schema import DjangoQLSchema, IntField
 
 from ..models import Book
+
+
+class WrittenInYearField(IntField):
+    model = Book
+    name = 'written_in_year'
+
+    def get_lookup_name(self):
+        return 'written__year'
+
+
+class BookCustomSearchSchema(DjangoQLSchema):
+    def get_fields(self, model):
+        if model == Book:
+            return [
+                WrittenInYearField(),
+            ]
 
 
 class DjangoQLQuerySetTest(TestCase):
@@ -22,3 +39,15 @@ class DjangoQLQuerySetTest(TestCase):
             qs.count()
         except Exception as e:
             self.fail(e)
+
+    def test_custom_field_query(self):
+        qs = Book.objects.djangoql(
+            'written_in_year = 2017',
+            schema=BookCustomSearchSchema,
+        )
+        where_clause = str(qs.query).split('WHERE')[1].strip()
+        self.assertEqual(
+            where_clause,
+            '"core_book"."written" BETWEEN 2017-01-01 00:00:00 '
+            'AND 2017-12-31 23:59:59.999999'
+        )
