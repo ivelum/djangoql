@@ -183,7 +183,7 @@ it, we just need to include it into the schema. In
 ``UserQLSchema.get_fields()`` we define a custom integer search field for
 ``User`` model. It's name should match the name of the column in our queryset.
 
-**Custom suggesiton options**
+**Custom suggestion options**
 
 .. code:: python
 
