@@ -159,6 +159,9 @@
       this.onCompletionMouseOver = this.onCompletionMouseOver.bind(this);
       this.popupCompletion = this.popupCompletion.bind(this);
       this.textareaResize = this.textareaResize.bind(this);
+      this.debouncedRenderCompletion = this.debounce(
+          this.renderCompletion.bind(this),
+          50);
 
       // Bind event handlers and initialize completion & textSize containers
       this.textarea.setAttribute('autocomplete', 'off');
@@ -246,6 +249,46 @@
       return (({}).toString.call(obj) === '[object Object]');
     },
 
+    debounce: function (func, wait, immediate) {
+      // Borrowed from Underscore.js
+      var args;
+      var context;
+      var result;
+      var timeout;
+      var timestamp;
+
+      var later = function () {
+        var last = Date.now() - timestamp;
+        if (last < wait && last >= 0) {
+          timeout = setTimeout(later, wait - last);
+        } else {
+          timeout = null;
+          if (!immediate) {
+            result = func.apply(context, args);
+            if (!timeout) {
+              args = null;
+              context = null;
+            }
+          }
+        }
+      };
+
+      return function () {
+        var callNow;
+        context = this;
+        args = arguments;
+        timestamp = Date.now();
+        callNow = immediate && !timeout;
+        if (!timeout) timeout = setTimeout(later, wait);
+        if (callNow) {
+          result = func.apply(context, args);
+          args = null;
+          context = null;
+        }
+        return result;
+      };
+    },
+
     logError: function (message) {
       console.error('DjangoQL: ' + message);  // eslint-disable-line no-console
     },
@@ -269,12 +312,12 @@
 
     onCompletionMouseOut: function () {
       this.selected = null;
-      this.renderCompletion();
+      this.debouncedRenderCompletion();
     },
 
     onCompletionMouseOver: function (e) {
       this.selected = parseInt(e.target.getAttribute('data-index'), 10);
-      this.renderCompletion();
+      this.debouncedRenderCompletion();
     },
 
     onKeydown: function (e) {
