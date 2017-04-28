@@ -474,9 +474,6 @@
       suggestionsLen = this.suggestions.length;
       li = [].slice.call(this.completionUL.querySelectorAll('li'));
       liLen = li.length;
-      if (this.selected === null) {
-        this.completionUL.scrollTop = 0;
-      }
 
       // Update or create necessary elements
       for (i = 0; i < suggestionsLen; i++) {
