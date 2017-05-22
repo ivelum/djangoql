@@ -158,7 +158,6 @@
       this.onCompletionMouseOut = this.onCompletionMouseOut.bind(this);
       this.onCompletionMouseOver = this.onCompletionMouseOver.bind(this);
       this.popupCompletion = this.popupCompletion.bind(this);
-      this.textareaResize = this.textareaResize.bind(this);
       this.debouncedRenderCompletion = this.debounce(
           this.renderCompletion.bind(this),
           50);
@@ -169,6 +168,7 @@
       this.textarea.addEventListener('blur', this.hideCompletion.bind(this));
       this.textarea.addEventListener('click', this.popupCompletion);
       if (options.autoResize) {
+        this.textareaResize = this.textareaResize.bind(this);
         this.textarea.style.resize = 'none';
         this.textarea.style.overflow = 'hidden';
         this.textarea.addEventListener('input', this.textareaResize);
@@ -179,6 +179,7 @@
         // we call .textareaResize() once again when window is fully loaded.
         window.addEventListener('load', this.textareaResize);
       } else {
+        this.textareaResize = null;
         // Catch resize events and re-position completion box.
         // See http://stackoverflow.com/a/7055239
         this.textarea.addEventListener(
@@ -425,6 +426,9 @@
       this.textarea.focus();
       this.textarea.setSelectionRange(cursorPosAfter, cursorPosAfter);
       this.selected = null;
+      if (this.textareaResize) {
+        this.textareaResize();
+      }
       this.generateSuggestions(this.textarea);
       this.renderCompletion();
     },
