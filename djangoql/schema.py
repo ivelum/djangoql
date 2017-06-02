@@ -58,28 +58,28 @@ class DjangoQLField(object):
 
     def get_lookup_value(self, value):
         """
-        Override this method to convert displayed values to lookup values 
+        Override this method to convert displayed values to lookup values
         """
         return value
 
     def get_lookup(self, path, operator, value):
         """
         Performs a lookup for this field with given path, operator and value.
-        
-        Override this if you'd like to implement a fully custom lookup. It 
+
+        Override this if you'd like to implement a fully custom lookup. It
         should support all comparison operators compatible with the field type.
-        
+
         :param path: a list of names preceding current lookup. For example,
-            if expression looks like 'author.groups.name = "Foo"' path would 
-            be ['author', 'groups']. 'name' is not included, because it's the 
+            if expression looks like 'author.groups.name = "Foo"' path would
+            be ['author', 'groups']. 'name' is not included, because it's the
             current field instance itself.
-        :param operator: a string with comparison operator. It could be one of 
-            the following: '=', '!=', '>', '>=', '<', '<=', '~', '!~', 'in', 
-            'not in'. Depending on the field type, some operators may be 
-            excluded. '~' and '!~' can be applied to StrField only and aren't 
-            allowed for any other fields. BoolField can't be used with less or 
-            greater operators, '>', '>=', '<' and '<=' are excluded for it.                    
-        :param value: value passed for comparison 
+        :param operator: a string with comparison operator. It could be one of
+            the following: '=', '!=', '>', '>=', '<', '<=', '~', '!~', 'in',
+            'not in'. Depending on the field type, some operators may be
+            excluded. '~' and '!~' can be applied to StrField only and aren't
+            allowed for any other fields. BoolField can't be used with less or
+            greater operators, '>', '>=', '<' and '<=' are excluded for it.
+        :param value: value passed for comparison
         :return: Q-object
         """
         search = '__'.join(path + [self.get_lookup_name()])
@@ -287,11 +287,11 @@ class DjangoQLSchema(object):
 
     def get_fields(self, model):
         """
-        By default, returns all field names of a given model. 
-        
-        Override this method to limit field options. You can either return a 
+        By default, returns all field names of a given model.
+
+        Override this method to limit field options. You can either return a
         plain list of field names from it, like ['id', 'name'], or call
-        .super() and exclude unwanted fields from its result. 
+        .super() and exclude unwanted fields from its result.
         """
         return sorted(
             [f.name for f in model._meta.get_fields() if f.name != 'password']
@@ -321,10 +321,11 @@ class DjangoQLSchema(object):
         return field_cls(**field_kwargs)
 
     def get_field_cls(self, field):
-        if isinstance(field, (models.AutoField, models.IntegerField)):
-            return IntField
-        elif isinstance(field, (models.CharField, models.TextField, models.UUIDField)):
+        str_fields = (models.CharField, models.TextField, models.UUIDField)
+        if isinstance(field, str_fields):
             return StrField
+        elif isinstance(field, (models.AutoField, models.IntegerField)):
+            return IntField
         elif isinstance(field, (models.BooleanField, models.NullBooleanField)):
             return BoolField
         elif isinstance(field, (models.DecimalField, models.FloatField)):
@@ -366,7 +367,7 @@ class DjangoQLSchema(object):
 
     def validate(self, node):
         """
-        Validate DjangoQL AST tree vs. current schema 
+        Validate DjangoQL AST tree vs. current schema
         """
         assert isinstance(node, Node)
         if isinstance(node.operator, Logical):
