@@ -323,7 +323,7 @@ class DjangoQLSchema(object):
     def get_field_cls(self, field):
         if isinstance(field, (models.AutoField, models.IntegerField)):
             return IntField
-        elif isinstance(field, (models.CharField, models.TextField)):
+        elif isinstance(field, (models.CharField, models.TextField, models.UUIDField)):
             return StrField
         elif isinstance(field, (models.BooleanField, models.NullBooleanField)):
             return BoolField
