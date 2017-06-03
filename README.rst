@@ -122,24 +122,25 @@ define a schema. Here's an example:
 
 In the example above we created a schema that does 3 things:
 
-- excludes Book model from search via ``exclude`` option. Instead of 
-  ``exclude`` you may also use ``include``, it would limit search to 
+- excludes Book model from search via ``exclude`` option. Instead of
+  ``exclude`` you may also use ``include``, it would limit search to
   listed models only;
-- limits available search fields for Group model to ``name`` field 
+- limits available search fields for Group model to ``name`` field
   only, in ``.get_fields()`` method;
 - enables completion options for Group names via ``suggest_options``.
 
-Important note about ``suggest_options``: it synchronously pulls all values 
-for given models and fields, so you should avoid large querysets there. If
-you'd like to define custom suggestion options, see below.
+Important note about ``suggest_options``: it looks for ``choices`` model field
+parameter first, and if it's not specified - it synchronously pulls all values
+for given model fields, so you should avoid large querysets there. If you'd like
+to define custom suggestion options, see below.
 
 Custom search fields
 --------------------
 
 Sometimes you may want deeper customization, and here custom search fields
-come into play. You may use them to search by annotations, or to define 
+come into play. You may use them to search by annotations, or to define
 custom suggestion options, or define fully custom search logic. DjangoQL
-defines the following base field classes in ``djangoql.schema`` that you may 
+defines the following base field classes in ``djangoql.schema`` that you may
 subclass to define your own behavior:
 
 * ``IntField``
@@ -176,10 +177,10 @@ Here are examples for common use cases:
             return qs.annotate(groups_count=Count('groups'))
 
 Let's take a closer look what's happening in the example above. First, we
-add ``groups_count`` annotation to queryset that is used by Django admin 
+add ``groups_count`` annotation to queryset that is used by Django admin
 in ``CustomUserAdmin.get_queryset()`` method. It would contain no. of groups
 user belongs to. As our queryset now pulls this column, we can now filter by
-it, we just need to include it into the schema. In 
+it, we just need to include it into the schema. In
 ``UserQLSchema.get_fields()`` we define a custom integer search field for
 ``User`` model. It's name should match the name of the column in our queryset.
 
@@ -199,8 +200,8 @@ it, we just need to include it into the schema. In
             return super(GroupNameField, self).get_options().\
                 annotate(users_count=Count('user')).\
                 order_by('-users_count')
-                
-                
+
+
     class UserQLSchema(DjangoQLSchema):
         def get_fields(self, model):
             if model == Group:
@@ -218,8 +219,8 @@ alphabetical sorting.
 
 **Custom search lookup**
 
-DjangoQL base fields provide two basic methods that you can override to 
-substitute either search column, or search value, or both - 
+DjangoQL base fields provide two basic methods that you can override to
+substitute either search column, or search value, or both -
 ``.get_lookup_name()`` and ``.get_lookup_value(value)``:
 
 .. code:: python
@@ -244,7 +245,7 @@ substitute either search column, or search value, or both -
         djangoql_schema = UserQLSchema
 
 In this example we've defined custom ``date_joined_year`` search field for
-users, and used built-in Django ``__year`` filter option in 
+users, and used built-in Django ``__year`` filter option in
 ``.get_lookup_name()`` to filter by date year only. Similarly you can use
 ``.get_lookup_value(value)`` hook to modify search value before it's used in
 the filter.
@@ -252,8 +253,8 @@ the filter.
 **Fully custom search lookup**
 
 ``.get_lookup_name()`` and ``.get_lookup_value(value)`` hooks can cover many
-simple use cases, but sometimes they're not enough and you want fully custom 
-search logic. In such cases you can override main ``.get_lookup()`` method of 
+simple use cases, but sometimes they're not enough and you want fully custom
+search logic. In such cases you can override main ``.get_lookup()`` method of
 a field. Example below demonstrates User ``age`` search:
 
 .. code:: python
@@ -263,14 +264,14 @@ a field. Example below demonstrates User ``age`` search:
 
     class UserAgeField(IntField):
         """
-        Search by given number of full years  
+        Search by given number of full years
         """
         model = User
         name = 'age'
 
         def get_lookup_name(self):
             """
-            We'll be doing comparisons vs. this model field 
+            We'll be doing comparisons vs. this model field
             """
             return 'date_joined'
 
