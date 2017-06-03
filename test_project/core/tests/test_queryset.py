@@ -16,10 +16,14 @@ class WrittenInYearField(IntField):
 
 
 class BookCustomSearchSchema(DjangoQLSchema):
+    suggest_options = {
+        Book: ['genre'],
+    }
+
     def get_fields(self, model):
         if model == Book:
             return [
-                WrittenInYearField(),
+                'genre', WrittenInYearField(),
             ]
 
 
@@ -39,6 +43,20 @@ class DjangoQLQuerySetTest(TestCase):
             qs.count()
         except Exception as e:
             self.fail(e)
+
+    def test_choices(self):
+        qs = Book.objects.djangoql(
+            'genre = "Drama"',
+            schema=BookCustomSearchSchema,
+        )
+        where_clause = str(qs.query).split('WHERE')[1].strip()
+        self.assertEqual('"core_book"."genre" = 1', where_clause)
+        qs = Book.objects.djangoql(
+            'genre in ("Drama", "Comics")',
+            schema=BookCustomSearchSchema,
+        )
+        where_clause = str(qs.query).split('WHERE')[1].strip()
+        self.assertEqual('"core_book"."genre" IN (1, 2)', where_clause)
 
     def test_custom_field_query(self):
         qs = Book.objects.djangoql(

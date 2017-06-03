@@ -5,7 +5,7 @@ from decimal import Decimal
 
 from django.contrib.contenttypes.fields import GenericRel
 from django.db import models
-from django.db.models import ManyToManyRel, ManyToOneRel
+from django.db.models import FieldDoesNotExist, ManyToManyRel, ManyToOneRel
 
 from .ast import Comparison, Const, List, Logical, Name, Node
 from .compat import text_type
@@ -42,13 +42,25 @@ class DjangoQLField(object):
             'options': list(self.get_options()) if self.suggest_options else [],
         }
 
+    def _field_choices(self):
+        if self.model:
+            try:
+                return self.model._meta.get_field(self.name).choices
+            except FieldDoesNotExist:
+                pass
+        return []
+
     def get_options(self):
         """
         Override this method to provide custom suggestion options
         """
-        return self.model.objects.\
-            order_by(self.name).\
-            values_list(self.name, flat=True)
+        choices = self._field_choices()
+        if choices:
+            return [c[1] for c in choices]
+        else:
+            return self.model.objects.\
+                order_by(self.name).\
+                values_list(self.name, flat=True)
 
     def get_lookup_name(self):
         """
@@ -60,6 +72,14 @@ class DjangoQLField(object):
         """
         Override this method to convert displayed values to lookup values
         """
+        choices = self._field_choices()
+        if choices:
+            if isinstance(value, list):
+                return [c[0] for c in choices if c[1] in value]
+            else:
+                for c in choices:
+                    if c[1] == value:
+                        return c[0]
         return value
 
     def get_lookup(self, path, operator, value):
@@ -318,7 +338,14 @@ class DjangoQLSchema(object):
         field_kwargs['suggest_options'] = (
             field.name in self.suggest_options.get(model, [])
         )
-        return field_cls(**field_kwargs)
+        field_instance = field_cls(**field_kwargs)
+        # Check if suggested options conflict with field type
+        if field_cls != StrField and field_instance.suggest_options:
+            for option in field_instance.get_options():
+                if isinstance(option, text_type):
+                    # Convert to StrField
+                    field_instance = StrField(**field_kwargs)
+        return field_instance
 
     def get_field_cls(self, field):
         str_fields = (models.CharField, models.TextField, models.UUIDField)

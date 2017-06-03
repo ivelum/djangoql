@@ -9,8 +9,19 @@ from djangoql.queryset import DjangoQLQuerySet
 
 
 class Book(models.Model):
+    GENRES = {
+        1: 'Drama',
+        2: 'Comics',
+        3: 'Other',
+    }
+
     name = models.CharField(max_length=10)  # lol, we're minimalists
     author = models.ForeignKey('auth.User')
+    genre = models.PositiveIntegerField(
+        null=True,
+        blank=True,
+        choices=GENRES.items(),
+    )
     written = models.DateTimeField(default=now)
     is_published = models.BooleanField(default=False)
     rating = models.FloatField(null=True)

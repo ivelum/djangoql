@@ -88,6 +88,7 @@ class DjangoQLSchemaTest(TestCase):
         self.assertListEqual(list(default.keys()), [
             'author',
             'content_type',
+            'genre',
             'id',
             'is_published',
             'name',

@@ -13,22 +13,29 @@ from .models import Book
 admin.site.unregister(User)
 
 
+class BookQLSchema(DjangoQLSchema):
+    suggest_options = {
+        Book: ['genre'],
+    }
+
+
 @admin.register(Book)
 class BookAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
-    list_display = ('name', 'author', 'written', 'is_published')
+    djangoql_schema = BookQLSchema
+    list_display = ('name', 'author', 'genre', 'written', 'is_published')
     list_filter = ('is_published',)
 
 
 class UserAgeField(IntField):
     """
-    Search by given number of full years  
+    Search by given number of full years
     """
     model = User
     name = 'age'
 
     def get_lookup_name(self):
         """
-        We'll be doing comparisons vs. this model field 
+        We'll be doing comparisons vs. this model field
         """
         return 'date_joined'
 
