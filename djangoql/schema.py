@@ -167,6 +167,12 @@ class StrField(DjangoQLField):
     value_types = [text_type]
     value_types_description = 'strings'
 
+    def get_options(self):
+        choices = self.model._meta.get_field(self.name).choices
+        if choices:
+            return [x[0] for x in choices]
+        return super(DjangoQLField, self).get_options()
+
 
 class BoolField(DjangoQLField):
     type = 'bool'
