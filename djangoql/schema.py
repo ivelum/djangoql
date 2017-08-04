@@ -181,9 +181,7 @@ class DateField(DjangoQLField):
     value_types_description = 'dates in "YYYY-MM-DD" format'
 
     def get_lookup_value(self, value):
-        return datetime.strptime(value, '%Y-%m-%d').replace(
-            tzinfo=get_current_timezone(),
-        )
+        return datetime.strptime(value, '%Y-%m-%d').date()
 
     def validate(self, value):
         super(DateField, self).validate(value)
