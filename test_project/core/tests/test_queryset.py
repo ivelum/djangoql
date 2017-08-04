@@ -39,6 +39,14 @@ class DjangoQLQuerySetTest(TestCase):
             where_clause,
         )
 
+    def test_datetime_like_query(self):
+        qs = Book.objects.djangoql('written ~ "2017-01-30"')
+        where_clause = str(qs.query).split('WHERE')[1].strip()
+        self.assertEqual(
+            '"core_book"."written" LIKE %2017-01-30% ESCAPE \'\\\'',
+            where_clause,
+        )
+
     def test_apply_search(self):
         qs = User.objects.all()
         try:

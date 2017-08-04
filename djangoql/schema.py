@@ -83,6 +83,33 @@ class DjangoQLField(object):
                         return c[0]
         return value
 
+    def get_operator(self, operator):
+        """
+        Get a comparison suffix to be used in Django ORM & inversion flag for it
+
+        :param operator: string, DjangoQL comparison operator
+        :return: (suffix, invert) - a tuple with 2 values:
+            suffix - suffix to be used in ORM query, for example '__gt' for '>'
+            invert - boolean, True if this comparison needs to be inverted
+        """
+        op = {
+            '=': '',
+            '>': '__gt',
+            '>=': '__gte',
+            '<': '__lt',
+            '<=': '__lte',
+            '~': '__icontains',
+            'in': '__in',
+        }.get(operator)
+        if op is not None:
+            return op, False
+        op = {
+            '!=': '',
+            '!~': '__icontains',
+            'not in': '__in',
+        }[operator]
+        return op, True
+
     def get_lookup(self, path, operator, value):
         """
         Performs a lookup for this field with given path, operator and value.
@@ -104,23 +131,7 @@ class DjangoQLField(object):
         :return: Q-object
         """
         search = '__'.join(path + [self.get_lookup_name()])
-        invert = False
-        op = {
-            '=': '',
-            '>': '__gt',
-            '>=': '__gte',
-            '<': '__lt',
-            '<=': '__lte',
-            '~': '__icontains',
-            'in': '__in',
-        }.get(operator)
-        if op is None:
-            op = {
-                '!=': '',
-                '!~': '__icontains',
-                'not in': '__in',
-            }[operator]
-            invert = True
+        op, invert = self.get_operator(operator)
         q = models.Q(**{'%s%s' % (search, op): self.get_lookup_value(value)})
         return ~q if invert else q
 
@@ -180,9 +191,6 @@ class DateField(DjangoQLField):
     value_types = [text_type]
     value_types_description = 'dates in "YYYY-MM-DD" format'
 
-    def get_lookup_value(self, value):
-        return datetime.strptime(value, '%Y-%m-%d').date()
-
     def validate(self, value):
         super(DateField, self).validate(value)
         try:
@@ -196,21 +204,14 @@ class DateField(DjangoQLField):
                 )
             )
 
+    def get_lookup_value(self, value):
+        return datetime.strptime(value, '%Y-%m-%d').date()
+
 
 class DateTimeField(DjangoQLField):
     type = 'datetime'
     value_types = [text_type]
     value_types_description = 'timestamps in "YYYY-MM-DD HH:MM" format'
-
-    def get_lookup_value(self, value):
-        mask = '%Y-%m-%d'
-        if len(value) > 10:
-            mask += ' %H:%M'
-        if len(value) > 16:
-            mask += ':%S'
-        return datetime.strptime(value, mask).replace(
-            tzinfo=get_current_timezone(),
-        )
 
     def validate(self, value):
         super(DateTimeField, self).validate(value)
@@ -224,6 +225,36 @@ class DateTimeField(DjangoQLField):
                     repr(value),
                 )
             )
+
+    def get_lookup_value(self, value):
+        mask = '%Y-%m-%d'
+        if len(value) > 10:
+            mask += ' %H:%M'
+        if len(value) > 16:
+            mask += ':%S'
+        return datetime.strptime(value, mask).replace(
+            tzinfo=get_current_timezone(),
+        )
+
+    def get_lookup(self, path, operator, value):
+        search = '__'.join(path + [self.get_lookup_name()])
+        op, invert = self.get_operator(operator)
+
+        # Add LIKE operator support for datetime fields. For LIKE comparisons
+        # we don't want to convert source value to datetime instance, because
+        # it would effectively kill the idea. What we want is expressions like
+        #       'created ~ "2017-01-30'
+        # to be translated to
+        #       'created LIKE %2017-01-30%',
+        # but it would work only if we pass a string as a parameter. If we pass
+        # a datetime instance, it would add time part in a form of 00:00:00,
+        # and resulting comparison would look like
+        #       'created LIKE %2017-01-30 00:00:00%'
+        # which is not what we want for this case.
+        val = value if operator in ('~', '!~') else self.get_lookup_value(value)
+
+        q = models.Q(**{'%s%s' % (search, op): val})
+        return ~q if invert else q
 
 
 class RelationField(DjangoQLField):
