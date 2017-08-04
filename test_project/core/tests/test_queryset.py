@@ -29,10 +29,13 @@ class BookCustomSearchSchema(DjangoQLSchema):
 
 class DjangoQLQuerySetTest(TestCase):
     def test_simple_query(self):
-        qs = Book.objects.djangoql('name = "foo" and author.email = "bar@baz"')
+        qs = Book.objects.djangoql(
+            'name = "foo" and author.email = "em@il" and written > "2017-01-30"'
+        )
         where_clause = str(qs.query).split('WHERE')[1].strip()
         self.assertEqual(
-            '("core_book"."name" = foo AND "auth_user"."email" = bar@baz)',
+            '("core_book"."name" = foo AND "auth_user"."email" = em@il '
+            'AND "core_book"."written" > 2017-01-30 00:00:00)',
             where_clause,
         )
 

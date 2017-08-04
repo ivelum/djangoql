@@ -6,6 +6,7 @@ from decimal import Decimal
 from django.contrib.contenttypes.fields import GenericRel
 from django.db import models
 from django.db.models import FieldDoesNotExist, ManyToManyRel, ManyToOneRel
+from django.utils.timezone import get_current_timezone
 
 from .ast import Comparison, Const, List, Logical, Name, Node
 from .compat import text_type
@@ -179,10 +180,15 @@ class DateField(DjangoQLField):
     value_types = [text_type]
     value_types_description = 'dates in "YYYY-MM-DD" format'
 
+    def get_lookup_value(self, value):
+        return datetime.strptime(value, '%Y-%m-%d').replace(
+            tzinfo=get_current_timezone(),
+        )
+
     def validate(self, value):
         super(DateField, self).validate(value)
         try:
-            datetime.strptime(value, '%Y-%m-%d')
+            self.get_lookup_value(value)
         except ValueError:
             raise DjangoQLSchemaError(
                 'Field "%s" can be compared to dates in '
@@ -198,15 +204,20 @@ class DateTimeField(DjangoQLField):
     value_types = [text_type]
     value_types_description = 'timestamps in "YYYY-MM-DD HH:MM" format'
 
-    def validate(self, value):
-        super(DateTimeField, self).validate(value)
+    def get_lookup_value(self, value):
         mask = '%Y-%m-%d'
         if len(value) > 10:
             mask += ' %H:%M'
         if len(value) > 16:
             mask += ':%S'
+        return datetime.strptime(value, mask).replace(
+            tzinfo=get_current_timezone(),
+        )
+
+    def validate(self, value):
+        super(DateTimeField, self).validate(value)
         try:
-            datetime.strptime(value, mask)
+            self.get_lookup_value(value)
         except ValueError:
             raise DjangoQLSchemaError(
                 'Field "%s" can be compared to timestamps in '
