@@ -3,6 +3,7 @@ from collections import OrderedDict
 from datetime import datetime
 from decimal import Decimal
 
+from django.conf import settings
 from django.contrib.contenttypes.fields import GenericRel
 from django.db import models
 from django.db.models import FieldDoesNotExist, ManyToManyRel, ManyToOneRel
@@ -232,9 +233,10 @@ class DateTimeField(DjangoQLField):
             mask += ' %H:%M'
         if len(value) > 16:
             mask += ':%S'
-        return datetime.strptime(value, mask).replace(
-            tzinfo=get_current_timezone(),
-        )
+        dt = datetime.strptime(value, mask)
+        if settings.USE_TZ:
+            dt = dt.replace(tzinfo=get_current_timezone())
+        return dt
 
     def get_lookup(self, path, operator, value):
         search = '__'.join(path + [self.get_lookup_name()])

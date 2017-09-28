@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from django.test import TestCase
+from django.test import TestCase, override_settings
 
 from djangoql.queryset import apply_search
 from djangoql.schema import DjangoQLSchema, IntField
@@ -28,7 +28,7 @@ class BookCustomSearchSchema(DjangoQLSchema):
 
 
 class DjangoQLQuerySetTest(TestCase):
-    def test_simple_query(self):
+    def do_simple_query_test(self):
         qs = Book.objects.djangoql(
             'name = "foo" and author.email = "em@il" and written > "2017-01-30"'
         )
@@ -38,6 +38,13 @@ class DjangoQLQuerySetTest(TestCase):
             'AND "core_book"."written" > 2017-01-30 00:00:00)',
             where_clause,
         )
+
+    def test_simple_query(self):
+        self.do_simple_query_test()
+
+    @override_settings(USE_TZ=False)
+    def test_simple_query_without_tz(self):
+        self.do_simple_query_test()
 
     def test_datetime_like_query(self):
         qs = Book.objects.djangoql('written ~ "2017-01-30"')
