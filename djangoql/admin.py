@@ -1,7 +1,7 @@
 import json
 
 from django.conf.urls import url
-from django.contrib import messages
+from django.contrib import admin, messages
 from django.core.exceptions import FieldError, ValidationError
 from django.http import HttpResponse
 from django.views.generic import TemplateView
@@ -10,6 +10,13 @@ from .compat import text_type
 from .exceptions import DjangoQLError
 from .queryset import apply_search
 from .schema import DjangoQLSchema
+from .models import Query
+from .views import QueryView
+
+
+@admin.register(Query)
+class QueryAdmin(admin.ModelAdmin):
+    list_display = ('model', 'name',)
 
 
 class DjangoQLSearchMixin(object):
@@ -45,6 +52,7 @@ class DjangoQLSearchMixin(object):
                 'djangoql/js/completion_admin.js',
             ))
             media.add_css({'': (
+                'djangoql/css/saved-queries.css',
                 'djangoql/css/completion.css',
                 'djangoql/css/completion_admin.css',
             )})
@@ -53,7 +61,7 @@ class DjangoQLSearchMixin(object):
     def get_urls(self):
         custom_urls = []
         if self.djangoql_completion:
-            custom_urls += [
+            custom_urls.extend([
                 url(
                     r'^introspect/$',
                     self.admin_site.admin_view(self.introspect),
@@ -69,7 +77,25 @@ class DjangoQLSearchMixin(object):
                     ),
                     name='djangoql_syntax_help',
                 ),
-            ]
+            ])
+        custom_urls.extend([
+            url(
+                r'^query/$',
+                self.admin_site.admin_view(QueryView.as_view(model=self.model)),
+                name='%s_%s_saved_queries' % (
+                    self.model._meta.app_label,
+                    self.model._meta.model_name,
+                ),
+            ),
+            url(
+                r'^query/(?P<pk>\d+)/$',
+                self.admin_site.admin_view(QueryView.as_view(model=self.model)),
+                name='%s_%s_edit_saved_queries' % (
+                    self.model._meta.app_label,
+                    self.model._meta.model_name,
+                ),
+            ),
+        ])
         return custom_urls + super(DjangoQLSearchMixin, self).get_urls()
 
     def introspect(self, request):
