@@ -1,3 +1,4 @@
 #changelist #toolbar form textarea#searchbar {
-  width: 80%;
+  width: 90%;
+  vertical-align: middle !important;
 }

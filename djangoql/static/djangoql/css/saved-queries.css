@@ -1,0 +1,41 @@
+.djangoql-query-area {
+  display: inline-block;
+  width: 80%
+}
+
+.icon {
+  width: 18px;
+  height: 18px;
+  display: inline-block;
+  vertical-align: top;
+  margin-top: 2px;
+  background-size: 18px auto !important;
+  background-repeat: no-repeat !important;
+  background-position: 0 0 !important;
+  background-color: transparent !important;
+}
+
+
+.icon_save.active {
+  background-image: url(../img/save.svg);
+}
+.icon_save {
+  background-image: url(../img/save.svg);
+}
+.icon_save:hover {
+  background-image: url(../img/save.svg);
+}
+
+.icon_view {
+  background-image: url(../img/view.svg);
+}
+
+.icon_delete {
+  background-image: url(../img/delete.svg);
+  width: 14px;
+  height: 14px;
+  background-size: 14px auto !important;
+  margin: 0 8px 0 0;
+  vertical-align: middle;
+  float: left;
+}
