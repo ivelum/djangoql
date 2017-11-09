@@ -71,7 +71,9 @@ class DjangoQLSchemaTest(TestCase):
             'auth.group',
             'auth.permission',
             'contenttypes.contenttype',
-            'core.book'
+            'core.book',
+            'core.publisher',
+            'djangoql.favoritequery',
         ])
 
     def test_include(self):
@@ -94,6 +96,7 @@ class DjangoQLSchemaTest(TestCase):
             'name',
             'object_id',
             'price',
+            'publisher',
             'rating',
             'written',
         ])
