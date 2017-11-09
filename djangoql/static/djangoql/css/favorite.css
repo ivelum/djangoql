@@ -1,0 +1,100 @@
+.djangoql-favorite__star-button, .djangoql-favorite__list-button {
+    font-size: 21px;
+    cursor: pointer;
+}
+
+.djangoql-favorite__table {
+    margin: 0;
+    background-color: white;
+    display: none;
+    border: solid 1px #ccc;
+    border-radius: 4px;
+    min-width: 390px;
+    max-width: 480px;
+    min-height: 22px;
+    max-height: 350px;
+    word-break: break-all;
+    z-index: 1001;
+    position: absolute;
+    top: 48px;
+    overflow: auto;
+}
+
+.djangoql-favorite__table-header {
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #fff;
+    background: #79aec8;
+}
+
+.djangoql-favorite__table .active {
+    background-color: #79aec8;
+    color: white;
+}
+
+.djangoql-favorite__row {
+    list-style: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.djangoql-favorite__row-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 120px;
+    padding: 5px 15px;
+}
+
+.djangoql-favorite__table .djangoql-favorite__input {
+    margin: 0;
+    padding: 0;
+    border-radius: 0;
+    width: 90px;
+    height: 100%;
+    border: none;
+    cursor: pointer;
+    background-color: transparent;
+    outline: none;
+    color: inherit;
+}
+
+.djangoql-favorite__empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3px;
+}
+
+.djangoql-favorite__scope {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 5px;
+}
+
+.djangoql-favorite__scope > input {
+    cursor: pointer;
+}
+
+.djangoql-favorite__scope > label {
+    padding-right: 5px;
+}
+
+.djangoql-favorite__trash, .djangoql-favorite__search, .djangoql-favorite__pencil, .djangoql-favorite__settings {
+    background-color: transparent;
+    height: 100%;
+    padding: 0 5px;
+}
+
+#changelist-search > div {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+#changelist #toolbar #changelist-search #searchbar {
+    width: 70%;
+}
