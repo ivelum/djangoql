@@ -6,10 +6,10 @@ from django.core.exceptions import FieldError, ValidationError
 from django.http import HttpResponse
 from django.views.generic import TemplateView
 
-from .compat import text_type
-from .exceptions import DjangoQLError
-from .queryset import apply_search
-from .schema import DjangoQLSchema
+from djangoql.compat import text_type
+from djangoql.exceptions import DjangoQLError
+from djangoql.queryset import apply_search
+from djangoql.schema import DjangoQLSchema
 
 
 class DjangoQLSearchMixin(object):

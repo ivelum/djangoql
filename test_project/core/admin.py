@@ -7,7 +7,8 @@ from django.utils.timezone import now
 from djangoql.admin import DjangoQLSearchMixin
 from djangoql.schema import DjangoQLSchema, IntField
 
-from .models import Book
+from .models import Book, Publisher
+from djangoql.admin.favorite import DjangoQLFavoriteQueryMixin
 
 
 admin.site.unregister(User)
@@ -20,10 +21,16 @@ class BookQLSchema(DjangoQLSchema):
 
 
 @admin.register(Book)
-class BookAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
+class BookAdmin(DjangoQLSearchMixin, DjangoQLFavoriteQueryMixin, admin.ModelAdmin):
     djangoql_schema = BookQLSchema
-    list_display = ('name', 'author', 'genre', 'written', 'is_published')
+    list_display = ('name', 'author', 'genre', 'written', 'is_published', 'publisher',)
     list_filter = ('is_published',)
+
+
+@admin.register(Publisher)
+class PublisherAdmin(DjangoQLSearchMixin, DjangoQLFavoriteQueryMixin, admin.ModelAdmin):
+    list_display = ('name', 'phone', 'address', 'site', 'email',)
+    public_favorite_query_enabled = True
 
 
 class UserAgeField(IntField):

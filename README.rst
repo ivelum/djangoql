@@ -61,6 +61,22 @@ Django search functionality with DjangoQL search. Example:
     class BookAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
         pass
 
+Add ``DjangoQLFavoriteQueryMixin`` to your model admin and it will add favorite
+queries functionality. Example:
+
+.. code:: python
+
+    from django.contrib import admin
+
+    from djangoql.admin import DjangoQLSearchMixin, DjangoQLFavoriteQueryMixin
+
+    from .models import Book
+
+
+    @admin.register(Book)
+    class BookAdmin(DjangoQLSearchMixin, DjangoQLFavoriteQueryMixin, admin.ModelAdmin):
+        pass
+
 
 Language reference
 ------------------
