@@ -50,6 +50,7 @@ class DjangoQLSearchMixin(object):
                 'djangoql/js/lib/lexer.js',
                 'djangoql/js/completion.js',
                 'djangoql/js/completion_admin.js',
+                'djangoql/js/save_queries.js',
             ))
             media.add_css({'': (
                 'djangoql/css/saved-queries.css',
