@@ -26,7 +26,10 @@ var django;
         .success((function (data) {
           this.queries[data.id] = $.extend({}, this.currentQuery);
           QueryListComponent.append(this.queries[data.id]);
-        }).bind(this));
+        }).bind(this))
+        .fail(function (data) {
+          ErrorMessageComponet.add(data.responseJSON.errors);
+        });
     },
     deleteQuery: function (queryId) {
       return $.ajax({
@@ -146,7 +149,28 @@ var django;
         );
     }
   };
-  
+
+  var ErrorMessageComponet = {
+    add: function (errors) {
+      if (!$('.messagelist').length) {
+        $('.breadcrumbs').after('<ul class="messagelist"></ul>');
+      } else {
+        this.clear();
+      }
+      $.each(errors, function (filed, errorMsgs) {
+        $.each(errorMsgs, function (i, error) {
+          $('.messagelist').append('' +
+            '<li class="error query-error">' +
+            '    <b>' + filed + ': </b>' + error +
+            '</li>'
+          );
+        });
+      });
+    },
+    clear: function () {
+      $('.query-error').remove();
+    }
+  };
 
   // from django docs https://docs.djangoproject.com/en/1.8/ref/csrf/
   function getCookie(name) {
