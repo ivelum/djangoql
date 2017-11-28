@@ -146,6 +146,7 @@ var django;
         );
     }
   };
+  
 
   // from django docs https://docs.djangoproject.com/en/1.8/ref/csrf/
   function getCookie(name) {
@@ -166,6 +167,22 @@ var django;
     return cookieValue;
   }
 
+  function dynamicBindEvent(selector, event, handler) {
+    /*
+    To bind event on dynamically created elements prior then 1.17 the recommended approach was to use live(),
+    however, live() was deprecated in 1.7 in favour of on(), and completely removed in 1.9
+    */
+    var versionStr = $.fn.jquery,
+      versionParts = $.map(versionStr.split('.'), parseInt),
+      majorVersion = versionParts[0],
+      minorVersion = versionParts[1];
+    if (majorVersion > 1 || minorVersion > 17) {
+      $(document).on(event, selector, handler);
+    } else {
+      $(selector).live(event, handler);
+    }
+  }
+
   $(function () {
     $.ajaxSetup({
       headers: {'X-CSRFToken': getCookie('csrftoken')}
@@ -174,13 +191,13 @@ var django;
     State.get();
     SearchFormComponent.render();
 
-    $('.query-element').click(function (e) {
+    dynamicBindEvent('.query-element', 'click', function (e) {
       e.preventDefault();
       var queryId = $(this).parent().data('id');
       State.choose(queryId);
     });
 
-    $('.delete-query').click(function (e) {
+    dynamicBindEvent('.delete-query', 'click', function (e) {
       e.preventDefault();
       var queryId = $(this).parent().data('id');
       State.deleteQuery(queryId);
@@ -191,7 +208,7 @@ var django;
       QueryListComponent.filter(searchStr);
     });
 
-    $('#searchbar').on('change keyup paste focusout', function () {
+    dynamicBindEvent('#searchbar', 'change keyup paste focusout', function () {
       State.update({
         query: $.trim($('#searchbar').val())
       });
