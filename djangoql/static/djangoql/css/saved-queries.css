@@ -1,41 +1,128 @@
 .djangoql-query-area {
-  display: inline-block;
-  width: 80%
+    display: inline-block;
+    width: 80%
 }
 
 .icon {
-  width: 18px;
-  height: 18px;
-  display: inline-block;
-  vertical-align: top;
-  margin-top: 2px;
-  background-size: 18px auto !important;
-  background-repeat: no-repeat !important;
-  background-position: 0 0 !important;
-  background-color: transparent !important;
+    width: 18px;
+    height: 18px;
+    display: inline-block;
+    vertical-align: top;
+    background-size: 18px auto;
+    background-position: 0 0 !important;
+    padding: 0 0 0 0;
+    margin: 2px 0 0 1%;
 }
 
 
-.icon_save.active {
-  background-image: url(../img/save.svg);
-}
-.icon_save {
-  background-image: url(../img/save.svg);
-}
-.icon_save:hover {
-  background-image: url(../img/save.svg);
+.viewlink {
+    padding-left: 16px;
+    background: url(../img/icon-menu.svg) 0 1px no-repeat;
 }
 
-.icon_view {
-  background-image: url(../img/view.svg);
+
+.icon-save.active {
+    background-image: url(../img/save.svg);
 }
 
-.icon_delete {
-  background-image: url(../img/delete.svg);
-  width: 14px;
-  height: 14px;
-  background-size: 14px auto !important;
-  margin: 0 8px 0 0;
-  vertical-align: middle;
-  float: left;
+.icon-save {
+    background-image: url(../img/save.svg);
+}
+
+.icon-save:hover {
+    background-image: url(../img/save.svg);
+}
+
+.icon-view {
+    background-image: url(../img/view.svg);
+}
+
+.query-name-bar {
+    width: 80%;
+    text-decoration: underline;
+    padding: 0 0 3px 0;
+    display: inline-block;
+    margin: 0 0 4px 20px;
+    height:20px;
+}
+
+.search-queries {
+    right: 35%;
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 40%;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+    z-index: 1;
+    margin: 10px 0 0 0;
+}
+
+#query-name {
+    width:100%;
+    display: none;
+    height: 9px
+}
+
+#find-query-input {
+    width: 90%;
+    margin: 10px 0 0 15px;
+}
+
+.save-query-form {
+    display: none;
+}
+
+.query-list-element {
+    border: 1px solid;
+    list-style-type: none;
+    padding: 5px;
+}
+
+.delete-query {
+    float: right;
+    display: block;
+    border-radius: 4px;
+    padding: 10px 15px;
+    height: 14px;
+    line-height: 14px;
+    color: #fff !important;
+}
+
+.query-element {
+    display: inline-block;
+    width: 80%;
+}
+
+.query-body {
+    margin: 0 0 0 10px;
+}
+
+#query-list {
+    margin: 5px;
+}
+
+.save-query-form {
+    right: 35%;
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-height: 120px;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+    z-index: 1;
+    margin: 10px 0 0 0;
+}
+
+.button-wrap {
+    position:absolute;
+    bottom: 2%;
+    width: 96%;
+}
+
+#save-query-form {
+    width: 96%;
+    margin: 2% 2% 0 2%;
+}
+
+#create-query {
+    float: right;
 }
