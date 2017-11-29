@@ -20,23 +20,6 @@
     background: url(../img/icon-menu.svg) 0 1px no-repeat;
 }
 
-
-.icon-save.active {
-    background-image: url(../img/save.svg);
-}
-
-.icon-save {
-    background-image: url(../img/save.svg);
-}
-
-.icon-save:hover {
-    background-image: url(../img/save.svg);
-}
-
-.icon-view {
-    background-image: url(../img/view.svg);
-}
-
 .query-name-bar {
     width: 80%;
     text-decoration: underline;
@@ -58,9 +41,12 @@
 }
 
 #query-name {
-    width:100%;
-    display: none;
+    width: 70%;
     height: 9px
+}
+
+#edit-name {
+    display: none;
 }
 
 #find-query-input {
@@ -125,4 +111,21 @@
 
 #create-query {
     float: right;
+}
+
+.query-error {
+    background: #ffefef;
+    display: inline-block;
+    min-width: 220px;
+    min-height: 22px;
+    padding: 4px 0px 4px 10px;
+    width: auto;
+}
+
+.query-name-error {
+    margin: 2px 0 0 6%;
+}
+
+.query-body-error {
+    margin: 2px 0 0 24px;
 }

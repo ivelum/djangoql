@@ -26,9 +26,11 @@ var django;
         .success((function (data) {
           this.queries[data.id] = $.extend({}, this.currentQuery);
           QueryListComponent.append(this.queries[data.id]);
+          SearchFormComponent.errorMessage.clean();
         }).bind(this))
         .fail(function (data) {
-          ErrorMessageComponet.add(data.responseJSON.errors);
+          SearchFormComponent.errorMessage.clean();
+          SearchFormComponent.errorMessage.add(data.responseJSON.errors);
         });
     },
     deleteQuery: function (queryId) {
@@ -120,22 +122,60 @@ var django;
       textArea.val(query.query).focus();
       textArea.css('height', (textArea.height() + textArea.scrollTop()) + 'px');
       QueryListComponent.toggle();
+      this.hideNameInput();
+    },
+    errorMessage: {
+      add: function (errMessages) {
+        var errorTemplate = '' +
+          '<div class="query-error {{ className }}">' +
+          '    <b>{{ errMessage }}</b>' +
+          '</div>';
+        if ('name' in errMessages) {
+          SearchFormComponent.showNameInput();
+          $('#name-error-wrap').append(
+            errorTemplate
+              .replace('{{ className }}', 'query-name-error')
+              .replace('{{ errMessage }}', errMessages.name.join(', '))
+          );
+        }
+        if ('query' in errMessages) {
+          $('#query-error-wrap').parent().append(
+            errorTemplate
+              .replace('{{ className }}', 'query-body-error')
+              .replace('{{ errMessage }}', errMessages.query.join(', '))
+          );
+        }
+      },
+      clean: function() {
+        $('.query-error').remove();
+      }
+    },
+    showNameInput: function () {
+      $('#edit-name').hide();
+      $('#query-name').show();
+    },
+    hideNameInput: function () {
+      $('#query-name').hide();
+      $('#edit-name').show();
     },
     render: function () {
-      $('#searchbar')
+      var djangoqlQueryArea = $('#searchbar')
         .wrap('<div class="djangoql-query-area"></div>')
-        .parent()
-        .prepend('' +
+        .parent();
+      djangoqlQueryArea
+        .prepend(
           '<div class="query-name-bar">' +
           '    <a href="#" id="edit-name" class="changelink">' +
           '      Query name' +
           '    </a>' +
           '    <input type="text" id="query-name" placeholder="Enter query name">' +
-          '</div>')
+          '</div>' +
+          '<div id="name-error-wrap"></div>'
+        )
         .prepend('<label for="query-public">Public: </label><input type="checkbox" id="query-public" title="Public">')
         .append('<a id="save-query" class="addlink icon" href="#" title="Save query"></a>')
         .append('<a id="view-queries" class="viewlink icon" href="#" title="View queries"></a>')
-        .append('' +
+        .append(
           '<div class="search-queries">' +
           '    <div>' +
           '        <input type="search" placeholder="Search by name or by query" id="find-query-input">' +
@@ -146,29 +186,8 @@ var django;
           '        </ul>' +
           '    </div>' +
           '</div>'
-        );
-    }
-  };
-
-  var ErrorMessageComponet = {
-    add: function (errors) {
-      if (!$('.messagelist').length) {
-        $('.breadcrumbs').after('<ul class="messagelist"></ul>');
-      } else {
-        this.clear();
-      }
-      $.each(errors, function (filed, errorMsgs) {
-        $.each(errorMsgs, function (i, error) {
-          $('.messagelist').append('' +
-            '<li class="error query-error">' +
-            '    <b>' + filed + ': </b>' + error +
-            '</li>'
-          );
-        });
-      });
-    },
-    clear: function () {
-      $('.query-error').remove();
+        )
+        .parent().append('<div id="query-error-wrap"></div>');
     }
   };
 
@@ -240,8 +259,8 @@ var django;
 
     $('#edit-name').click(function (e) {
       e.preventDefault();
-      $('#edit-name').hide();
-      $('#query-name').show().focus();
+      SearchFormComponent.showNameInput();
+      $('#query-name').focus();
     });
 
     $('#query-name')
@@ -251,8 +270,7 @@ var django;
         $('#edit-name').text(value);
       })
       .focusout(function () {
-        $('#edit-name').show();
-        $('#query-name').hide();
+        SearchFormComponent.hideNameInput();
       });
 
     $('#query-public').change(function () {
