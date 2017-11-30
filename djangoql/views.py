@@ -16,7 +16,9 @@ class QueryView(View):
             data = Query.objects.filter(model=self._content_type)
         else:
             data = Query.objects.filter(Q(user=self.request.user) | Q(public=True), model=self._content_type)
-        return JsonResponse({'value': list(data.values('id', 'name', 'query', 'public'))})
+        return JsonResponse({
+            'value': list(data.values('id', 'name', 'query', 'public')),
+        })
 
     def post(self, *args, **kwargs):
         form = QueryForm(data=self.request.POST, instance=self._get_instance())
@@ -25,19 +27,19 @@ class QueryView(View):
             query.user = self.request.user
             query.model = self._content_type
             query.save()
-            return JsonResponse({'ok': True, 'id': query.id})
+            return JsonResponse({'ok': True, 'id': query.id, })
         else:
-            return JsonResponse({'ok': False, 'errors': form.errors}, status=400)
+            return JsonResponse({'ok': False, 'errors': form.errors, }, status=400)
 
     def delete(self, *args, **kwargs):
         ok = False
-        filters = {'id': self.kwargs['pk']}
+        filters = {'id': self.kwargs['pk'], }
         if not self.request.user.is_superuser:
-            filters.update({'user': self.request.user})
+            filters.update({'user': self.request.user, })
         result, _ = Query.objects.filter(**filters).delete()
         if result:
             ok = True
-        return JsonResponse({'ok': ok})
+        return JsonResponse({'ok': ok, })
 
     @property
     def _content_type(self):
