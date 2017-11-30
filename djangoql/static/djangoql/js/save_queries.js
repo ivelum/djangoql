@@ -70,11 +70,11 @@ var django;
       var queryElement = $('#query-list')
         .append(
           '<li data-id="' + query.id + '" id="query-element-' + query.id + '" class="query-list-element">' +
-          '    <a href="#" class="query-element">' +
-          '      <h3><div class="query-name"></div></h3>' +
-          '      <b><div class="query-body"></div></b>' +
-          '    </a>' +
-          '    <a href="#" class="delete-query deletelink"></a>' +
+          '  <a href="#" class="query-element">' +
+          '    <h3><div class="query-name"></div></h3>' +
+          '    <b><div class="query-body"></div></b>' +
+          '  </a>' +
+          '  <a href="#" class="delete-query deletelink"></a>' +
           '</li>'
         )
         .find('#query-element-' + query.id);
@@ -165,10 +165,10 @@ var django;
       djangoqlQueryArea
         .prepend(
           '<div class="query-name-bar">' +
-          '    <a href="#" id="edit-name" class="changelink">' +
-          '      Query name' +
-          '    </a>' +
-          '    <input type="text" id="query-name" placeholder="Enter query name">' +
+          '  <a href="#" id="edit-name" class="changelink">' +
+          '    Query name' +
+          '  </a>' +
+          '  <input type="text" id="query-name" placeholder="Enter query name">' +
           '</div>' +
           '<div id="name-error-wrap"></div>'
         )
@@ -177,14 +177,12 @@ var django;
         .append('<a id="view-queries" class="viewlink icon" href="#" title="View queries"></a>')
         .append(
           '<div class="search-queries">' +
-          '    <div>' +
-          '        <input type="search" placeholder="Search by name or by query" id="find-query-input">' +
-          '    </div>' +
-          '    <div>' +
-          '        <ul id="query-list">' +
-          '            ' +
-          '        </ul>' +
-          '    </div>' +
+          '  <div>' +
+          '    <input type="search" placeholder="Search by name or by query" id="find-query-input">' +
+          '  </div>' +
+          '  <div>' +
+          '    <ul id="query-list"></ul>' +
+          '  </div>' +
           '</div>'
         )
         .parent().append('<div id="query-error-wrap"></div>');
