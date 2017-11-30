@@ -4,45 +4,44 @@
 }
 
 .icon {
-    width: 18px;
-    height: 18px;
-    display: inline-block;
-    vertical-align: top;
-    background-size: 18px auto;
     background-position: 0 0 !important;
-    padding: 0 0 0 0;
+    background-size: 18px auto;
+    display: inline-block;
+    height: 18px;
     margin: 2px 0 0 1%;
+    padding: 0 0 0 0;
+    vertical-align: top;
+    width: 18px;
 }
 
-
 .viewlink {
-    padding-left: 16px;
     background: url(../img/icon-menu.svg) 0 1px no-repeat;
+    padding-left: 16px;
 }
 
 .query-name-bar {
-    width: 80%;
-    text-decoration: underline;
-    padding: 0 0 3px 0;
     display: inline-block;
+    height: 20px;
     margin: 0 0 4px 20px;
-    height:20px;
+    padding: 0 0 3px 0;
+    text-decoration: underline;
+    width: 80%;
 }
 
 .search-queries {
-    right: 35%;
-    display: none;
-    position: absolute;
     background-color: #f9f9f9;
-    min-width: 40%;
-    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
-    z-index: 1;
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+    display: none;
     margin: 10px 0 0 0;
+    min-width: 40%;
+    position: absolute;
+    right: 35%;
+    z-index: 1;
 }
 
 #query-name {
+    height: 9px;
     width: 70%;
-    height: 9px
 }
 
 #edit-name {
@@ -50,8 +49,8 @@
 }
 
 #find-query-input {
-    width: 90%;
     margin: 10px 0 0 15px;
+    width: 90%;
 }
 
 .save-query-form {
@@ -65,13 +64,13 @@
 }
 
 .delete-query {
-    float: right;
-    display: block;
     border-radius: 4px;
-    padding: 10px 15px;
+    color: #fff !important;
+    display: block;
+    float: right;
     height: 14px;
     line-height: 14px;
-    color: #fff !important;
+    padding: 10px 15px;
 }
 
 .query-element {
@@ -88,25 +87,25 @@
 }
 
 .save-query-form {
-    right: 35%;
-    display: none;
-    position: absolute;
     background-color: #f9f9f9;
-    min-height: 120px;
-    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
-    z-index: 1;
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+    display: none;
     margin: 10px 0 0 0;
+    min-height: 120px;
+    position: absolute;
+    right: 35%;
+    z-index: 1;
 }
 
 .button-wrap {
-    position:absolute;
     bottom: 2%;
+    position: absolute;
     width: 96%;
 }
 
 #save-query-form {
-    width: 96%;
     margin: 2% 2% 0 2%;
+    width: 96%;
 }
 
 #create-query {
@@ -116,8 +115,8 @@
 .query-error {
     background: #ffefef;
     display: inline-block;
-    min-width: 220px;
     min-height: 22px;
+    min-width: 220px;
     padding: 4px 0px 4px 10px;
     width: auto;
 }
