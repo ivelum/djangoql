@@ -35,20 +35,18 @@ class DjangoQLSearchMixin(object):
         messages.add_message(request, messages.WARNING, msg)
         return queryset, use_distinct
 
-    @property
-    def media(self):
-        media = super(DjangoQLSearchMixin, self).media
-        if self.djangoql_completion:
-            media.add_js((
-                'djangoql/js/lib/lexer.js',
-                'djangoql/js/completion.js',
-                'djangoql/js/completion_admin.js',
-            ))
-            media.add_css({'': (
+    class Media:
+        js = (
+            'djangoql/js/lib/lexer.js',
+            'djangoql/js/completion.js',
+            'djangoql/js/completion_admin.js',
+        )
+        css = {
+            'all': (
                 'djangoql/css/completion.css',
                 'djangoql/css/completion_admin.css',
-            )})
-        return media
+            )
+        }
 
     def get_urls(self):
         custom_urls = []
