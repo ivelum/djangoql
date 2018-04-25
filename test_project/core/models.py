@@ -16,7 +16,7 @@ class Book(models.Model):
     }
 
     name = models.CharField(max_length=10)  # lol, we're minimalists
-    author = models.ForeignKey('auth.User')
+    author = models.ForeignKey('auth.User', on_delete=models.CASCADE)
     genre = models.PositiveIntegerField(
         null=True,
         blank=True,
@@ -26,7 +26,11 @@ class Book(models.Model):
     is_published = models.BooleanField(default=False)
     rating = models.FloatField(null=True)
     price = models.DecimalField(max_digits=7, decimal_places=2, null=True)
-    content_type = models.ForeignKey(ContentType, null=True)
+    content_type = models.ForeignKey(
+        ContentType,
+        null=True,
+        on_delete=models.CASCADE,
+    )
     object_id = models.PositiveIntegerField(null=True)
     content_object = GenericForeignKey('content_type', 'object_id')
 

@@ -62,6 +62,8 @@ MIDDLEWARE_CLASSES += [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+MIDDLEWARE = MIDDLEWARE_CLASSES  # Django 2.0
+
 ROOT_URLCONF = 'test_project.urls'
 
 TEMPLATES = [
