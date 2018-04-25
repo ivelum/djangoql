@@ -3,6 +3,7 @@ import json
 from django.conf.urls import url
 from django.contrib import messages
 from django.core.exceptions import FieldError, ValidationError
+from django.forms import Media
 from django.http import HttpResponse
 from django.views.generic import TemplateView
 
@@ -39,15 +40,17 @@ class DjangoQLSearchMixin(object):
     def media(self):
         media = super(DjangoQLSearchMixin, self).media
         if self.djangoql_completion:
-            media.add_js((
-                'djangoql/js/lib/lexer.js',
-                'djangoql/js/completion.js',
-                'djangoql/js/completion_admin.js',
-            ))
-            media.add_css({'': (
-                'djangoql/css/completion.css',
-                'djangoql/css/completion_admin.css',
-            )})
+            media += Media(
+                css={'': (
+                    'djangoql/css/completion.css',
+                    'djangoql/css/completion_admin.css',
+                )},
+                js=(
+                    'djangoql/js/lib/lexer.js',
+                    'djangoql/js/completion.js',
+                    'djangoql/js/completion_admin.js',
+                )
+            )
         return media
 
     def get_urls(self):
