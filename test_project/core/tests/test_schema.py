@@ -99,6 +99,15 @@ class DjangoQLSchemaTest(TestCase):
         ])
         self.assertListEqual(list(custom.keys()), ['name', 'is_published'])
 
+    def test_circular_references(self):
+        models = DjangoQLSchema(Book).as_dict()['models']
+        # If Book references Author then Author shouldn't reference Book back
+        book_author_field = models['core.book'].get('author')
+        self.assertIsNotNone(book_author_field)
+        self.assertEqual('relation', book_author_field['type'])
+        self.assertEqual('auth.user', book_author_field['relation'])
+        self.assertNotIn('book', models['auth.user'])
+
     def test_custom_search(self):
         custom = BookCustomSearchSchema(Book).as_dict()['models']['core.book']
         self.assertListEqual(list(custom.keys()), ['written_in_year'])

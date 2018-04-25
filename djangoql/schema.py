@@ -338,13 +338,15 @@ class DjangoQLSchema(object):
                 field = self.get_field_instance(model, field)
             if not field:
                 continue
-            fields[field.name] = field
-            if isinstance(field, RelationField) \
-                    and field.relation not in exclude:
-                result.update(self.introspect(
-                    model=field.related_model,
-                    exclude=tuple(exclude) + tuple(result.keys()),
-                ))
+            if isinstance(field, RelationField):
+                if field.relation not in exclude:
+                    fields[field.name] = field
+                    result.update(self.introspect(
+                        model=field.related_model,
+                        exclude=tuple(exclude) + tuple(result.keys()),
+                    ))
+            else:
+                fields[field.name] = field
         return result
 
     def get_fields(self, model):
