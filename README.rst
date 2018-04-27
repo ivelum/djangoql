@@ -18,6 +18,7 @@ Contents
 
 * `Installation`_
 * `Add it to your Django admin`_
+* `Using together with a standard Django admin search`_
 * `Language reference`_
 * `DjangoQL Schema`_
 * `Custom search fields`_
@@ -60,6 +61,25 @@ Django search functionality with DjangoQL search. Example:
     @admin.register(Book)
     class BookAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
         pass
+
+
+Using together with a standard Django admin search
+--------------------------------------------------
+
+If you define ``search_fields`` on your ModelAdmin class, DjangoQL integration
+would automatically recognize this and let users choose between a standard
+Django search (that you specified with ``search_fields``) and Advanced Search
+with DjangoQL. Example:
+
+.. code:: python
+
+    @admin.register(Book)
+    class BookAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
+        search_fields = ('title', 'author__name')
+
+For the example above, a checkbox that controls search mode would appear near
+the search input. If you don't want two search modes, simply remove
+``search_fields`` from your ModelAdmin class.
 
 
 Language reference
