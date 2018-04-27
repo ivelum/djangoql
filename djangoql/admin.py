@@ -2,6 +2,7 @@ import json
 
 from django.conf.urls import url
 from django.contrib import messages
+from django.contrib.admin.views.main import ChangeList
 from django.core.exceptions import FieldError, ValidationError
 from django.forms import Media
 from django.http import HttpResponse
@@ -13,13 +14,35 @@ from .queryset import apply_search
 from .schema import DjangoQLSchema
 
 
+DJANGOQL_SEARCH_MARKER = 'q-l'
+
+
+class DjangoQLChangeList(ChangeList):
+    def get_filters_params(self, *args, **kwargs):
+        params = super(DjangoQLChangeList, self).get_filters_params(
+            *args,
+            **kwargs
+        )
+        if DJANGOQL_SEARCH_MARKER in params:
+            del params[DJANGOQL_SEARCH_MARKER]
+        return params
+
+
 class DjangoQLSearchMixin(object):
-    search_fields = ('_djangoql',)  # just a stub to have search input displayed
     djangoql_completion = True
     djangoql_schema = DjangoQLSchema
     djangoql_syntax_help_template = 'djangoql/syntax_help.html'
 
+    def get_changelist(self, *args, **kwargs):
+        return DjangoQLChangeList
+
     def get_search_results(self, request, queryset, search_term):
+        if request.GET.get(DJANGOQL_SEARCH_MARKER, '').lower() != 'on':
+            return super(DjangoQLSearchMixin, self).get_search_results(
+                request=request,
+                queryset=queryset,
+                search_term=search_term,
+            )
         use_distinct = False
         if not search_term:
             return queryset, use_distinct

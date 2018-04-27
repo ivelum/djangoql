@@ -150,6 +150,12 @@
       if (options.valuesCaseSensitive) {
         this.valuesCaseSensitive = true;
       }
+      this.completionEnabled = options.hasOwnProperty('completionEnabled') ?
+        options.completionEnabled :
+        true;
+
+      this.enableCompletion = this.enableCompletion.bind(this);
+      this.disableCompletion = this.disableCompletion.bind(this);
 
       // these handlers are re-used more than once in the code below,
       // so it's handy to have them already bound
@@ -206,6 +212,15 @@
         });
         this.completion.appendChild(syntaxHelp);
       }
+    },
+
+    enableCompletion: function () {
+      this.completionEnabled = true;
+    },
+
+    disableCompletion: function () {
+      this.completionEnabled = false;
+      this.hideCompletion();
     },
 
     loadIntrospections: function (introspections) {
@@ -467,6 +482,11 @@
       var liLen;
       var suggestionsLen;
 
+      if (!this.completionEnabled) {
+        this.hideCompletion();
+        return;
+      }
+
       if (dontForceDisplay && this.completion.style.display === 'none') {
         return;
       }
@@ -660,6 +680,12 @@
       var searchFilter;
       var textBefore;
       var textAfter;
+
+      if (!this.completionEnabled) {
+        this.prefix = '';
+        this.suggestions = [];
+        return;
+      }
 
       if (!this.currentModel) {
         // Introspections are not loaded yet

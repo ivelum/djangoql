@@ -1,3 +1,7 @@
 #changelist #toolbar form textarea#searchbar {
   width: 80%;
 }
+
+.djangoql-toggle {
+  margin-right: 10px;
+}
