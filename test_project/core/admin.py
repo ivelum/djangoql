@@ -101,6 +101,7 @@ class UserQLSchema(DjangoQLSchema):
 @admin.register(User)
 class CustomUserAdmin(DjangoQLSearchMixin, UserAdmin):
     djangoql_schema = UserQLSchema
+    search_fields = ('username', 'first_name', 'last_name')
 
     list_display = ('username', 'first_name', 'last_name', 'is_staff', 'group')
 

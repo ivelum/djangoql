@@ -30,8 +30,7 @@
   DjangoQL.DOMReady(function () {
     // use '-' in the param name to prevent conflicts with any model field name
     var QLParamName = 'q-l';
-    var QLParamValue = parseQueryString()[QLParamName];
-    var QLEnabled = QLParamValue === 'on';
+    var QLEnabled = parseQueryString()[QLParamName] === 'on';
     var QLInput;
     var QLToggle;
     var QLPlaceholder = 'Advanced search with Query Language';
@@ -43,10 +42,6 @@
       return;
     }
     originalPlaceholder = input.placeholder;
-
-    if (!QLEnabled) {
-      QLParamValue = 'off';
-    }
 
     function onCompletionToggle(e) {
       if (e.target.checked) {
@@ -63,22 +58,26 @@
       }
     }
 
-    QLInput = document.querySelector('input[name=' + QLParamName + ']');
-    if (!QLInput) {
-      QLInput = document.createElement('input');
-      QLInput.type = 'hidden';
-      input.parentNode.insertBefore(QLInput, input);
-    }
-    QLInput.name = QLEnabled ? QLParamName : '';
-    QLInput.value = 'on';
+    if (DjangoQL._enableToggle) {
+      QLInput = document.querySelector('input[name=' + QLParamName + ']');
+      if (!QLInput) {
+        QLInput = document.createElement('input');
+        QLInput.type = 'hidden';
+        input.parentNode.insertBefore(QLInput, input);
+      }
+      QLInput.name = QLEnabled ? QLParamName : '';
+      QLInput.value = 'on';
 
-    QLToggle = document.createElement('input');
-    QLToggle.type = 'checkbox';
-    QLToggle.checked = QLEnabled;
-    QLToggle.className = 'djangoql-toggle';
-    QLToggle.title = QLPlaceholder;
-    QLToggle.onchange = onCompletionToggle;
-    input.parentNode.insertBefore(QLToggle, input);
+      QLToggle = document.createElement('input');
+      QLToggle.type = 'checkbox';
+      QLToggle.checked = QLEnabled;
+      QLToggle.className = 'djangoql-toggle';
+      QLToggle.title = QLPlaceholder;
+      QLToggle.onchange = onCompletionToggle;
+      input.parentNode.insertBefore(QLToggle, input);
+    } else {
+      QLEnabled = true;
+    }
 
     textarea = document.createElement('textarea');
     textarea.value = input.value;

@@ -29,15 +29,25 @@ class DjangoQLChangeList(ChangeList):
 
 
 class DjangoQLSearchMixin(object):
+    search_fields = ('_djangoql',)  # just a stub to have search input displayed
     djangoql_completion = True
     djangoql_schema = DjangoQLSchema
     djangoql_syntax_help_template = 'djangoql/syntax_help.html'
+
+    def search_mode_toggle_enabled(self):
+        # If search fields were defined on a child ModelAdmin instance,
+        # we suppose that the developer wants two search modes and therefore
+        # enable search mode toggle
+        return self.search_fields != DjangoQLSearchMixin.search_fields
 
     def get_changelist(self, *args, **kwargs):
         return DjangoQLChangeList
 
     def get_search_results(self, request, queryset, search_term):
-        if request.GET.get(DJANGOQL_SEARCH_MARKER, '').lower() != 'on':
+        if (
+            self.search_mode_toggle_enabled() and
+            request.GET.get(DJANGOQL_SEARCH_MARKER, '').lower() != 'on'
+        ):
             return super(DjangoQLSearchMixin, self).get_search_results(
                 request=request,
                 queryset=queryset,
@@ -63,16 +73,19 @@ class DjangoQLSearchMixin(object):
     def media(self):
         media = super(DjangoQLSearchMixin, self).media
         if self.djangoql_completion:
+            js = [
+                'djangoql/js/lib/lexer.js',
+                'djangoql/js/completion.js',
+            ]
+            if self.search_mode_toggle_enabled():
+                js.append('djangoql/js/completion_admin_toggle.js')
+            js.append('djangoql/js/completion_admin.js')
             media += Media(
                 css={'': (
                     'djangoql/css/completion.css',
                     'djangoql/css/completion_admin.css',
                 )},
-                js=(
-                    'djangoql/js/lib/lexer.js',
-                    'djangoql/js/completion.js',
-                    'djangoql/js/completion_admin.js',
-                )
+                js=js,
             )
         return media
 
