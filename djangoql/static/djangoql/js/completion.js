@@ -114,6 +114,8 @@
   return {
     currentModel: null,
     models: {},
+    currentHistory: null,
+    historyEnabled: false,
 
     token: token,
     lexer: lexer,
@@ -130,13 +132,18 @@
 
     init: function (options) {
       var syntaxHelp;
+      var history;
+      var history_enabled = false;
 
       // Initialization
       if (!this.isObject(options)) {
         this.logError('Please pass an object with initialization parameters');
         return;
       }
+
       this.loadIntrospections(options.introspections);
+      this.loadHistory(options.history)
+
       this.textarea = document.querySelector(options.selector);
       if (!this.textarea) {
         this.logError('Element not found by selector: ' + options.selector);
@@ -199,6 +206,17 @@
       document.querySelector('body').appendChild(this.completion);
       this.completionUL = document.createElement('ul');
       this.completion.appendChild(this.completionUL);
+
+      history = document.createElement('p');
+      history.className = 'syntax-help';
+      history.innerHTML = '<a id="history_enabler" href="">Search History</a>';
+      history.addEventListener('mousedown', function (e) {
+          this.historyEnabled = true;
+          this.loadHistory(options.history);
+          this.renderHistory();
+      }.bind(this));
+      this.completion.appendChild(history);
+
       if (typeof options.syntaxHelp === 'string') {
         syntaxHelp = document.createElement('p');
         syntaxHelp.className = 'syntax-help';
@@ -221,6 +239,35 @@
     disableCompletion: function () {
       this.completionEnabled = false;
       this.hideCompletion();
+    },
+
+    loadHistory: function (history) {
+      var onLoadError;
+      var request;
+
+        onLoadError = function (history) {
+          this.logError('failed to load history from' + history);
+        }.bind(this);
+        request = new XMLHttpRequest();
+        request.open('GET', history, true);
+        request.onload = function () {
+          var data;
+          if (request.status === 200) {
+            data = JSON.parse(request.responseText);
+            this.currentHistory = data.history;
+          } else {
+            onLoadError();
+          }
+        }.bind(this);
+        request.ontimeout = onLoadError;
+        request.onerror = onLoadError;
+        /* eslint-disable max-len */
+        // Workaround for IE9, see
+        // https://cypressnorth.com/programming/internet-explorer-aborting-ajax-requests-fixed/
+        /* eslint-enable max-len */
+        request.onprogress = function () {};
+        window.setTimeout(request.send.bind(request));
+
     },
 
     loadIntrospections: function (introspections) {
@@ -318,7 +365,12 @@
     },
 
     onCompletionMouseClick: function (e) {
-      this.selectCompletion(parseInt(e.target.getAttribute('data-index'), 10));
+      if (!this.historyEnabled) {
+        this.selectCompletion(parseInt(e.target.getAttribute('data-index'), 10));
+      } else {
+        this.textarea.value = e.target.textContent;
+        document.getElementById('changelist-search').submit();
+      }
     },
 
     onCompletionMouseDown: function (e) {
@@ -327,16 +379,21 @@
     },
 
     onCompletionMouseOut: function () {
-      this.selected = null;
-      this.debouncedRenderCompletion();
+        if (!this.historyEnabled) {
+          this.selected = null;
+          this.debouncedRenderCompletion();
+        }
     },
 
     onCompletionMouseOver: function (e) {
-      this.selected = parseInt(e.target.getAttribute('data-index'), 10);
-      this.debouncedRenderCompletion();
+        if (!this.historyEnabled) {
+          this.selected = parseInt(e.target.getAttribute('data-index'), 10);
+          this.debouncedRenderCompletion();
+        }
     },
 
     onKeydown: function (e) {
+
       switch (e.keyCode) {
         case 38:  // up arrow
           if (this.suggestions.length) {
@@ -419,8 +476,10 @@
     },
 
     popupCompletion: function () {
-      this.generateSuggestions();
-      this.renderCompletion();
+      if (!this.historyEnabled) {
+        this.generateSuggestions();
+        this.renderCompletion();
+      }
     },
 
     selectCompletion: function (index) {
@@ -445,13 +504,17 @@
         this.textareaResize();
       }
       this.generateSuggestions(this.textarea);
-      this.renderCompletion();
+      if (!this.historyEnabled) {
+        this.renderCompletion();
+      }
     },
 
     hideCompletion: function () {
-      this.selected = null;
-      if (this.completion) {
-        this.completion.style.display = 'none';
+      if (!this.historyEnabled) {
+          this.selected = null;
+          if (this.completion) {
+            this.completion.style.display = 'none';
+          }
       }
     },
 
@@ -472,6 +535,80 @@
           '<b>$1</b>');
     },
 
+    renderHistory: function (dontForceDisplay) {
+      var currentLi;
+      var i;
+      var completionRect;
+      var currentLiRect;
+      var inputRect;
+      var li;
+      var liLen;
+      var historyLen;
+
+      if (!this.completionEnabled) {
+        this.hideCompletion();
+        return;
+      }
+
+      if (dontForceDisplay && this.completion.style.display === 'none') {
+        return;
+      }
+      if (!this.currentHistory.length) {
+        this.hideCompletion();
+        return;
+      }
+
+      historyLen = this.currentHistory.length;
+      li = [].slice.call(this.completionUL.querySelectorAll('li'));
+      liLen = li.length;
+
+      // Update or create necessary elements
+      for (i = 0; i < historyLen; i++) {
+        if (i < liLen) {
+          currentLi = li[i];
+        } else {
+          currentLi = document.createElement('li');
+          currentLi.setAttribute('data-index', i);
+          this.completionUL.appendChild(currentLi);
+          currentLi.addEventListener('click', this.onCompletionMouseClick);
+          currentLi.addEventListener('mousedown', this.onCompletionMouseDown);
+          currentLi.addEventListener('mouseout', this.onCompletionMouseOut);
+          currentLi.addEventListener('mouseover', this.onCompletionMouseOver);
+        }
+        currentLi.textContent = this.currentHistory[i];
+
+        if (this.currentHistory[i] == this.selected) {
+          currentLi.className = 'active';
+          currentLiRect = currentLi.getBoundingClientRect();
+          completionRect = this.completionUL.getBoundingClientRect();
+          if (currentLiRect.bottom > completionRect.bottom) {
+            this.completionUL.scrollTop = this.completionUL.scrollTop + 2 +
+                (currentLiRect.bottom - completionRect.bottom);
+          } else if (currentLiRect.top < completionRect.top) {
+            this.completionUL.scrollTop = this.completionUL.scrollTop - 2 -
+                (completionRect.top - currentLiRect.top);
+          }
+        } else {
+          currentLi.className = '';
+        }
+      }
+      // Remove redundant elements
+      while (liLen > historyLen) {
+        liLen--;
+        li[liLen].removeEventListener('click', this.onCompletionMouseClick);
+        li[liLen].removeEventListener('mousedown', this.onCompletionMouseDown);
+        li[liLen].removeEventListener('mouseout', this.onCompletionMouseOut);
+        li[liLen].removeEventListener('mouseover', this.onCompletionMouseOver);
+        this.completionUL.removeChild(li[liLen]);
+      }
+
+      inputRect = this.textarea.getBoundingClientRect();
+      this.completion.style.top = window.pageYOffset + inputRect.top +
+          inputRect.height + 'px';
+      this.completion.style.left = inputRect.left + 'px';
+      this.completion.style.display = 'block';
+    },
+
     renderCompletion: function (dontForceDisplay) {
       var currentLi;
       var i;
@@ -481,6 +618,11 @@
       var li;
       var liLen;
       var suggestionsLen;
+
+      if (this.historyEnabled) {
+        this.historyEnabled = false;
+        return
+      }
 
       if (!this.completionEnabled) {
         this.hideCompletion();
@@ -492,6 +634,10 @@
       }
       if (!this.suggestions.length) {
         this.hideCompletion();
+        return;
+      }
+
+      if (!this.currentHistory) {
         return;
       }
 
@@ -669,6 +815,7 @@
       return { prefix: prefix, scope: scope, model: model, field: field };
     },
 
+
     generateSuggestions: function () {
       var input = this.textarea;
       var context;
@@ -680,6 +827,12 @@
       var searchFilter;
       var textBefore;
       var textAfter;
+
+
+      if (this.historyEnabled) {
+        this.historyEnabled = false;
+        return
+      }
 
       if (!this.completionEnabled) {
         this.prefix = '';

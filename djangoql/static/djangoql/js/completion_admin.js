@@ -26,6 +26,31 @@
     return result;
   }
 
+  function parseQueryString() {
+    var qs = window.location.search.substring(1);
+    var result = {};
+    var vars = qs.split('&');
+    var i;
+    var l = vars.length;
+    var pair;
+    var key;
+    for (i = 0; i < l; i++) {
+      pair = vars[i].split('=');
+      key = decodeURIComponent(pair[0]);
+      if (key) {
+        if (typeof result[key] !== 'undefined') {
+          if (({}).toString.call(result[key]) !== '[object Array]') {
+            result[key] = [result[key]];
+          }
+          result[key].push(decodeURIComponent(pair[1]));
+        } else {
+          result[key] = decodeURIComponent(pair[1]);
+        }
+      }
+    }
+    return result;
+  }
+
   // Replace standard search input with textarea and add completion toggle
   DjangoQL.DOMReady(function () {
     // use '-' in the param name to prevent conflicts with any model field name
@@ -36,6 +61,7 @@
     var QLPlaceholder = 'Advanced search with Query Language';
     var originalPlaceholder;
     var textarea;
+    var datalist;
     var input = document.querySelector('input[name=q]');
 
     if (!input) {
@@ -86,6 +112,7 @@
     textarea.rows = 1;
     textarea.placeholder = QLEnabled ? QLPlaceholder : originalPlaceholder;
     textarea.setAttribute('maxlength', 2000);
+
     input.parentNode.insertBefore(textarea, input);
 
     input.parentNode.removeChild(input);
@@ -95,6 +122,7 @@
       completionEnabled: QLEnabled,
       introspections: 'introspect/',
       syntaxHelp: 'djangoql-syntax/',
+      history: 'djangoql-history/',
       selector: 'textarea[name=q]',
       autoResize: true
     });

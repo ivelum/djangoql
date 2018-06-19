@@ -4,6 +4,7 @@ from django.conf.urls import url
 from django.contrib import messages
 from django.contrib.admin.views.main import ChangeList
 from django.core.exceptions import FieldError, ValidationError
+from django.http.response import JsonResponse
 from django.forms import Media
 from django.http import HttpResponse
 from django.views.generic import TemplateView
@@ -12,6 +13,9 @@ from .compat import text_type
 from .exceptions import DjangoQLError
 from .queryset import apply_search
 from .schema import DjangoQLSchema
+from .models import history
+
+import sys
 
 
 DJANGOQL_SEARCH_MARKER = 'q-l'
@@ -57,10 +61,9 @@ class DjangoQLSearchMixin(object):
         if not search_term:
             return queryset, use_distinct
         try:
-            return (
-                apply_search(queryset, search_term, self.djangoql_schema),
-                use_distinct,
-            )
+            qs = apply_search(queryset, search_term, self.djangoql_schema)
+            self.new_history_item(request.user, search_term)
+            return ( qs, use_distinct, )
         except (DjangoQLError, ValueError, FieldError) as e:
             msg = text_type(e)
         except ValidationError as e:
@@ -102,11 +105,16 @@ class DjangoQLSearchMixin(object):
                     ),
                 ),
                 url(
+                    r'^djangoql-history/$',
+                    self.admin_site.admin_view(self.get_history),
+                    name='history',
+                ),
+                url(
                     r'^djangoql-syntax/$',
                     TemplateView.as_view(
                         template_name=self.djangoql_syntax_help_template,
                     ),
-                    name='djangoql_syntax_help',
+                    name='history',
                 ),
             ]
         return custom_urls + super(DjangoQLSearchMixin, self).get_urls()
@@ -117,3 +125,20 @@ class DjangoQLSearchMixin(object):
             content=json.dumps(response, indent=2),
             content_type='application/json; charset=utf-8',
         )
+
+    def new_history_item(self,user,search_term):
+        history_item = history()
+        history_item.user = user
+        history_item.query = search_term
+        history_item.save()
+
+    def get_history(self, request):
+        reverse_history_qs = history.objects.filter(user=request.user)
+        history_qs = reverse_history_qs.order_by('-pk')
+        lastQueries = []
+        for i,q in enumerate(history_qs):
+            if i < 200: #limit history to 200 items per user
+                lastQueries.append(q.query)
+            else:
+                q.delete()
+        return JsonResponse({'history':lastQueries})
