@@ -114,7 +114,7 @@ class DjangoQLSearchMixin(object):
                     TemplateView.as_view(
                         template_name=self.djangoql_syntax_help_template,
                     ),
-                    name='history',
+                    name='djangoql_syntax_help',
                 ),
             ]
         return custom_urls + super(DjangoQLSearchMixin, self).get_urls()
