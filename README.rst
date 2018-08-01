@@ -329,7 +329,7 @@ a field. Example below demonstrates User ``age`` search:
             elif operator == '>':
                 return Q(**{'%s__lt' % search_field: year_start})
             elif operator == '>=':
-                return Q(**{'%s__lt' % search_field: year_end})
+                return Q(**{'%s__lte' % search_field: year_end})
             elif operator == '<':
                 return Q(**{'%s__gt' % search_field: year_end})
             elif operator == '<=':
