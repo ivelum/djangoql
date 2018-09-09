@@ -6,7 +6,7 @@ DjangoQL
 
 Advanced search language for Django, with auto-completion. Supports logical
 operators, parenthesis, table joins, works with any Django models. Tested vs.
-Python 2.7, 3.5 and 3.6, Django 1.8 - 2.0. Auto-completion feature tested
+Python 2.7, 3.5 - 3.7, Django 1.8 - 2.1. Auto-completion feature tested
 in Chrome, Firefox, Safari, IE9+.
 
 See a video: `DjangoQL demo <https://youtu.be/oKVff4dHZB8>`_

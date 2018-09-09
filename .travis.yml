@@ -3,6 +3,7 @@ python:
   - 2.7
   - 3.5
   - 3.6
+  - 3.7
   - pypy
 env:
   - DJANGO="Django>=1.8,<1.9"
@@ -10,6 +11,7 @@ env:
   - DJANGO="Django>=1.10,<1.11"
   - DJANGO="Django>=1.11,<2.0"
   - DJANGO="Django>=2.0,<2.1"
+  - DJANGO="Django>=2.1,<2.2"
 install:
   - pip install PLY
   - pip install -U $DJANGO
@@ -21,5 +23,9 @@ matrix:
   exclude:
     - python: 2.7
       env: DJANGO="Django>=2.0,<2.1"
+    - python: 2.7
+      env: DJANGO="Django>=2.1,<2.2"
     - python: pypy
       env: DJANGO="Django>=2.0,<2.1"
+    - python: pypy
+      env: DJANGO="Django>=2.1,<2.2"
