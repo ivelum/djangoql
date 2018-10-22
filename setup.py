@@ -8,7 +8,6 @@ try:
 except ImportError:
     from distutils.core import setup
 
-os.environ['PYTHONDONTWRITEBYTECODE'] = '1'
 
 packages = ['djangoql']
 requires = ['ply>=3.8']
@@ -38,4 +37,3 @@ setup(
     ],
 )
 
-del os.environ['PYTHONDONTWRITEBYTECODE']
