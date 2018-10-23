@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import os
 import djangoql
 
 try:
@@ -36,4 +35,3 @@ setup(
         'Programming Language :: Python :: 3.6',
     ],
 )
-
