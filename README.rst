@@ -38,6 +38,7 @@ Add ``'djangoql'`` to ``INSTALLED_APPS`` in your ``settings.py``:
 
     INSTALLED_APPS = [
         ...
+        'django.contrib.contenttypes',
         'djangoql',
         ...
     ]
