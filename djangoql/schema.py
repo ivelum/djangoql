@@ -4,9 +4,9 @@ from datetime import datetime
 from decimal import Decimal
 
 from django.conf import settings
-from django.contrib.contenttypes.fields import GenericRel
 from django.db import models
 from django.db.models import FieldDoesNotExist, ManyToManyRel, ManyToOneRel
+from django.db.models.fields.related import ForeignObjectRel
 from django.utils.timezone import get_current_timezone
 
 from .ast import Comparison, Const, List, Logical, Name, Node
@@ -374,7 +374,7 @@ class DjangoQLSchema(object):
             field_kwargs['related_model'] = field.related_model
         else:
             field_cls = self.get_field_cls(field)
-        if isinstance(field, (ManyToOneRel, ManyToManyRel, GenericRel)):
+        if isinstance(field, (ManyToOneRel, ManyToManyRel, ForeignObjectRel)):
             # Django 1.8 doesn't have .null attribute for these fields
             field_kwargs['nullable'] = True
         else:
