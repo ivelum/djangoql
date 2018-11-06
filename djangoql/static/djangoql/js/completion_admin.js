@@ -37,6 +37,7 @@
     var originalPlaceholder;
     var textarea;
     var input = document.querySelector('input[name=q]');
+    var djangoQL;
 
     if (!input) {
       return;
@@ -45,13 +46,13 @@
 
     function onCompletionToggle(e) {
       if (e.target.checked) {
-        DjangoQL.enableCompletion();
+        djangoQL.enableCompletion();
         QLInput.name = QLParamName;
         textarea.placeholder = QLPlaceholder;
         textarea.focus();
-        DjangoQL.popupCompletion();
+        djangoQL.popupCompletion();
       } else {
-        DjangoQL.disableCompletion();
+        djangoQL.disableCompletion();
         QLInput.name = '';
         textarea.placeholder = originalPlaceholder;
         textarea.focus();
@@ -91,7 +92,7 @@
     input.parentNode.removeChild(input);
     textarea.focus();
 
-    DjangoQL.init({
+    djangoQL = new DjangoQL({
       completionEnabled: QLEnabled,
       introspections: 'introspect/',
       syntaxHelp: 'djangoql-syntax/',
