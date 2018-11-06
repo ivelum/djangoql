@@ -111,109 +111,123 @@
   }
 
   // Main DjangoQL object
-  return {
-    currentModel: null,
-    models: {},
+  var DjangoQL = function (options) {
+    this.currentModel = null;
+    this.models = {};
 
-    token: token,
-    lexer: lexer,
+    this.token = token;
+    this.lexer = lexer;
 
-    prefix: '',
-    suggestions: [],
-    selected: null,
-    valuesCaseSensitive: false,
-    highlightCaseSensitive: true,
+    this.prefix = '';
+    this.suggestions = [];
+    this.selected = null;
+    this.valuesCaseSensitive = false;
+    this.highlightCaseSensitive = true;
 
-    textarea: null,
-    completion: null,
-    completionUL: null,
+    this.textarea = null;
+    this.completion = null;
+    this.completionUL = null;
 
-    init: function (options) {
-      var syntaxHelp;
+    var syntaxHelp;
 
-      // Initialization
-      if (!this.isObject(options)) {
-        this.logError('Please pass an object with initialization parameters');
-        return;
-      }
-      this.loadIntrospections(options.introspections);
-      this.textarea = document.querySelector(options.selector);
-      if (!this.textarea) {
-        this.logError('Element not found by selector: ' + options.selector);
-        return;
-      }
-      if (this.textarea.tagName !== 'TEXTAREA') {
-        this.logError('selector must be pointing to <textarea> element, but ' +
-            this.textarea.tagName + ' was found');
-        return;
-      }
-      if (options.valuesCaseSensitive) {
-        this.valuesCaseSensitive = true;
-      }
-      this.completionEnabled = options.hasOwnProperty('completionEnabled') ?
-        options.completionEnabled :
-        true;
+    // Initialization
+    if (!this.isObject(options)) {
+      this.logError('Please pass an object with initialization parameters');
+      return;
+    }
+    this.loadIntrospections(options.introspections);
+    this.textarea = document.querySelector(options.selector);
+    if (!this.textarea) {
+      this.logError('Element not found by selector: ' + options.selector);
+      return;
+    }
+    if (this.textarea.tagName !== 'TEXTAREA') {
+      this.logError('selector must be pointing to <textarea> element, but ' +
+          this.textarea.tagName + ' was found');
+      return;
+    }
+    if (options.valuesCaseSensitive) {
+      this.valuesCaseSensitive = true;
+    }
+    this.completionEnabled = options.hasOwnProperty('completionEnabled') ?
+      options.completionEnabled :
+      true;
 
-      this.enableCompletion = this.enableCompletion.bind(this);
-      this.disableCompletion = this.disableCompletion.bind(this);
+    this.enableCompletion = this.enableCompletion.bind(this);
+    this.disableCompletion = this.disableCompletion.bind(this);
 
-      // these handlers are re-used more than once in the code below,
-      // so it's handy to have them already bound
-      this.onCompletionMouseClick = this.onCompletionMouseClick.bind(this);
-      this.onCompletionMouseDown = this.onCompletionMouseDown.bind(this);
-      this.onCompletionMouseOut = this.onCompletionMouseOut.bind(this);
-      this.onCompletionMouseOver = this.onCompletionMouseOver.bind(this);
-      this.popupCompletion = this.popupCompletion.bind(this);
-      this.debouncedRenderCompletion = this.debounce(
-          this.renderCompletion.bind(this),
-          50);
+    // these handlers are re-used more than once in the code below,
+    // so it's handy to have them already bound
+    this.onCompletionMouseClick = this.onCompletionMouseClick.bind(this);
+    this.onCompletionMouseDown = this.onCompletionMouseDown.bind(this);
+    this.onCompletionMouseOut = this.onCompletionMouseOut.bind(this);
+    this.onCompletionMouseOver = this.onCompletionMouseOver.bind(this);
+    this.popupCompletion = this.popupCompletion.bind(this);
+    this.debouncedRenderCompletion = this.debounce(
+        this.renderCompletion.bind(this),
+        50);
 
-      // Bind event handlers and initialize completion & textSize containers
-      this.textarea.setAttribute('autocomplete', 'off');
-      this.textarea.addEventListener('keydown', this.onKeydown.bind(this));
-      this.textarea.addEventListener('blur', this.hideCompletion.bind(this));
-      this.textarea.addEventListener('click', this.popupCompletion);
-      if (options.autoResize) {
-        this.textareaResize = this.textareaResize.bind(this);
-        this.textarea.style.resize = 'none';
-        this.textarea.style.overflow = 'hidden';
-        this.textarea.addEventListener('input', this.textareaResize);
-        this.textareaResize();
-        // There could be a situation when fonts are not loaded yet at this
-        // point. When fonts are finally loaded it could make textarea looking
-        // weird - for example in Django 1.9+ last line won't fit. To fix this
-        // we call .textareaResize() once again when window is fully loaded.
-        window.addEventListener('load', this.textareaResize);
-      } else {
-        this.textareaResize = null;
-        // Catch resize events and re-position completion box.
-        // See http://stackoverflow.com/a/7055239
-        this.textarea.addEventListener(
-            'mouseup', this.renderCompletion.bind(this, true));
-        this.textarea.addEventListener(
-            'mouseout', this.renderCompletion.bind(this, true));
-      }
+    // Bind event handlers and initialize completion & textSize containers
+    this.textarea.setAttribute('autocomplete', 'off');
+    this.textarea.addEventListener('keydown', this.onKeydown.bind(this));
+    this.textarea.addEventListener('blur', this.hideCompletion.bind(this));
+    this.textarea.addEventListener('click', this.popupCompletion);
+    if (options.autoResize) {
+      this.textareaResize = this.textareaResize.bind(this);
+      this.textarea.style.resize = 'none';
+      this.textarea.style.overflow = 'hidden';
+      this.textarea.addEventListener('input', this.textareaResize);
+      this.textareaResize();
+      // There could be a situation when fonts are not loaded yet at this
+      // point. When fonts are finally loaded it could make textarea looking
+      // weird - for example in Django 1.9+ last line won't fit. To fix this
+      // we call .textareaResize() once again when window is fully loaded.
+      window.addEventListener('load', this.textareaResize);
+    } else {
+      this.textareaResize = null;
+      // Catch resize events and re-position completion box.
+      // See http://stackoverflow.com/a/7055239
+      this.textarea.addEventListener(
+          'mouseup', this.renderCompletion.bind(this, true));
+      this.textarea.addEventListener(
+          'mouseout', this.renderCompletion.bind(this, true));
+    }
 
-      this.completion = document.createElement('div');
-      this.completion.className = 'djangoql-completion';
-      document.querySelector('body').appendChild(this.completion);
-      this.completionUL = document.createElement('ul');
-      this.completion.appendChild(this.completionUL);
-      if (typeof options.syntaxHelp === 'string') {
-        syntaxHelp = document.createElement('p');
-        syntaxHelp.className = 'syntax-help';
-        syntaxHelp.innerHTML = '<a href="' + options.syntaxHelp +
-            '" target="_blank">Syntax Help</a>';
-        syntaxHelp.addEventListener('mousedown', function (e) {
-          // This is needed to prevent conflict with textarea.onblur event
-          // handler, which tries to hide the completion box and therefore
-          // makes Syntax Help link malfunctional.
-          e.preventDefault();
-        });
-        this.completion.appendChild(syntaxHelp);
-      }
-    },
+    this.completion = document.createElement('div');
+    this.completion.className = 'djangoql-completion';
+    document.querySelector('body').appendChild(this.completion);
+    this.completionUL = document.createElement('ul');
+    this.completion.appendChild(this.completionUL);
+    if (typeof options.syntaxHelp === 'string') {
+      syntaxHelp = document.createElement('p');
+      syntaxHelp.className = 'syntax-help';
+      syntaxHelp.innerHTML = '<a href="' + options.syntaxHelp +
+          '" target="_blank">Syntax Help</a>';
+      syntaxHelp.addEventListener('mousedown', function (e) {
+        // This is needed to prevent conflict with textarea.onblur event
+        // handler, which tries to hide the completion box and therefore
+        // makes Syntax Help link malfunctional.
+        e.preventDefault();
+      });
+      this.completion.appendChild(syntaxHelp);
+    }
 
+  };
+
+  // Backward compatibility
+  DjangoQL.init = function (options) {
+    return new DjangoQL(options);
+  };
+
+  DjangoQL.DOMReady = function (callback) {
+    if (document.readyState !== 'loading') {
+      callback();
+    } else {
+      document.addEventListener('DOMContentLoaded', callback);
+    }
+  };
+
+  DjangoQL.prototype = {
     enableCompletion: function () {
       this.completionEnabled = true;
     },
@@ -307,14 +321,6 @@
 
     logError: function (message) {
       console.error('DjangoQL: ' + message);  // eslint-disable-line no-console
-    },
-
-    DOMReady: function (callback) {
-      if (document.readyState !== 'loading') {
-        callback();
-      } else {
-        document.addEventListener('DOMContentLoaded', callback);
-      }
     },
 
     onCompletionMouseClick: function (e) {
@@ -807,4 +813,7 @@
     }
 
   };
+
+  return DjangoQL;
+
 }));
