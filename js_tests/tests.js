@@ -2,11 +2,12 @@
 
 /* global DjangoQL, expect, describe, before, it */
 
-var token = DjangoQL.token;
+var djangoQL;
+var token;
 
 describe('DjangoQL completion', function () {
   before(function () {
-    DjangoQL.init({
+    djangoQL = new DjangoQL({
       introspections: {
         current_model: 'core.book',
         models: {
@@ -113,11 +114,12 @@ describe('DjangoQL completion', function () {
       selector: 'textarea[name=test]',
       autoresize: true
     });
+    token = djangoQL.token;
   });
 
   describe('.init()', function () {
     it('should properly read introspection data', function () {
-      expect(DjangoQL.currentModel).to.be('core.book');
+      expect(djangoQL.currentModel).to.be('core.book');
     });
   });
 
@@ -137,82 +139,82 @@ describe('DjangoQL completion', function () {
         token('CONTAINS', '~'),
         token('NOT_CONTAINS', '!~')
       ];
-      DjangoQL.lexer.setInput('() ., = != >\t >= < <= ~ !~');
+      djangoQL.lexer.setInput('() ., = != >\t >= < <= ~ !~');
       tokens.forEach(function (t) {
-        expect(DjangoQL.lexer.lex()).to.eql(t);
+        expect(djangoQL.lexer.lex()).to.eql(t);
       });
-      expect(DjangoQL.lexer.lex()).to.not.be.ok();  // end of input
+      expect(djangoQL.lexer.lex()).to.not.be.ok();  // end of input
     });
 
     it('should recognize names', function () {
       var names = ['a', 'myVar_42', '__LOL__', '_', '_0'];
-      DjangoQL.lexer.setInput(names.join(' '));
+      djangoQL.lexer.setInput(names.join(' '));
       names.forEach(function (name) {
-        expect(DjangoQL.lexer.lex()).to.eql(token('NAME', name));
+        expect(djangoQL.lexer.lex()).to.eql(token('NAME', name));
       });
     });
 
     it('should recognize reserved words', function () {
       var words = ['True', 'False', 'None', 'or', 'and', 'in'];
-      DjangoQL.lexer.setInput(words.join(' '));
+      djangoQL.lexer.setInput(words.join(' '));
       words.forEach(function (word) {
-        expect(DjangoQL.lexer.lex()).to.eql(token(word.toUpperCase(), word));
+        expect(djangoQL.lexer.lex()).to.eql(token(word.toUpperCase(), word));
       });
     });
 
     it('should recognize strings', function () {
       var strings = ['""', '"42"', '"\\t\\n\\u0042 \\" ^"'];
-      DjangoQL.lexer.setInput(strings.join(' '));
+      djangoQL.lexer.setInput(strings.join(' '));
       strings.forEach(function (s) {
-        expect(DjangoQL.lexer.lex()).to
+        expect(djangoQL.lexer.lex()).to
             .eql(token('STRING_VALUE', s.slice(1, s.length - 1)));
       });
     });
 
     it('should parse int values', function () {
       var numbers = ['0', '-0', '42', '-42'];
-      DjangoQL.lexer.setInput(numbers.join(' '));
+      djangoQL.lexer.setInput(numbers.join(' '));
       numbers.forEach(function (num) {
-        expect(DjangoQL.lexer.lex()).to.eql(token('INT_VALUE', num));
+        expect(djangoQL.lexer.lex()).to.eql(token('INT_VALUE', num));
       });
     });
 
     it('should parse float values', function () {
       var numbers = ['-0.5e+42', '42.0', '2E64', '2.71e-0002'];
-      DjangoQL.lexer.setInput(numbers.join(' '));
+      djangoQL.lexer.setInput(numbers.join(' '));
       numbers.forEach(function (num) {
-        expect(DjangoQL.lexer.lex()).to.eql(token('FLOAT_VALUE', num));
+        expect(djangoQL.lexer.lex()).to.eql(token('FLOAT_VALUE', num));
       });
     });
   });
 
   describe('.resolveName()', function () {
     it('should properly resolve known names', function () {
-      expect(DjangoQL.resolveName('price')).to
+      expect(djangoQL.resolveName('price')).to
           .eql({ model: 'core.book', field: 'price' });
-      expect(DjangoQL.resolveName('author')).to
+      expect(djangoQL.resolveName('author')).to
           .eql({ model: 'auth.user', field: null });
-      expect(DjangoQL.resolveName('author.first_name')).to
+      expect(djangoQL.resolveName('author.first_name')).to
           .eql({ model: 'auth.user', field: 'first_name' });
-      expect(DjangoQL.resolveName('author.groups')).to
+      expect(djangoQL.resolveName('author.groups')).to
           .eql({ model: 'auth.group', field: null });
-      expect(DjangoQL.resolveName('author.groups.id')).to
+      expect(djangoQL.resolveName('author.groups.id')).to
           .eql({ model: 'auth.group', field: 'id' });
-      expect(DjangoQL.resolveName('author.groups.user')).to
+      expect(djangoQL.resolveName('author.groups.user')).to
           .eql({ model: 'auth.user', field: null });
-      expect(DjangoQL.resolveName('author.groups.user.email')).to
+      expect(djangoQL.resolveName('author.groups.user.email')).to
           .eql({ model: 'auth.user', field: 'email' });
     });
     it('should return nulls for unknown names', function () {
       ['gav', 'author.gav', 'author.groups.gav'].forEach(function (name) {
-        expect(DjangoQL.resolveName(name)).to.eql({ model: null, field: null });
+        expect(djangoQL.resolveName(name)).to.eql({ model: null, field: null });
       });
     });
   });
 
   describe('.getScope()', function () {
     it('should properly detect scope and prefix', function () {
-      var book = DjangoQL.currentModel;
+      var book = djangoQL.currentModel;
       var examples = [
         {
           args: ['', 0],
@@ -298,7 +300,7 @@ describe('DjangoQL completion', function () {
         }
       ];
       examples.forEach(function (e) {
-        expect(DjangoQL.getContext.apply(DjangoQL, e.args)).to.eql(e.result);
+        expect(djangoQL.getContext.apply(djangoQL, e.args)).to.eql(e.result);
       });
     });
 
@@ -310,7 +312,7 @@ describe('DjangoQL completion', function () {
         ['a = "', 5]  // just after a quote
       ];
       examples.forEach(function (example) {
-        var context = DjangoQL.getContext.apply(DjangoQL, example);
+        var context = djangoQL.getContext.apply(djangoQL, example);
         expect(context.scope).to.be(null);
         expect(context.model).to.be(null);
         expect(context.field).to.be(null);
