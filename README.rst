@@ -467,7 +467,7 @@ Template code, ``completion_demo.html``:
 
       <script>
         DjangoQL.DOMReady(function () {
-          DjangoQL.init({
+          new DjangoQL({
             // either JS object with a result of DjangoQLSchema(MyModel).as_dict(),
             // or an URL from which this information could be loaded asynchronously
             introspections: {{ introspections|safe }},
