@@ -34,4 +34,6 @@ class Book(models.Model):
     object_id = models.PositiveIntegerField(null=True)
     content_object = GenericForeignKey('content_type', 'object_id')
 
+    similar_books = models.ManyToManyField('Book')
+
     objects = DjangoQLQuerySet.as_manager()
