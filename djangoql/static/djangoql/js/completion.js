@@ -387,6 +387,7 @@
             // feature, but other than that it should look and behave like
             // a normal input. So expected behavior when pressing Enter is
             // to submit the form, not to add a new line.
+            e.target.form.dispatchEvent(new Event('submit'));
             e.target.form.submit();
           }
           e.preventDefault();
