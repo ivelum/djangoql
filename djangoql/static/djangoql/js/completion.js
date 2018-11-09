@@ -136,7 +136,11 @@
       return;
     }
     this.loadIntrospections(options.introspections);
-    this.textarea = document.querySelector(options.selector);
+    if (typeof options.selector === 'string') {
+      this.textarea = document.querySelector(options.selector);
+    } else {
+      this.textarea = options.selector;
+    }
     if (!this.textarea) {
       this.logError('Element not found by selector: ' + options.selector);
       return;
