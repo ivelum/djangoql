@@ -332,7 +332,10 @@ class DjangoQLSchema(object):
         Returns a dict with all model labels and their fields found.
         """
         fields = OrderedDict()
-        result = {self.model_label(model): fields}
+        model_label = self.model_label(model)
+        result = {model_label: fields}
+        exclude += (model_label, )  # exclude self
+
         for field in self.get_fields(model):
             if not isinstance(field, DjangoQLField):
                 field = self.get_field_instance(model, field)
