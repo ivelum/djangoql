@@ -553,6 +553,10 @@
       this.completion.style.display = 'block';
     },
 
+    destroyCompletionElement: function() {
+      this.completion.parentNode.removeChild(this.completion);
+    },
+
     resolveName: function (name) {
       // Walk through introspection definitions and get target model and field
       var f;
