@@ -472,7 +472,8 @@ Template code, ``completion_demo.html``:
             // or an URL from which this information could be loaded asynchronously
             introspections: {{ introspections|safe }},
 
-            // css selector for query input. It should be a textarea
+            // css selector for query input or HTMLElement object.
+            // It should be a textarea
             selector: 'textarea[name=q]',
 
             // optional, you can provide URL for Syntax Help link here.
