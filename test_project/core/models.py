@@ -30,10 +30,14 @@ class Book(models.Model):
         ContentType,
         null=True,
         on_delete=models.CASCADE,
+        editable=False,
     )
-    object_id = models.PositiveIntegerField(null=True)
+    object_id = models.PositiveIntegerField(null=True, editable=False)
     content_object = GenericForeignKey('content_type', 'object_id')
 
-    similar_books = models.ManyToManyField('Book')
+    similar_books = models.ManyToManyField('Book', blank=True)
 
     objects = DjangoQLQuerySet.as_manager()
+
+    def __str__(self):
+        return self.name
