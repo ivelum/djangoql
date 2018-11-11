@@ -112,6 +112,7 @@
 
   // Main DjangoQL object
   var DjangoQL = function (options) {
+    this.options = options;
     this.currentModel = null;
     this.models = {};
 
@@ -127,8 +128,7 @@
     this.textarea = null;
     this.completion = null;
     this.completionUL = null;
-
-    var syntaxHelp;
+    this.completionEnabled = false;
 
     // Initialization
     if (!this.isObject(options)) {
@@ -153,9 +153,6 @@
     if (options.valuesCaseSensitive) {
       this.valuesCaseSensitive = true;
     }
-    this.completionEnabled = options.hasOwnProperty('completionEnabled') ?
-      options.completionEnabled :
-      true;
 
     this.enableCompletion = this.enableCompletion.bind(this);
     this.disableCompletion = this.disableCompletion.bind(this);
@@ -197,25 +194,7 @@
           'mouseout', this.renderCompletion.bind(this, true));
     }
 
-    this.completion = document.createElement('div');
-    this.completion.className = 'djangoql-completion';
-    document.querySelector('body').appendChild(this.completion);
-    this.completionUL = document.createElement('ul');
-    this.completion.appendChild(this.completionUL);
-    if (typeof options.syntaxHelp === 'string') {
-      syntaxHelp = document.createElement('p');
-      syntaxHelp.className = 'syntax-help';
-      syntaxHelp.innerHTML = '<a href="' + options.syntaxHelp +
-          '" target="_blank">Syntax Help</a>';
-      syntaxHelp.addEventListener('mousedown', function (e) {
-        // This is needed to prevent conflict with textarea.onblur event
-        // handler, which tries to hide the completion box and therefore
-        // makes Syntax Help link malfunctional.
-        e.preventDefault();
-      });
-      this.completion.appendChild(syntaxHelp);
-    }
-
+    this.createCompletionElement();
   };
 
   // Backward compatibility
@@ -232,6 +211,44 @@
   };
 
   DjangoQL.prototype = {
+    createCompletionElement: function () {
+      var options = this.options;
+      var syntaxHelp;
+
+      if (!this.completion) {
+        this.completion = document.createElement('div');
+        this.completion.className = 'djangoql-completion';
+        document.querySelector('body').appendChild(this.completion);
+        this.completionUL = document.createElement('ul');
+        this.completion.appendChild(this.completionUL);
+        if (typeof options.syntaxHelp === 'string') {
+          syntaxHelp = document.createElement('p');
+          syntaxHelp.className = 'syntax-help';
+          syntaxHelp.innerHTML = '<a href="' + options.syntaxHelp +
+              '" target="_blank">Syntax Help</a>';
+          syntaxHelp.addEventListener('mousedown', function (e) {
+            // This is needed to prevent conflict with textarea.onblur event
+            // handler, which tries to hide the completion box and therefore
+            // makes Syntax Help link malfunctional.
+            e.preventDefault();
+          });
+          this.completion.appendChild(syntaxHelp);
+        }
+
+        this.completionEnabled = options.hasOwnProperty('completionEnabled') ?
+          options.completionEnabled :
+          true;
+      }
+    },
+
+    destroyCompletionElement: function () {
+      if (this.completion) {
+        this.completion.parentNode.removeChild(this.completion);
+        this.completion = null;
+        this.completionEnabled = false;
+      }
+    },
+
     enableCompletion: function () {
       this.completionEnabled = true;
     },
@@ -555,10 +572,6 @@
           inputRect.height + 'px';
       this.completion.style.left = inputRect.left + 'px';
       this.completion.style.display = 'block';
-    },
-
-    destroyCompletionElement: function() {
-      this.completion.parentNode.removeChild(this.completion);
     },
 
     resolveName: function (name) {
