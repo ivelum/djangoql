@@ -815,6 +815,10 @@
             if (field.nullable) {
               this.suggestions.push(suggestion('None', '', ' '));
             }
+          } else if (field.type === 'unknown') {
+            // unknown field type, reset suggestions
+            this.prefix = '';
+            this.suggestions = [];
           }
           break;
 
