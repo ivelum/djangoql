@@ -785,7 +785,10 @@
           break;
 
         case 'value':
-          if (field.type === 'str') {
+          if (!field) {
+            // related field
+            this.suggestions = [suggestion('None', '', ' ')];
+          } else if (field.type === 'str') {
             if (textBefore && textBefore[textBefore.length - 1] === '"') {
               snippetBefore = '';
             } else {
