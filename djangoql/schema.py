@@ -1,5 +1,5 @@
 import inspect
-from collections import OrderedDict
+from collections import OrderedDict, deque
 from datetime import datetime
 from decimal import Decimal
 
@@ -333,23 +333,34 @@ class DjangoQLSchema(object):
         """
         fields = OrderedDict()
         model_label = self.model_label(model)
-        result = {model_label: fields}
-        exclude += (model_label, )  # exclude self
+        result = {}
 
-        for field in self.get_fields(model):
-            if not isinstance(field, DjangoQLField):
-                field = self.get_field_instance(model, field)
-            if not field:
+        open_set = deque([model])
+        closed_set = list(exclude)
+
+        while open_set:
+            model = open_set.popleft()
+            model_label = self.model_label(model)
+
+            if model_label in closed_set:
                 continue
-            if isinstance(field, RelationField):
-                if field.relation not in exclude:
-                    fields[field.name] = field
-                    result.update(self.introspect(
-                        model=field.related_model,
-                        exclude=tuple(exclude) + tuple(result.keys()),
-                    ))
-            else:
-                fields[field.name] = field
+
+            model_fields = {}
+            for field in self.get_fields(model):
+                if not isinstance(field, DjangoQLField):
+                    field = self.get_field_instance(model, field)
+                if not field:
+                    continue
+                if isinstance(field, RelationField):
+                    if field.relation not in closed_set:
+                        model_fields[field.name] = field
+                        open_set.append(field.related_model)
+                else:
+                    model_fields[field.name] = field
+
+            result[model_label] = model_fields
+            closed_set.append(model_label)
+
         return result
 
     def get_fields(self, model):
