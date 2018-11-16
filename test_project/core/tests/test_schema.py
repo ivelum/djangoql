@@ -95,6 +95,7 @@ class DjangoQLSchemaTest(TestCase):
             'object_id',
             'price',
             'rating',
+            'similar_books',
             'written',
         ])
         self.assertListEqual(list(custom.keys()), ['name', 'is_published'])
