@@ -331,10 +331,7 @@ class DjangoQLSchema(object):
 
         Returns a dict with all model labels and their fields found.
         """
-        fields = OrderedDict()
-        model_label = self.model_label(model)
         result = {}
-
         open_set = deque([model])
         closed_set = list(exclude)
 
@@ -345,7 +342,7 @@ class DjangoQLSchema(object):
             if model_label in closed_set:
                 continue
 
-            model_fields = {}
+            model_fields = OrderedDict()
             for field in self.get_fields(model):
                 if not isinstance(field, DjangoQLField):
                     field = self.get_field_instance(model, field)
