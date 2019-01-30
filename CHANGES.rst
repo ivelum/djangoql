@@ -1,3 +1,45 @@
+0.12.3
+------
+
+* Fixed removal/override of related fields, when the referenced model is
+  linked from more parent models on multiple levels  (thanks to @vkrizan);
+
+0.12.2
+------
+
+* fixed weird completion widget behavior for unknown field types (thanks to 
+  @vkrizan);
+
+0.12.0
+------
+
+* completion widget now supports passing either CSS selector or HTMLElement
+  instance (thanks to @vkrizan);
+
+0.11.0
+------
+
+* completion widget converted to a constructable JS object to improve  its 
+  compatibility with JS frameworks (thanks to @vkrizan);
+
+0.10.3
+------
+
+* DjangoQL no longer depends on ContentType. Fixes use cases when the package
+  is used without Django admin and ContentType is not used;
+
+0.10.2
+------
+
+* Removed .DS_Store from the distribution (thanks to @vkrizan);
+
+0.10.1
+------
+
+* Added Python 3.7 and Django 2.1 to the test matrix;
+* removed PYTHONDONTWRITEBYTECODE from the setup.py and added test_project to
+  the distribution (thanks to @vkrizan);
+
 0.10.0
 ------
 
