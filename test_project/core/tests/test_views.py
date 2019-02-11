@@ -93,4 +93,4 @@ class DjangoQLViewsTest(TestCase):
 
         response = self.client.get(reverse('djangoql:query'),
                                    {'model': 'book'})
-        self.assertEqual(len(json.loads(response.content.decode())), 2)
+        self.assertEqual(len(json.loads(response.content.decode())), 1)
