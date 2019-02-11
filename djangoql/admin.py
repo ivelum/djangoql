@@ -1,7 +1,7 @@
 import json
 
 from django.conf.urls import url
-from django.contrib import messages
+from django.contrib import messages, admin
 from django.contrib.admin.views.main import ChangeList
 from django.core.exceptions import FieldError, ValidationError
 from django.forms import Media
@@ -12,9 +12,11 @@ from .compat import text_type
 from .exceptions import DjangoQLError
 from .queryset import apply_search
 from .schema import DjangoQLSchema
+from .models import Query
 
 
 DJANGOQL_SEARCH_MARKER = 'q-l'
+DJANGOQL_QUERY_ID = 'q-id'
 
 
 class DjangoQLChangeList(ChangeList):
@@ -25,6 +27,8 @@ class DjangoQLChangeList(ChangeList):
         )
         if DJANGOQL_SEARCH_MARKER in params:
             del params[DJANGOQL_SEARCH_MARKER]
+        if DJANGOQL_QUERY_ID in self.params:
+            del params[DJANGOQL_QUERY_ID]
         return params
 
 
@@ -33,6 +37,7 @@ class DjangoQLSearchMixin(object):
     djangoql_completion = True
     djangoql_schema = DjangoQLSchema
     djangoql_syntax_help_template = 'djangoql/syntax_help.html'
+    djangoql_saved_queries = False
 
     def search_mode_toggle_enabled(self):
         # If search fields were defined on a child ModelAdmin instance,
@@ -75,16 +80,25 @@ class DjangoQLSearchMixin(object):
         if self.djangoql_completion:
             js = [
                 'djangoql/js/lib/lexer.js',
+                'djangoql/js/helpers.js',
                 'djangoql/js/completion.js',
+            ]
+            css = [
+                'djangoql/css/completion.css',
+                'djangoql/css/completion_admin.css',
             ]
             if self.search_mode_toggle_enabled():
                 js.append('djangoql/js/completion_admin_toggle.js')
+
             js.append('djangoql/js/completion_admin.js')
+
+            if self.djangoql_saved_queries:
+                js.append('djangoql/js/saved_queries.js')
+                js.append('djangoql/js/saved_queries_admin.js')
+                css.append('djangoql/css/saved_queries.css')
+
             media += Media(
-                css={'': (
-                    'djangoql/css/completion.css',
-                    'djangoql/css/completion_admin.css',
-                )},
+                css={'': css},
                 js=js,
             )
         return media
@@ -117,3 +131,8 @@ class DjangoQLSearchMixin(object):
             content=json.dumps(response, indent=2),
             content_type='application/json; charset=utf-8',
         )
+
+
+@admin.register(Query)
+class SavedQueryAdmin(admin.ModelAdmin):
+    pass

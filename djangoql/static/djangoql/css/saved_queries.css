@@ -1,0 +1,131 @@
+.djangoql-sq-dialog {
+  position: absolute;
+  overflow: hidden;
+  width: 350px;
+  display: none;
+  border: solid 1px #ccc;
+  border-radius: 4px;
+  background: white;
+  min-width: 183px;
+  font-size: 13px;
+}
+
+.djangoql-sq-dialog ul {
+  padding: 2px 0;
+  margin: 0;
+  max-height: 295px;
+  overflow: auto;
+}
+
+.djangoql-sq-dialog li {
+  list-style: none;
+  padding: 4px 10px;
+  cursor: pointer;
+}
+
+.djangoql-sq-button {
+  margin: 0 5px !important;
+}
+
+.djangoql-sq-actions li:last-child {
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 8px;
+}
+
+.djangoql-sq-actions li {
+  color: #447e9b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.djangoql-sq-actions li:hover {
+ color: #036;
+}
+
+.djangoql-sq-label {
+  font-size: 12px;
+  color: #666;
+  display: none;
+  margin-top: 10px;
+}
+
+
+#changelist-search .djangoql-sq-label {
+  margin-left: 22px;
+}
+
+.djangoql-sq-query-row {
+  display: flex;
+  overflow: hidden;
+}
+
+.djangoql-sq-query-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex-grow: 1;
+  cursor: pointer;
+}
+
+.djangoql-sq-query-name:hover {
+  color: #000;
+}
+
+.djangoql-sq-ops {
+  display: none;
+  margin-left: 5px;
+}
+
+.djangoql-sq-query-row:hover .djangoql-sq-ops {
+  display: block;
+  white-space: nowrap;
+}
+
+.djangoql-sq-label-reset {
+  width: 8px;
+  height: 8px;
+  background: url(../img/remove.svg);
+  background-size: 100%;
+}
+
+.djangoql-sq-ops span, .djangoql-sq-label-reset {
+  display: inline-block;
+  margin: 0 3px;
+  cursor: pointer;
+
+  color: #666;
+}
+
+.djangoql-sq-ops span:hover {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.djangoql-sq-label:hover .djangoql-sq-label-reset {
+  display: inline-block;
+}
+
+.django-sq-query-list-placeholder {
+  color: #999;
+  background: none !important;
+  display: none;
+}
+
+.django-sq-query-list li:hover {
+  background-color: #79aec8;
+}
+
+.django-sq-query-list li:hover .djangoql-sq-ops span {
+  color: white;
+  background-color: #79aec8;
+}
+
+.django-sq-query-list li:hover .djangoql-sq-ops span,
+.django-sq-query-list li:hover .djangoql-sq-query-name {
+  color: white;
+  background-color: #79aec8;
+}
+
+.djangoql-sq-button-container {
+  display: inline-block;
+}
