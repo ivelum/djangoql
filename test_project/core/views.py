@@ -1,6 +1,7 @@
 import json
 
 from django.contrib.auth.models import Group, User
+from django.contrib.auth import authenticate, login
 from django.shortcuts import render_to_response
 from django.views.decorators.http import require_GET
 
@@ -24,6 +25,9 @@ def completion_demo(request):
         except DjangoQLError as e:
             query = query.none()
             error = str(e)
+    # Authenticate user to be able to work with the saved queries
+    user = authenticate(username='demo', password='demo')
+    login(request, user)
     return render_to_response('completion_demo.html', {
         'q': q,
         'error': error,

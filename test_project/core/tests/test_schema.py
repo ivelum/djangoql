@@ -71,7 +71,8 @@ class DjangoQLSchemaTest(TestCase):
             'auth.group',
             'auth.permission',
             'contenttypes.contenttype',
-            'core.book'
+            'core.book',
+            'djangoql.query'
         ])
 
     def test_include(self):

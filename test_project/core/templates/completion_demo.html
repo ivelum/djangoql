@@ -5,14 +5,20 @@
   <meta charset="UTF-8">
   <title>DjangoQL completion demo</title>
   <link rel="stylesheet" type="text/css" href="{% static 'djangoql/css/completion.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'djangoql/css/saved_queries.css' %}" />
   <script src="{% static 'djangoql/js/lib/lexer.js' %}"></script>
+  <script src="{% static 'djangoql/js/helpers.js' %}"></script>
+  <script src="{% static 'djangoql/js/saved_queries.js' %}"></script>
   <script src="{% static 'djangoql/js/completion.js' %}"></script>
 </head>
 <body>
 
-  <form action="" method="get">
+  <form action="" method="get" >
     <p style="color: red">{{ error }}</p>
-    <textarea name="q" cols="40" rows="1" autofocus>{{ q }}</textarea>
+    <div style="display: flex; align-items: baseline">
+      <textarea name="q" cols="40" rows="1" autofocus>{{ q }}</textarea>
+      <input type="submit" style="margin: 0 5px;" />
+    </div>
   </form>
 
   <ul>
@@ -41,6 +47,32 @@
         // of this is to see full search query without scrolling, could be
         // helpful for really long queries.
         autoResize: true
+      });
+
+      SavedQueries.init({
+        view: new SavedQueries.View({
+          // css selector for form containing the query input.
+          // Used to insert a label with the query name into
+          formSelector: 'form',
+
+          // css selector for submit button, used to insert saved queries
+          // button next to it
+          submitSelector: '[type="submit"]',
+
+          // css selector for search input selector
+          inputSelector: 'textarea[name=q]',
+
+          // saved queries button text
+          buttonText: 'Favorites'
+        }),
+        repo: new SavedQueries.QueryRepo({
+          // backend url used to store queries
+          endpoint: '/djangoql/query/',
+
+          // django model
+          model: 'user'
+        }),
+        submitOnSelect: true
       });
     });
   </script>
