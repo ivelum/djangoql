@@ -42,6 +42,12 @@ Add ``'djangoql'`` to ``INSTALLED_APPS`` in your ``settings.py``:
         ...
     ]
 
+Include the djangoql URLconf in your project ``urls.py``:
+
+.. code:: python
+
+    url(r'^djangoql/', include('djangoql.urls'))
+
 
 Add it to your Django admin
 ---------------------------
