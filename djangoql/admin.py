@@ -103,9 +103,9 @@ class DjangoQLSearchMixin(object):
                 ),
                 url(
                     r'^djangoql-syntax/$',
-                    TemplateView.as_view(
+                    self.admin_site.admin_view(TemplateView.as_view(
                         template_name=self.djangoql_syntax_help_template,
-                    ),
+                    )),
                     name='djangoql_syntax_help',
                 ),
             ]

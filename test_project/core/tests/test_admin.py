@@ -26,3 +26,13 @@ class DjangoQLAdminTest(TestCase):
         self.assertEqual('core.book', introspections['current_model'])
         for model in ('core.book', 'auth.user', 'auth.group'):
             self.assertIn(model, introspections['models'])
+
+    def test_djangoql_syntax_help(self):
+        url = reverse('admin:djangoql_syntax_help')
+        # unauthorized request should be redirected
+        response = self.client.get(url)
+        self.assertEqual(302, response.status_code)
+        self.assertTrue(self.client.login(**self.credentials))
+        # authorized request should be served
+        response = self.client.get(url)
+        self.assertEqual(200, response.status_code)
