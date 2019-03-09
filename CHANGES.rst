@@ -1,3 +1,9 @@
+0.12.4
+------
+
+* DjangoQL syntax help page in admin now requires users to be logged-in (thanks
+  to @OndrejIT);
+
 0.12.3
 ------
 
@@ -7,7 +13,7 @@
 0.12.2
 ------
 
-* fixed weird completion widget behavior for unknown field types (thanks to 
+* fixed weird completion widget behavior for unknown field types (thanks to
   @vkrizan);
 
 0.12.0
@@ -19,7 +25,7 @@
 0.11.0
 ------
 
-* completion widget converted to a constructable JS object to improve  its 
+* completion widget converted to a constructable JS object to improve  its
   compatibility with JS frameworks (thanks to @vkrizan);
 
 0.10.3
