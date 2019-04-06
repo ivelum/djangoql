@@ -40,13 +40,16 @@ class DjangoQLSearchMixin(object):
         # enable search mode toggle
         return self.search_fields != DjangoQLSearchMixin.search_fields
 
+    def djangoql_search_enabled(self, request):
+        return request.GET.get(DJANGOQL_SEARCH_MARKER, '').lower() == 'on'
+
     def get_changelist(self, *args, **kwargs):
         return DjangoQLChangeList
 
     def get_search_results(self, request, queryset, search_term):
         if (
             self.search_mode_toggle_enabled() and
-            request.GET.get(DJANGOQL_SEARCH_MARKER, '').lower() != 'on'
+            not self.djangoql_search_enabled(request)
         ):
             return super(DjangoQLSearchMixin, self).get_search_results(
                 request=request,
