@@ -1,3 +1,9 @@
+0.12.5
+------
+
+* Added convenience method DjangoQLSearchMixin.djangoql_search_enabled()
+  (thanks to @MilovanovM);
+
 0.12.4
 ------
 
