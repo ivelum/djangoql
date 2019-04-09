@@ -206,6 +206,8 @@ class DateField(DjangoQLField):
             )
 
     def get_lookup_value(self, value):
+        if value is None:
+            return None
         return datetime.strptime(value, '%Y-%m-%d').date()
 
 
