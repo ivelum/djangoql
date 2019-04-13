@@ -1,3 +1,11 @@
+0.12.6
+------
+
+* Fixed: DateField and DateTimeField lookups no longer crash on comparison with
+  None (thanks to @st8st8);
+* Officially compatible with Django 2.2 (no changes in the code, just added it
+  to the test matrix);
+
 0.12.5
 ------
 
