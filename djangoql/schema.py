@@ -206,7 +206,7 @@ class DateField(DjangoQLField):
             )
 
     def get_lookup_value(self, value):
-        if value is None:
+        if not value:
             return None
         return datetime.strptime(value, '%Y-%m-%d').date()
 
@@ -230,6 +230,8 @@ class DateTimeField(DjangoQLField):
             )
 
     def get_lookup_value(self, value):
+        if not value:
+            return None
         mask = '%Y-%m-%d'
         if len(value) > 10:
             mask += ' %H:%M'

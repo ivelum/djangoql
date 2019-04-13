@@ -85,3 +85,8 @@ class DjangoQLQuerySetTest(TestCase):
         self.assertTrue(
             where_clause.startswith('"core_book"."written" BETWEEN 2017-01-01')
         )
+
+    def test_empty_datetime(self):
+        qs = apply_search(User.objects.all(), 'last_login = None')
+        where_clause = str(qs.query).split('WHERE')[1].strip()
+        self.assertEqual('"auth_user"."last_login" IS NULL', where_clause)
