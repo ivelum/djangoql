@@ -46,7 +46,7 @@ Add ``'djangoql'`` to ``INSTALLED_APPS`` in your ``settings.py``:
 Add it to your Django admin
 ---------------------------
 
-Add ``DjangoQLSearchMixin`` to your model admin, and it will replace standard
+Adding ``DjangoQLSearchMixin`` your model admin will replace the standard
 Django search functionality with DjangoQL search. Example:
 
 .. code:: python
@@ -63,13 +63,10 @@ Django search functionality with DjangoQL search. Example:
         pass
 
 
-Using together with a standard Django admin search
+Using DjangoQL with the standard Django admin search
 --------------------------------------------------
 
-If you define ``search_fields`` on your ModelAdmin class, DjangoQL integration
-would automatically recognize this and let users choose between a standard
-Django search (that you specified with ``search_fields``) and Advanced Search
-with DjangoQL. Example:
+DjangoQL will recognize if you have defined search_fields in your ModelAdmin class, and doing so will allow you to choose between a standard Django search (as specified by search fields) and an advanced search with DjangoQL. Example:
 
 .. code:: python
 
@@ -85,13 +82,12 @@ the search input. If you don't want two search modes, simply remove
 Language reference
 ------------------
 
-DjangoQL is shipped with comprehensive Syntax Help, which is
-available in Django admin (see Syntax Help link in auto-completion
+DjangoQL is shipped with comprehensive Syntax Help, which can be found in Django admin (see the Syntax Help link in auto-completion
 popup). Here's a quick summary:
 
-DjangoQL looks close to Python syntax, however there're some minor
-differences. Basically you just reference model fields like you do
-it in Python code, apply comparison and logical operators and
+DjangoQL's syntax resembles Python's, with some minor
+differences. Basically you just reference model fields as you would
+in Python code, then apply comparison and logical operators and
 parenthesis. DjangoQL is case-sensitive.
 
 - model fields: exactly as they are defined in Python code. Access
@@ -99,13 +95,13 @@ parenthesis. DjangoQL is case-sensitive.
 - strings must be double-quoted. Single quotes are not supported.
   To escape a double quote use ``\"``;
 - boolean and null values: ``True``, ``False``, ``None``. Please note
-  that they can be combined with equality operators only, so you can
+  that they can be combined only with equality operators, so you can
   write ``published = False or date_published = None``, but
   ``published > False`` will cause an error;
 - logical operators: ``and``, ``or``;
 - comparison operators: ``=``, ``!=``, ``<``, ``<=``, ``>``, ``>=``
-  - work as you expect. ``~`` and ``!~`` - test that a string contains
-  or not contains a substring (translated into ``__icontains``);
+  - work as you expect. ``~`` and ``!~`` - test whether or not a string contains
+  a substring (translated into ``__icontains``);
 - test a value vs. list: ``in``, ``not in``. Example:
   ``pk in (2, 3)``.
 
@@ -115,9 +111,9 @@ DjangoQL Schema
 
 Schema defines limitations - what you can do with a DjangoQL query.
 If you don't specify any schema, DjangoQL will provide a default
-schema for you. It would recursively walk though all model fields and
-relations and include everything it could find in the schema, so
-users would be able to search through everything. However sometimes
+schema for you. This will walk recursively through all model fields and
+relations and include everything it finds in the schema, so
+users would be able to search through everything. Sometimes
 this is not what you want, either due to DB performance or security
 concerns. If you'd like to limit search models or fields, you should
 define a schema. Here's an example:
@@ -142,25 +138,24 @@ define a schema. Here's an example:
 
 In the example above we created a schema that does 3 things:
 
-- excludes Book model from search via ``exclude`` option. Instead of
-  ``exclude`` you may also use ``include``, it would limit search to
+- excludes the Book model from search via ``exclude`` option. Instead of
+  ``exclude`` you may also use ``include``, which limits a search to
   listed models only;
-- limits available search fields for Group model to ``name`` field
-  only, in ``.get_fields()`` method;
+- limits available search fields for Group model to only the ``name`` field
+  , in the ``.get_fields()`` method;
 - enables completion options for Group names via ``suggest_options``.
 
-Important note about ``suggest_options``: it looks for ``choices`` model field
-parameter first, and if it's not specified - it synchronously pulls all values
+An important note about ``suggest_options``: it looks for the ``choices`` model field
+parameter first, and if it's not specified - it will synchronously pull all values
 for given model fields, so you should avoid large querysets there. If you'd like
 to define custom suggestion options, see below.
 
 Custom search fields
 --------------------
 
-Sometimes you may want deeper customization, and here custom search fields
-come into play. You may use them to search by annotations, or to define
-custom suggestion options, or define fully custom search logic. DjangoQL
-defines the following base field classes in ``djangoql.schema`` that you may
+Deeper search customization can be achieved with custom search fields. Custom search fields can be used to search by annotations, define
+custom suggestion options, or define fully custom search logic. In ``djangoql.schema``, DjangoQL
+defines the following base field classes that you may
 subclass to define your own behavior:
 
 * ``IntField``
@@ -196,13 +191,13 @@ Here are examples for common use cases:
             qs = super(CustomUserAdmin, self).get_queryset(request)
             return qs.annotate(groups_count=Count('groups'))
 
-Let's take a closer look what's happening in the example above. First, we
+Let's take a closer look at what's happening in the example above. First, we
 add ``groups_count`` annotation to queryset that is used by Django admin
-in ``CustomUserAdmin.get_queryset()`` method. It would contain no. of groups
-user belongs to. As our queryset now pulls this column, we can now filter by
-it, we just need to include it into the schema. In
+in the ``CustomUserAdmin.get_queryset()`` method. It would contain the number of groups a
+user belongs to. As our queryset now pulls this column, we can filter by
+it. It just needs to be included in the schema. In
 ``UserQLSchema.get_fields()`` we define a custom integer search field for
-``User`` model. It's name should match the name of the column in our queryset.
+``User`` model. Its name should match the name of the column in our queryset.
 
 **Custom suggestion options**
 
@@ -240,7 +235,7 @@ alphabetical sorting.
 **Custom search lookup**
 
 DjangoQL base fields provide two basic methods that you can override to
-substitute either search column, or search value, or both -
+substitute either search column, search value, or both -
 ``.get_lookup_name()`` and ``.get_lookup_value(value)``:
 
 .. code:: python
@@ -264,10 +259,10 @@ substitute either search column, or search value, or both -
     class CustomUserAdmin(DjangoQLSearchMixin, UserAdmin):
         djangoql_schema = UserQLSchema
 
-In this example we've defined custom ``date_joined_year`` search field for
-users, and used built-in Django ``__year`` filter option in
+In this example we've defined the custom ``date_joined_year`` search field for
+users, and used the built-in Django ``__year`` filter option in
 ``.get_lookup_name()`` to filter by date year only. Similarly you can use
-``.get_lookup_value(value)`` hook to modify search value before it's used in
+``.get_lookup_value(value)`` hook to modify a search value before it's used in
 the filter.
 
 **Fully custom search lookup**
