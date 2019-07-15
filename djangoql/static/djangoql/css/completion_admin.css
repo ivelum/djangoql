@@ -5,3 +5,27 @@
 .djangoql-toggle {
   margin-right: 10px;
 }
+
+.djangoql-help {
+  display: inline-block;
+  float: right;
+  margin-right: 30px;
+}
+
+@media (max-width: 1024px) {
+  .djangoql-help {
+    margin-right: 20px;
+  }
+}
+
+@media (max-width: 767px) {
+  .djangoql-help {
+    margin-right: 5px;
+  }
+}
+
+.clearfix::after {
+  content: "";
+  clear: both;
+  display: table;
+}

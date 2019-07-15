@@ -6,12 +6,18 @@ from django.contrib.admin.views.main import ChangeList
 from django.core.exceptions import FieldError, ValidationError
 from django.forms import Media
 from django.http import HttpResponse
+from django.template.loader import render_to_string
 from django.views.generic import TemplateView
 
 from .compat import text_type
 from .exceptions import DjangoQLError
 from .queryset import apply_search
 from .schema import DjangoQLSchema
+
+try:
+    from django.core.urlresolvers import reverse
+except ImportError:  # Django 2.0
+    from django.urls import reverse
 
 
 DJANGOQL_SEARCH_MARKER = 'q-l'
@@ -64,13 +70,19 @@ class DjangoQLSearchMixin(object):
                 apply_search(queryset, search_term, self.djangoql_schema),
                 use_distinct,
             )
-        except (DjangoQLError, ValueError, FieldError) as e:
-            msg = text_type(e)
-        except ValidationError as e:
-            msg = e.messages[0]
-        queryset = queryset.none()
-        messages.add_message(request, messages.WARNING, msg)
-        return queryset, use_distinct
+        except (DjangoQLError, ValueError, FieldError, ValidationError) as e:
+            msg = self.djangoql_error_message(e)
+            messages.add_message(request, messages.WARNING, msg)
+            return queryset.none(), use_distinct
+
+    def djangoql_error_message(self, exception):
+        if isinstance(exception, ValidationError):
+            msg = exception.messages[0]
+        else:
+            msg = text_type(exception)
+        return render_to_string('djangoql/error_message.html', context={
+            'error_message': msg,
+        })
 
     @property
     def media(self):
