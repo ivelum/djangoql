@@ -6,8 +6,8 @@ DjangoQL
 
 Advanced search language for Django, with auto-completion. Supports logical
 operators, parenthesis, table joins, and works with any Django model. Tested on
-Python 2.7, 3.5 - 3.7, Django 1.8 - 2.2. The auto-completion feature has been tested
-in Chrome, Firefox, Safari, IE9+.
+Python 2.7, 3.5 - 3.7, Django 1.8 - 2.2. The auto-completion feature has been
+tested in Chrome, Firefox, Safari, IE9+.
 
 See a video: `DjangoQL demo <https://youtu.be/oKVff4dHZB8>`_
 
@@ -18,7 +18,7 @@ Contents
 
 * `Installation`_
 * `Add it to your Django admin`_
-* `Using together with a standard Django admin search`_
+* `Using DjangoQL with the standard Django admin search`_
 * `Language reference`_
 * `DjangoQL Schema`_
 * `Custom search fields`_
@@ -64,9 +64,11 @@ Django search functionality with DjangoQL search. Example:
 
 
 Using DjangoQL with the standard Django admin search
---------------------------------------------------
+----------------------------------------------------
 
-DjangoQL will recognize if you have defined search_fields in your ModelAdmin class, and doing so will allow you to choose between a standard Django search (as specified by search fields) and an advanced search with DjangoQL. Example:
+DjangoQL will recognize if you have defined search_fields in your ModelAdmin
+class, and doing so will allow you to choose between a standard Django search
+(as specified by search fields) and an advanced search with DjangoQL. Example:
 
 .. code:: python
 
@@ -82,8 +84,9 @@ the search input. If you don't want two search modes, simply remove
 Language reference
 ------------------
 
-DjangoQL is shipped with comprehensive Syntax Help, which can be found in Django admin (see the Syntax Help link in auto-completion
-popup). Here's a quick summary:
+DjangoQL is shipped with comprehensive Syntax Help, which can be found in Django
+admin (see the Syntax Help link in auto-completion popup). Here's a quick
+summary:
 
 DjangoQL's syntax resembles Python's, with some minor
 differences. Basically you just reference model fields as you would
@@ -145,16 +148,17 @@ In the example above we created a schema that does 3 things:
   , in the ``.get_fields()`` method;
 - enables completion options for Group names via ``suggest_options``.
 
-An important note about ``suggest_options``: it looks for the ``choices`` model field
-parameter first, and if it's not specified - it will synchronously pull all values
-for given model fields, so you should avoid large querysets there. If you'd like
-to define custom suggestion options, see below.
+An important note about ``suggest_options``: it looks for the ``choices`` model
+field parameter first, and if it's not specified - it will synchronously pull
+all values for given model fields, so you should avoid large querysets there.
+If you'd like to define custom suggestion options, see below.
 
 Custom search fields
 --------------------
 
-Deeper search customization can be achieved with custom search fields. Custom search fields can be used to search by annotations, define
-custom suggestion options, or define fully custom search logic. In ``djangoql.schema``, DjangoQL
+Deeper search customization can be achieved with custom search fields. Custom
+search fields can be used to search by annotations, define custom suggestion
+options, or define fully custom search logic. In ``djangoql.schema``, DjangoQL
 defines the following base field classes that you may
 subclass to define your own behavior:
 
@@ -193,9 +197,9 @@ Here are examples for common use cases:
 
 Let's take a closer look at what's happening in the example above. First, we
 add ``groups_count`` annotation to queryset that is used by Django admin
-in the ``CustomUserAdmin.get_queryset()`` method. It would contain the number of groups a
-user belongs to. As our queryset now pulls this column, we can filter by
-it. It just needs to be included in the schema. In
+in the ``CustomUserAdmin.get_queryset()`` method. It would contain the number
+of groups a user belongs to. As our queryset now pulls this column, we can
+filter by it. It just needs to be included in the schema. In
 ``UserQLSchema.get_fields()`` we define a custom integer search field for
 ``User`` model. Its name should match the name of the column in our queryset.
 
