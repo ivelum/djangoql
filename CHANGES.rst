@@ -1,3 +1,9 @@
+0.13.0
+------
+
+* Added "DjangoQL syntax help" link to the error messages in Django admin
+  (thanks to @AngellusMortis for the idea);
+
 0.12.6
 ------
 
