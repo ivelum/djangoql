@@ -196,11 +196,11 @@ Here are examples for common use cases:
             return qs.annotate(groups_count=Count('groups'))
 
 Let's take a closer look at what's happening in the example above. First, we
-add ``groups_count`` annotation to queryset that is used by Django admin
+add ``groups_count`` annotation to the queryset that is used by Django admin
 in the ``CustomUserAdmin.get_queryset()`` method. It would contain the number
 of groups a user belongs to. As our queryset now pulls this column, we can
 filter by it. It just needs to be included in the schema. In
-``UserQLSchema.get_fields()`` we define a custom integer search field for
+``UserQLSchema.get_fields()`` we define a custom integer search field for the
 ``User`` model. Its name should match the name of the column in our queryset.
 
 **Custom suggestion options**
