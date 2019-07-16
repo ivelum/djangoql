@@ -271,8 +271,8 @@ the filter.
 
 **Fully custom search lookup**
 
-``.get_lookup_name()`` and ``.get_lookup_value(value)`` hooks can cover many
-simple use cases, but sometimes they're not enough and you want fully custom
+``.get_lookup_name()`` and ``.get_lookup_value(value)`` hooks cover many
+simple use cases, but sometimes they're not enough and you want a fully custom
 search logic. In such cases you can override main ``.get_lookup()`` method of
 a field. Example below demonstrates User ``age`` search:
 
@@ -375,7 +375,7 @@ Sure. You can add DjangoQL search functionality to any Django model using
 
         objects = DjangoQLQuerySet.as_manager()
 
-With the example above you can perform search like this:
+With the example above you can perform a search like this:
 
 .. code:: python
 
