@@ -36,7 +36,7 @@
     <div class="module">
       <h2 id="search-conditions">Search conditions</h2>
       <p>
-        Search condition is a basic search query building block. It always
+        A search condition is a basic search query building block. It always
         consists of 3 elements: <code>field</code>,
         <code>comparison operator</code> and <code>value</code>, placed exactly
         in this order from left to right.
@@ -53,7 +53,7 @@
         <pre>date_joined >= "2017-01-01"</pre>
         <p>One more example, looking for super-users:</p>
         <pre>is_superuser = True</pre>
-        <p>And one more - find all users who's names are in a given list:</p>
+        <p>And one more - finding all users whose names are in a given list:</p>
         <pre>first_name in ("John", "Jack", "Jason")</pre>
       {% endblock %}
     </div>
@@ -64,9 +64,9 @@
       <h2 id="multiple-search-conditions">Multiple search conditions</h2>
 
       <p>
-        You can combine multiple search conditions together using logical
+        You can combine multiple search conditions together using the logical
         operators <code>and</code> (both conditions must be true) and
-        <code>or</code> (at least one of conditions must be true, no matter
+        <code>or</code> (at least one of the conditions must be true, no matter
         which one). Important - logical operators must be written in lowercase:
         <code>and</code> and <code>or</code> is correct, and <code>AND</code> or
         <code>OR</code> is incorrect and will cause an error.
@@ -85,7 +85,7 @@
         </p>
         <pre>is_superuser = True or is_staff = True</pre>
         <p>
-          Logical operators can be quite powerful, they let you to build complex
+          Logical operators can be quite powerful, as they let you to build complex
           search queries. If you're building a complex query there's an
           important tip to keep in mind: if your query contains both
           <code>and</code> and <code>or</code> operators, we strongly encourage
@@ -101,15 +101,15 @@
           because <code>and</code> operator is evaluated first. In fact it pulls
           users who are either super-users (no matter when they registered)
           <code>or</code> users who are both Staff <code>and</code> registered
-          after 2017. This problem can be fixed with parenthesis, just put it
-          around search conditions that must be evaluated first, like this:
+          after 2017. This problem can be fixed with parentheses, just put them
+          around the search conditions that must be evaluated first, like this:
         </p>
         <pre>(is_superuser = True or is_staff = True) and date_joined > "2017-01-01"</pre>
         <p>
           Using parenthesis is recommended only when your query mixes both
           <code>and</code> and <code>or</code> operators. If your query contains
           multiple logical operators of only one kind (either <code>and</code>
-          or <code>or</code>) you can safely omit parenthesis and it would work
+          or <code>or</code>) you can safely omit parenthesis and it will work
           as expected.
         </p>
       {% endblock %}
@@ -123,7 +123,7 @@
       <p>
         In a search query you should reference fields of current model exactly
         as they're defined in Python code for this particular Django model.
-        Search query input has an auto-completion feature that popups
+        Search query input has an auto-completion feature that pops up
         automatically and suggests all available options. If you're not sure
         what the field name is, then pick one of the options displayed
         (example):
@@ -138,15 +138,15 @@
 
       {% block field_naming %}
       <p>
-        In most cases internal Django model fields look similar to what you see
+        In most cases, internal Django model fields look similar to what you see
         in Django admin interface, just in lowercase and with <code>_</code>
-        instead of spaces. For example, in standard Users admin interface
+        instead of spaces. For example, in the standard Users admin interface, the
         internal <code>first_name</code> field is displayed as
         <code>First name</code>, <code>email</code> field is displayed as
         <code>Email address</code> and so on. However there could be exceptions
-        from this, if developers have defined custom display names that look
+        to this, if developers have defined custom display names that look
         very different from their internal representation. In such cases it
-        could be a good idea to ask developers to override this help template
+        might be a good idea to ask developers to override this help template
         and provide an "internal name -> display name" fields mapping right
         here.
       </p>
@@ -167,7 +167,7 @@
 
       <p>
         DjangoQL allows you to search by related models as well (it
-        automatically converts relations to SQL joins under the hood). Use
+        automatically converts relations to SQL joins under the hood). Use the
         <code>.</code> dot separator to designate related models and their
         fields. For example:
       </p>
@@ -184,14 +184,14 @@
       </p>
 
       <p>
-        In most cases search condition with a related model must specify
+        In most cases the search condition with a related model must specify the
         exact field of that model, but not a related model itself. For example,
         <code>groups in ("Marketing", "Support")</code> won't work, because
         <code>groups</code> is a model and not a field. Models could have many
         fields, and the server doesn't know against which field would you like
-        to perform a comparison. However there's one notable exception from
-        this - when you'd like to find records which are linked (or not linked)
-        to any related models of that kind. In such case you should compare
+        to perform a comparison. However there's one notable exception to
+        this - when you'd like to find records that are linked (or not linked)
+        to any related models of that kind. In such a case, you should compare the 
         related model to a special <code>None</code> value, like this:
       </p>
 
@@ -199,7 +199,7 @@
 
       <p>
         The example above would search for users that don't belong to any
-        groups. If you'd to find all users that belong to at least any group
+        groups. If you'd like to find all users that belong to at least any group
         instead, use <code>!= None</code>:
       </p>
 
@@ -227,7 +227,7 @@
           </tr>
           <tr>
             <td>!=</td>
-            <td>not equals</td>
+            <td>does not equal</td>
             <td>id != 42</td>
           </tr>
           <tr>
@@ -237,7 +237,7 @@
           </tr>
           <tr>
             <td>!~</td>
-            <td>not contains a substring</td>
+            <td>does not contain a substring</td>
             <td>username !~ "test"</td>
           </tr>
           <tr>
@@ -276,12 +276,12 @@
       <p>Notes:</p>
       <ol>
         <li>
-          <code>~</code> and <code>!~</code> operators can be applied to string
-          fields only;
+          <code>~</code> and <code>!~</code> operators can be applied only to string
+          fields;
         </li>
         <li>
           <code>True</code>, <code>False</code> and <code>None</code> values can
-          be combined with <code>=</code> and <code>!=</code> only;
+          be combined only with <code>=</code> and <code>!=</code>;
         </li>
         <li>
           <code>in</code> and <code>not in</code> operators must be written in
@@ -379,10 +379,10 @@
               <code>None</code>
             </td>
             <td>
-              This is a special value that represents an absense of any value:
+              This is a special value that represents an absence of any value:
               <code>None</code>. It should be written exactly like this, with
               the first letter in uppercase and others in lowercase, without
-              quotes. When to use it - when some field in the database is
+              quotes. Use it when some field in the database is
               nullable (i.e. can contain NULL in SQL terms) and you'd like to
               search for records which either have no value
               (<code>some_field = None</code>) or have some value
