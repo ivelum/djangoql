@@ -97,8 +97,8 @@
         </p>
         <pre>is_superuser = True or is_staff = True and date_joined > "2017-01-01"</pre>
         <p>
-          The problem with query above is that it won't do what you expect,
-          because <code>and</code> operator is evaluated first. In fact it pulls
+          The problem with the query above is that it won't do what you expect,
+          because the <code>and</code> operator is evaluated first. In fact it pulls
           users who are either super-users (no matter when they registered)
           <code>or</code> users who are both Staff <code>and</code> registered
           after 2017. This problem can be fixed with parentheses, just put them
@@ -153,7 +153,7 @@
       {% endblock %}
 
       <p>
-        Note that some fields which you see in Django admin may not be
+        Note that some fields that you see in Django admin may not be
         searchable. This includes computed fields, i.e. fields which are not
         stored in the database as a plain value, but rather calculated from
         other values in the code.
@@ -187,8 +187,8 @@
         In most cases the search condition with a related model must specify the
         exact field of that model, but not a related model itself. For example,
         <code>groups in ("Marketing", "Support")</code> won't work, because
-        <code>groups</code> is a model and not a field. Models could have many
-        fields, and the server doesn't know against which field would you like
+        <code>groups</code> is a model and not a field. Models can have many
+        fields, and the server doesn't know against which field you would like
         to perform a comparison. However there's one notable exception to
         this - when you'd like to find records that are linked (or not linked)
         to any related models of that kind. In such a case, you should compare the 
@@ -370,7 +370,7 @@
               <code>"YYYY-MM-DD HH:MM"</code> format, or optionally with seconds
               in  <code>"YYYY-MM-DD HH:MM:SS"</code> format (24-hour clock).
               Please note that comparisons with date and time are performed in
-              a server timezone, which is usually UTC.
+              the server's timezone, which is usually UTC.
             </td>
           </tr>
           <tr>
