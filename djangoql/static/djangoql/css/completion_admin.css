@@ -1,5 +1,11 @@
 #changelist #toolbar form textarea#searchbar {
-  width: 80%;
+  flex-grow: 1;
+  margin-right: 5px;
+}
+
+#changelist-search div {
+  display: flex;
+  align-items: baseline;
 }
 
 .djangoql-toggle {

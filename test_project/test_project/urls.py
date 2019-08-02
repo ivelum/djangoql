@@ -23,6 +23,7 @@ from core.views import completion_demo
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', completion_demo),
+    url(r'^djangoql/', include('djangoql.urls', namespace='djangoql'))
 ]
 
 if settings.DEBUG and settings.DJDT:

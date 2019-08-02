@@ -22,6 +22,7 @@ class BookQLSchema(DjangoQLSchema):
 @admin.register(Book)
 class BookAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
     djangoql_schema = BookQLSchema
+    djangoql_saved_queries = True
     list_display = ('name', 'author', 'genre', 'written', 'is_published')
     list_filter = ('is_published',)
     filter_horizontal = ('similar_books',)

@@ -3,19 +3,37 @@
     <meta charset="utf-8">
     <link rel="stylesheet" href="../node_modules/mocha/mocha.css" />
     <link rel="stylesheet" href="../djangoql/static/djangoql/css/completion.css" />
+    <link rel="stylesheet" href="../djangoql/static/djangoql/css/saved_queries.css" />
     <style type="text/css">
       textarea {
         font-size: 13px;
         margin: 10px;
         width: 50%;
       }
+      form input {
+        vertical-align: top;
+        margin: 8px 0px;
+      }
+      .form-container {
+        display: flex;
+        align-items: baseline;
+      }
+      .djangoql-sq-label-name {
+        margin-left: 10px;
+        margin-top: 5px;
+      }
     </style>
   </head>
   <body>
     <form>
-      <textarea name="test" rows="1"></textarea>
+      <div class="form-container">
+        <textarea name="test" rows="1"></textarea>
+        <input type="submit" />
+      </div>
     </form>
     <script src="../djangoql/static/djangoql/js/lib/lexer.js"></script>
+    <script src="../djangoql/static/djangoql/js/helpers.js"></script>
+    <script src="../djangoql/static/djangoql/js/saved_queries.js"></script>
     <script src="../djangoql/static/djangoql/js/completion.js"></script>
 
     <div id="mocha"></div>
@@ -24,7 +42,8 @@
     <script>
       mocha.ui('bdd');
     </script>
-    <script src="tests.js"></script>
+    <script src="test.completion.js"></script>
+    <script src="test.saved_queries.js"></script>
     <script>
       mocha.run()
     </script>
