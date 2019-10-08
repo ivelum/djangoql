@@ -1,7 +1,7 @@
 import json
 
 from django.contrib.auth.models import Group, User
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 from django.views.decorators.http import require_GET
 
 from djangoql.exceptions import DjangoQLError
@@ -24,7 +24,7 @@ def completion_demo(request):
         except DjangoQLError as e:
             query = query.none()
             error = str(e)
-    return render_to_response('completion_demo.html', {
+    return render(request, 'completion_demo.html', context={
         'q': q,
         'error': error,
         'search_results': query,
