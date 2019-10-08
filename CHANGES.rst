@@ -1,3 +1,9 @@
+0.13.1
+------
+
+* Fixed compatibility with upcoming Django 3.0 (thanks to @vkrizan for the
+  reminder);
+
 0.13.0
 ------
 
