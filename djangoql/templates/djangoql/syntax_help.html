@@ -49,7 +49,9 @@
           <code>"John"</code> is a <code>value</code>:
         </p>
         <pre>first_name = "John"</pre>
-        <p>Another example, looking for users who registered in 2017 or later:</p>
+        <p>
+          Another example, looking for users who registered in 2017 or later:
+        </p>
         <pre>date_joined >= "2017-01-01"</pre>
         <p>One more example, looking for super-users:</p>
         <pre>is_superuser = True</pre>
@@ -85,8 +87,8 @@
         </p>
         <pre>is_superuser = True or is_staff = True</pre>
         <p>
-          Logical operators can be quite powerful, as they let you to build complex
-          search queries. If you're building a complex query there's an
+          Logical operators can be quite powerful, as they let you to build
+          complex search queries. If you're building a complex query there's an
           important tip to keep in mind: if your query contains both
           <code>and</code> and <code>or</code> operators, we strongly encourage
           you to use parenthesis to specify the precedence of operators. Here's
@@ -121,9 +123,9 @@
       <h2 id="fields">Fields</h2>
 
       <p>
-        In a search query, you should reference the current model's fields exactly 
-        as they're defined in Python code for that particular Django model.
-        Search query input has an auto-completion feature that pops up
+        In a search query, you should reference the current model's fields
+        exactly as they're defined in Python code for that particular Django
+        model. Search query input has an auto-completion feature that pops up
         automatically and suggests all available options. If you're not sure
         what the field name is, then pick one of the options displayed
         (example):
@@ -140,8 +142,8 @@
       <p>
         In most cases, internal Django model fields look similar to what you see
         in Django admin interface, just in lowercase and with <code>_</code>
-        instead of spaces. For example, in the standard Users admin interface, the
-        internal <code>first_name</code> field is displayed as
+        instead of spaces. For example, in the standard Users admin interface,
+        the internal <code>first_name</code> field is displayed as
         <code>First name</code>, <code>email</code> field is displayed as
         <code>Email address</code> and so on. However there could be exceptions
         to this, if developers have defined custom display names that look
@@ -191,16 +193,16 @@
         fields, and the server doesn't know against which field you would like
         to perform a comparison. However there's one notable exception to
         this - when you'd like to find records that are linked (or not linked)
-        to any related models of that kind. In such a case, you should compare the 
-        related model to a special <code>None</code> value, like this:
+        to any related models of that kind. In such a case, you should compare
+        the related model to a special <code>None</code> value, like this:
       </p>
 
       <pre>groups = None</pre>
 
       <p>
         The example above would search for users that don't belong to any
-        groups. If you'd like to find all users that belong to at least any group
-        instead, use <code>!= None</code>:
+        groups. If you'd like to find all users that belong to at least any
+        group instead, use <code>!= None</code>:
       </p>
 
       <pre>groups != None</pre>
@@ -276,8 +278,8 @@
       <p>Notes:</p>
       <ol>
         <li>
-          <code>~</code> and <code>!~</code> operators can be applied only to string
-          fields;
+          <code>~</code> and <code>!~</code> operators can be applied only to
+          string fields;
         </li>
         <li>
           <code>True</code>, <code>False</code> and <code>None</code> values can
