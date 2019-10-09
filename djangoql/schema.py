@@ -41,7 +41,6 @@ class DjangoQLField(object):
         return {
             'type': self.type,
             'nullable': self.nullable,
-            'options': list(self.get_options()) if self.suggest_options else [],
         }
 
     def _field_choices(self):

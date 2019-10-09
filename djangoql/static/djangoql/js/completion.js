@@ -110,6 +110,22 @@
     };
   }
 
+  // TODO docstring
+  // TODO move to DjangoQL object?
+  function loadSuggestions(text, callback) {
+    var xhr = new XMLHttpRequest();
+    var params = new URLSearchParams();
+    params.set('text', text);
+
+    xhr.open('GET', 'suggestions/?' + params.toString(), true); // TODO move request URL to options
+    xhr.onload = function () {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+        callback(JSON.parse(xhr.responseText));
+      }
+    };
+    xhr.send();
+  }
+
   // Main DjangoQL object
   var DjangoQL = function (options) {
     this.options = options;
@@ -807,8 +823,11 @@
               }.bind(this);
             }
             this.highlightCaseSensitive = this.valuesCaseSensitive;
-            this.suggestions = field.options.map(function (f) {
-              return suggestion(f, snippetBefore, snippetAfter);
+            var self = this; // TODO do it in a more elegant way
+            loadSuggestions(context.prefix,function (suggestions) {
+              self.suggestions = suggestions.map(function (f) {
+                return suggestion(f, snippetBefore, snippetAfter);
+              });
             });
           } else if (field.type === 'bool') {
             this.suggestions = [

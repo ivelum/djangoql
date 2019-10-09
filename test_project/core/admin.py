@@ -5,7 +5,7 @@ from django.db.models import Q, Count
 from django.utils.timezone import now
 
 from djangoql.admin import DjangoQLSearchMixin
-from djangoql.schema import DjangoQLSchema, IntField
+from djangoql.schema import DjangoQLSchema, IntField, StrField
 
 from .models import Book
 
@@ -86,6 +86,12 @@ class UserAgeField(IntField):
             return timestamp.replace(month=2, day=28, year=timestamp.year - n)
 
 
+class UserNameField(StrField):
+    model = User
+    name = 'username'
+    suggest_options = True
+
+
 class UserQLSchema(DjangoQLSchema):
     exclude = (Book,)
     suggest_options = {
@@ -95,7 +101,7 @@ class UserQLSchema(DjangoQLSchema):
     def get_fields(self, model):
         fields = super(UserQLSchema, self).get_fields(model)
         if model == User:
-            fields = [UserAgeField(), IntField(name='groups_count')] + fields
+            fields = [UserNameField(), UserAgeField(), IntField(name='groups_count')]# + fields
         return fields
 
 

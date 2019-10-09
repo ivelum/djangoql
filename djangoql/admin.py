@@ -123,6 +123,11 @@ class DjangoQLSearchMixin(object):
                     )),
                     name='djangoql_syntax_help',
                 ),
+                url(
+                    r'^suggestions/$',
+                    self.admin_site.admin_view(self.suggestions),
+                    name='djangoql_field_value_suggestions',
+                ),
             ]
         return custom_urls + super(DjangoQLSearchMixin, self).get_urls()
 
@@ -130,5 +135,17 @@ class DjangoQLSearchMixin(object):
         response = self.djangoql_schema(self.model).as_dict()
         return HttpResponse(
             content=json.dumps(response, indent=2),
+            content_type='application/json; charset=utf-8',
+        )
+
+    def suggestions(self, request):
+        # TODO move fields list generation to DjangoQLSchema
+        suggestions = list(
+            # TODO replace "username" with real field name
+            # TODO order by field?
+            self.model.objects.filter(username__startswith=request.GET['text']).values_list('username', flat=True)[:50]  # TODO limit from field settings + default limit
+        )
+        return HttpResponse(
+            content=json.dumps(suggestions, indent=2),
             content_type='application/json; charset=utf-8',
         )
