@@ -236,6 +236,23 @@ In this example we've defined a custom GroupNameField that sorts suggestions
 for group names by popularity (no. of users in a group) instead of default
 alphabetical sorting.
 
+**Set value suggestions limit**
+
+By default, field value suggestions number is limited to 50 entries.
+If you want to change this, override ``suggestions_limit`` field in your custom schema.
+
+.. code:: python
+
+    from djangoql.schema import DjangoQLSchema, StrField
+
+
+    class UserQLSchema(DjangoQLSchema):
+        exclude = (Book,)
+        suggest_options = {
+            Group: ['name'],
+        }
+        suggestions_limit = 30  # Set a desired limit here
+
 **Custom search lookup**
 
 DjangoQL base fields provide two basic methods that you can override to

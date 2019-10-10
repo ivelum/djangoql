@@ -86,22 +86,17 @@ class UserAgeField(IntField):
             return timestamp.replace(month=2, day=28, year=timestamp.year - n)
 
 
-class UserNameField(StrField):
-    model = User
-    name = 'username'
-    suggest_options = True
-
-
 class UserQLSchema(DjangoQLSchema):
     exclude = (Book,)
     suggest_options = {
-        Group: ['name'],
+        Group: ['name'], User: ['username']
     }
+    suggestions_limit = 30
 
     def get_fields(self, model):
         fields = super(UserQLSchema, self).get_fields(model)
         if model == User:
-            fields = [UserNameField(), UserAgeField(), IntField(name='groups_count')]# + fields
+            fields = [UserAgeField(), IntField(name='groups_count')] + fields
         return fields
 
 

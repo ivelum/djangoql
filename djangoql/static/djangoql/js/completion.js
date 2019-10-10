@@ -110,22 +110,6 @@
     };
   }
 
-  // TODO docstring
-  // TODO move to DjangoQL object?
-  function loadSuggestions(text, callback) {
-    var xhr = new XMLHttpRequest();
-    var params = new URLSearchParams();
-    params.set('text', text);
-
-    xhr.open('GET', 'suggestions/?' + params.toString(), true); // TODO move request URL to options
-    xhr.onload = function () {
-      if (xhr.readyState === 4 && xhr.status === 200) {
-        callback(JSON.parse(xhr.responseText));
-      }
-    };
-    xhr.send();
-  }
-
   // Main DjangoQL object
   var DjangoQL = function (options) {
     this.options = options;
@@ -823,12 +807,12 @@
               }.bind(this);
             }
             this.highlightCaseSensitive = this.valuesCaseSensitive;
-            var self = this; // TODO do it in a more elegant way
-            loadSuggestions(context.prefix,function (suggestions) {
-              self.suggestions = suggestions.map(function (f) {
-                return suggestion(f, snippetBefore, snippetAfter);
-              });
-            });
+            this.loadSuggestions(
+              context.prefix, context.field, function (responseData) {
+                this.suggestions = responseData.map(function (f) {
+                  return suggestion(f, snippetBefore, snippetAfter);
+                });
+              }.bind(this));
           } else if (field.type === 'bool') {
             this.suggestions = [
               suggestion('True', '', ' '),
@@ -861,6 +845,24 @@
       } else {
         this.selected = null;
       }
+    },
+    // Load suggestions from backend
+    loadSuggestions: function (text, fieldName, callback) {
+      var xhr = new XMLHttpRequest();
+      var params = new URLSearchParams();
+      params.set('text', text);
+      params.set('field_name', fieldName);
+      xhr.open(
+        'GET',
+        this.options.suggestionsUrl + params.toString(),
+        true
+      );
+      xhr.onload = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+          callback(JSON.parse(xhr.responseText));
+        }
+      };
+      xhr.send();
     }
 
   };

@@ -27,7 +27,7 @@ class DjangoQLField(object):
     value_types_description = ''
 
     def __init__(self, model=None, name=None, nullable=None,
-                 suggest_options=None):
+                 suggest_options=None, suggestions_limit=None):
         if model is not None:
             self.model = model
         if name is not None:
@@ -36,6 +36,11 @@ class DjangoQLField(object):
             self.nullable = nullable
         if suggest_options is not None:
             self.suggest_options = suggest_options
+        if suggestions_limit is not None:
+            self.suggestions_limit = suggestions_limit
+
+    def _get_options_queryset(self):
+        return self.model.objects.order_by(self.name)
 
     def as_dict(self):
         return {
@@ -53,15 +58,27 @@ class DjangoQLField(object):
 
     def get_options(self):
         """
-        Override this method to provide custom suggestion options
+        DEPRECATED: field value suggestions are now using get_sugestions() method
         """
         choices = self._field_choices()
         if choices:
             return [c[1] for c in choices]
         else:
-            return self.model.objects.\
-                order_by(self.name).\
-                values_list(self.name, flat=True)
+            return self._get_options_queryset().values_list(self.name, flat=True)
+
+    def get_sugestions(self, text):
+        """
+        Override this method to provide custom suggestion options
+        """
+        choices = self._field_choices()
+        if choices:
+            return [c[1] for c in choices]
+
+        kwargs = {'{}__icontains'.format(self.name): text}
+
+        return self._get_options_queryset()\
+            .filter(**kwargs)[:self.suggestions_limit]\
+            .values_list(self.name, flat=True)
 
     def get_lookup_name(self):
         """
@@ -266,12 +283,13 @@ class RelationField(DjangoQLField):
     type = 'relation'
 
     def __init__(self, model, name, related_model, nullable=False,
-                 suggest_options=False):
+                 suggest_options=False, suggestions_limit=None):
         super(RelationField, self).__init__(
             model=model,
             name=name,
             nullable=nullable,
             suggest_options=suggest_options,
+            suggestions_limit=suggestions_limit,
         )
         self.related_model = related_model
 
@@ -289,6 +307,7 @@ class DjangoQLSchema(object):
     include = ()  # models to include into introspection
     exclude = ()  # models to exclude from introspection
     suggest_options = None
+    suggestions_limit = 50
 
     def __init__(self, model):
         if not inspect.isclass(model) or not issubclass(model, models.Model):
@@ -396,6 +415,7 @@ class DjangoQLSchema(object):
         field_kwargs['suggest_options'] = (
             field.name in self.suggest_options.get(model, [])
         )
+        field_kwargs['suggestions_limit'] = self.suggestions_limit
         field_instance = field_cls(**field_kwargs)
         # Check if suggested options conflict with field type
         if field_cls != StrField and field_instance.suggest_options:
