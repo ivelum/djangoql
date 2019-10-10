@@ -3,6 +3,7 @@ import json
 from django.contrib.auth.models import Group, User
 from django.shortcuts import render
 from django.views.decorators.http import require_GET
+from django.http.response import HttpResponse
 
 from djangoql.exceptions import DjangoQLError
 from djangoql.queryset import apply_search
@@ -30,3 +31,14 @@ def completion_demo(request):
         'search_results': query,
         'introspections': json.dumps(UserQLSchema(query.model).as_dict()),
     })
+
+
+@require_GET
+def suggestions(request):
+    payload = UserQLSchema(User) \
+        .get_field_instance(User, request.GET['field_name']) \
+        .get_sugestions(request.GET['text'])
+    return HttpResponse(
+        content=json.dumps(list(payload), indent=2),
+        content_type='application/json; charset=utf-8',
+    )

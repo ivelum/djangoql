@@ -17,12 +17,13 @@ from django.conf import settings
 from django.conf.urls import url, include
 from django.contrib import admin
 
-from core.views import completion_demo
+from core.views import completion_demo, suggestions
 
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', completion_demo),
+    url(r'^suggestions/', suggestions),
 ]
 
 if settings.DEBUG and settings.DJDT:
