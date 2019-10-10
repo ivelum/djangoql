@@ -166,3 +166,37 @@ class DjangoQLSchemaTest(TestCase):
                 self.fail('This query should\'t pass validation: %s' % query)
             except DjangoQLSchemaError as e:
                 pass
+
+
+class UserQLSchema(DjangoQLSchema):
+    include = (User,)
+    suggestions_limit = 30
+
+
+class BookQLSchema(DjangoQLSchema):
+    include = (Book,)
+    suggestions_limit = 2
+
+
+class DjangoQLFieldTest(TestCase):
+    def setUp(self):
+        for i in range(2, 70):
+            User.objects.create(username='a' * i)
+
+    def test_get_suggestions_limit_doesnt_affect_choices(self):
+        result = BookQLSchema(Book).get_field_instance(Book, 'genre').get_sugestions('blah')
+        self.assertEqual(len(result), len(Book.GENRES))
+
+    def test_get_suggestions_with_string_field_should_be_limited(self):
+        suggestions = IncludeUserGroupSchema(User).get_field_instance(User, 'username').get_sugestions('aaa')
+        self.assertEqual(len(suggestions), 50)
+
+    def test_get_suggestions_with_custom_limit(self):
+        suggestions = UserQLSchema(User).get_field_instance(User, 'username').get_sugestions('aaa')
+        self.assertEqual(len(suggestions), UserQLSchema.suggestions_limit)
+
+    def test_suggestions_should_contain_query_string(self):
+        query_string = 'aaa'
+        suggestions = UserQLSchema(User).get_field_instance(User, 'username').get_sugestions(query_string)
+        for suggestion in suggestions:
+            self.assertIn(query_string, suggestion)
