@@ -6,7 +6,7 @@ python:
   - 3.5
   - 3.6
   - 3.7
-  - 3.8
+  - 3.8-dev
 env:
   - DJANGO="Django==1.8.*"
   - DJANGO="Django==1.9.*"
