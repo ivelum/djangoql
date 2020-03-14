@@ -183,7 +183,7 @@ Here are examples for common use cases:
         def get_fields(self, model):
             fields = super(UserQLSchema, self).get_fields(model)
             if model == User:
-                fields = [IntField(name='groups_count')] + fields
+                fields += [IntField(name='groups_count')]
             return fields
 
 
@@ -255,7 +255,7 @@ substitute either search column, search value, or both -
         def get_fields(self, model):
             fields = super(UserQLSchema, self).get_fields(model)
             if model == User:
-                fields = [UserDateJoinedYear()] + fields
+                fields += [UserDateJoinedYear()]
             return fields
 
 
@@ -347,7 +347,7 @@ a field. Example below demonstrates User ``age`` search:
         def get_fields(self, model):
             fields = super(UserQLSchema, self).get_fields(model)
             if model == User:
-                fields = [UserAgeField()] + fields
+                fields += [UserAgeField()]
             return fields
 
 

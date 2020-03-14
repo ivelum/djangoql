@@ -95,7 +95,7 @@ class UserQLSchema(DjangoQLSchema):
     def get_fields(self, model):
         fields = super(UserQLSchema, self).get_fields(model)
         if model == User:
-            fields = [UserAgeField(), IntField(name='groups_count')] + fields
+            fields += [UserAgeField(), IntField(name='groups_count')]
         return fields
 
 
