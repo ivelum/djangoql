@@ -37,6 +37,7 @@ class DjangoQLChangeList(ChangeList):
 class DjangoQLSearchMixin(object):
     search_fields = ('_djangoql',)  # just a stub to have search input displayed
     djangoql_completion = True
+    djangoql_completion_enabled_by_default = True
     djangoql_schema = DjangoQLSchema
     djangoql_syntax_help_template = 'djangoql/syntax_help.html'
 
@@ -94,6 +95,8 @@ class DjangoQLSearchMixin(object):
             ]
             if self.search_mode_toggle_enabled():
                 js.append('djangoql/js/completion_admin_toggle.js')
+                if not self.djangoql_completion_enabled_by_default:
+                    js.append('djangoql/js/completion_admin_toggle_off.js')
             js.append('djangoql/js/completion_admin.js')
             media += Media(
                 css={'': (

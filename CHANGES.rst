@@ -1,3 +1,13 @@
+0.14.0 (unreleased yet)
+-----------------------
+
+* Breaking: when using in the admin together with the standard Django search,
+  DjangoQL checkbox is now on by default. If you don't want this behavior, you
+  can turn it off with ``djangoql_completion_enabled_by_default`` option. Thanks
+  to @nicolazilio for the idea;
+* Improved field customization examples in the docs (#55, thanks to
+  @joeydebreuk);
+
 0.13.1
 ------
 

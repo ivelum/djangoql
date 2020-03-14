@@ -30,7 +30,8 @@
   DjangoQL.DOMReady(function () {
     // use '-' in the param name to prevent conflicts with any model field name
     var QLParamName = 'q-l';
-    var QLEnabled = parseQueryString()[QLParamName] === 'on';
+    var QLEnabled;
+    var QLEnabledInURL;
     var QLInput;
     var QLToggle;
     var QLPlaceholder = 'Advanced search with Query Language';
@@ -44,16 +45,25 @@
     }
     originalPlaceholder = input.placeholder;
 
+    QLEnabledInURL = parseQueryString()[QLParamName];
+    if (QLEnabledInURL === 'on') {
+      QLEnabled = true;
+    } else if (QLEnabledInURL === 'off') {
+      QLEnabled = false;
+    } else {
+      QLEnabled = Boolean(DjangoQL._toggleOnByDefault);
+    }
+
     function onCompletionToggle(e) {
       if (e.target.checked) {
         djangoQL.enableCompletion();
-        QLInput.name = QLParamName;
+        QLInput.value = 'on';
         textarea.placeholder = QLPlaceholder;
         textarea.focus();
         djangoQL.popupCompletion();
       } else {
         djangoQL.disableCompletion();
-        QLInput.name = '';
+        QLInput.value = 'off';
         textarea.placeholder = originalPlaceholder;
         textarea.focus();
       }
@@ -66,8 +76,8 @@
         QLInput.type = 'hidden';
         input.parentNode.insertBefore(QLInput, input);
       }
-      QLInput.name = QLEnabled ? QLParamName : '';
-      QLInput.value = 'on';
+      QLInput.name = QLParamName;
+      QLInput.value = QLEnabled ? 'on' : 'off';
 
       QLToggle = document.createElement('input');
       QLToggle.type = 'checkbox';
