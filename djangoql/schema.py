@@ -168,6 +168,12 @@ class IntField(DjangoQLField):
     value_types = [int]
     value_types_description = 'integer numbers'
 
+    def validate(self, value):
+        """
+        Support enum-like choices defined on an integer field
+        """
+        return super(IntField, self).validate(self.get_lookup_value(value))
+
 
 class FloatField(DjangoQLField):
     type = 'float'
@@ -397,14 +403,7 @@ class DjangoQLSchema(object):
         field_kwargs['suggest_options'] = (
             field.name in self.suggest_options.get(model, [])
         )
-        field_instance = field_cls(**field_kwargs)
-        # Check if suggested options conflict with field type
-        if field_cls != StrField and field_instance.suggest_options:
-            for option in field_instance.get_options():
-                if isinstance(option, text_type):
-                    # Convert to StrField
-                    field_instance = StrField(**field_kwargs)
-        return field_instance
+        return field_cls(**field_kwargs)
 
     def get_field_cls(self, field):
         str_fields = (models.CharField, models.TextField, models.UUIDField)
