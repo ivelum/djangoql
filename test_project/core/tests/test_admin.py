@@ -57,11 +57,20 @@ class DjangoQLAdminTest(TestCase):
 
         # check for unknown fields
         r = self.get_json(url, status=400, data={'field': 'gav'})
-        self.assertEqual(r.get('error'), "Book has no field named 'gav'")
+        self.assertIn(r.get('error'), (
+            "Book has no field named 'gav'",
+            "Book has no field named u'gav'",  # py2.7
+        ))
         r = self.get_json(url, status=400, data={'field': 'x.y'})
-        self.assertEqual(r.get('error'), "App 'core' doesn't have a 'x' model.")
+        self.assertIn(r.get('error'), (
+            "App 'core' doesn't have a 'x' model.",
+            "App 'core' doesn't have a u'x' model.",  # py2.7
+        ))
         r = self.get_json(url, status=400, data={'field': 'auth.user.lol'})
-        self.assertEqual(r.get('error'), "User has no field named 'lol'")
+        self.assertIn(r.get('error'), (
+            "User has no field named 'lol'",
+            "User has no field named u'lol'",  # py2.7
+        ))
 
         # field with choices
         r = self.get_json(url, data={'field': 'genre'})
