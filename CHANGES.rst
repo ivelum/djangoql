@@ -1,10 +1,19 @@
 0.14.0 (unreleased yet)
 -----------------------
 
+* New feature: field suggestion options are now loaded asynchronously via
+  Suggestions API;
+* **Breaking**: ``DjangoQLField.get_options()`` now accepts mandatory ``search``
+  parameter. If you've implemented custom suggestion options for your schema,
+  please add handling of this parameter (you should only return results that
+  match ``search`` criteria);
 * Breaking: when using in the admin together with the standard Django search,
   DjangoQL checkbox is now on by default. If you don't want this behavior, you
   can turn it off with ``djangoql_completion_enabled_by_default`` option. Thanks
   to @nicolazilio for the idea;
+* Deprecated: if you've used ``DjangoQLSchema.as_dict()`` somewhere in your
+  code, please switch to new schema serializers instead (see in
+  ``serializers.py``);
 * Improved field customization examples in the docs (#55, thanks to
   @joeydebreuk);
 

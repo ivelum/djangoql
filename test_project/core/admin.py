@@ -87,8 +87,8 @@ class UserAgeField(IntField):
 
 
 class UserQLSchema(DjangoQLSchema):
-    exclude = (Book,)
     suggest_options = {
+        Book: ['genre'],
         Group: ['name'],
     }
 

@@ -32,3 +32,7 @@
   border-top: solid 1px #ccc;
   font-size: inherit;
 }
+
+.djangoql-loading {
+  background: url('../img/loading.gif') no-repeat 10px center;
+}

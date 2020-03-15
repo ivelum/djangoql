@@ -5,8 +5,12 @@ from django.test import TestCase
 from djangoql.exceptions import DjangoQLSchemaError
 from djangoql.parser import DjangoQLParser
 from djangoql.schema import DjangoQLSchema, IntField
+from djangoql.serializers import SuggestionsAPISerializer
 
 from ..models import Book
+
+
+serializer = SuggestionsAPISerializer('/suggestions/')
 
 
 class ExcludeUserSchema(DjangoQLSchema):
@@ -53,7 +57,7 @@ class DjangoQLSchemaTest(TestCase):
         return models
 
     def test_default(self):
-        schema_dict = DjangoQLSchema(Book).as_dict()
+        schema_dict = serializer.serialize(DjangoQLSchema(Book))
         self.assertIsInstance(schema_dict, dict)
         self.assertEqual('core.book', schema_dict.get('current_model'))
         models = schema_dict.get('models')
@@ -64,7 +68,7 @@ class DjangoQLSchemaTest(TestCase):
         self.assertListEqual(all_model_labels, sorted(models.keys()))
 
     def test_exclude(self):
-        schema_dict = ExcludeUserSchema(Book).as_dict()
+        schema_dict = serializer.serialize(ExcludeUserSchema(Book))
         self.assertEqual('core.book', schema_dict['current_model'])
         self.assertListEqual(sorted(schema_dict['models'].keys()), [
             'admin.logentry',
@@ -75,7 +79,7 @@ class DjangoQLSchemaTest(TestCase):
         ])
 
     def test_include(self):
-        schema_dict = IncludeUserGroupSchema(User).as_dict()
+        schema_dict = serializer.serialize(IncludeUserGroupSchema(User))
         self.assertEqual('auth.user', schema_dict['current_model'])
         self.assertListEqual(sorted(schema_dict['models'].keys()), [
             'auth.group',
@@ -83,8 +87,10 @@ class DjangoQLSchemaTest(TestCase):
         ])
 
     def test_get_fields(self):
-        default = DjangoQLSchema(Book).as_dict()['models']['core.book']
-        custom = BookCustomFieldsSchema(Book).as_dict()['models']['core.book']
+        default_schema = DjangoQLSchema(Book)
+        default = serializer.serialize(default_schema)['models']['core.book']
+        custom_schema = BookCustomFieldsSchema(Book)
+        custom = serializer.serialize(custom_schema)['models']['core.book']
         self.assertListEqual(list(default.keys()), [
             'author',
             'content_type',
@@ -101,7 +107,7 @@ class DjangoQLSchemaTest(TestCase):
         self.assertListEqual(list(custom.keys()), ['name', 'is_published'])
 
     def test_circular_references(self):
-        models = DjangoQLSchema(Book).as_dict()['models']
+        models = serializer.serialize(DjangoQLSchema(Book))['models']
         # If Book references Author then Author shouldn't reference Book back
         book_author_field = models['core.book'].get('author')
         self.assertIsNotNone(book_author_field)
@@ -110,8 +116,11 @@ class DjangoQLSchemaTest(TestCase):
         self.assertNotIn('book', models['auth.user'])
 
     def test_custom_search(self):
-        custom = BookCustomSearchSchema(Book).as_dict()['models']['core.book']
-        self.assertListEqual(list(custom.keys()), ['written_in_year'])
+        models = serializer.serialize(BookCustomSearchSchema(Book))['models']
+        self.assertListEqual(
+            list(models['core.book'].keys()),
+            ['written_in_year'],
+        )
 
     def test_invalid_config(self):
         try:

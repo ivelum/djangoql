@@ -13,6 +13,8 @@ from .compat import text_type
 from .exceptions import DjangoQLError
 from .queryset import apply_search
 from .schema import DjangoQLSchema
+from .serializers import SuggestionsAPISerializer
+from .views import SuggestionsAPIView
 
 try:
     from django.core.urlresolvers import reverse
@@ -91,6 +93,7 @@ class DjangoQLSearchMixin(object):
         if self.djangoql_completion:
             js = [
                 'djangoql/js/lib/lexer.js',
+                'djangoql/js/lib/LRUCache.js',
                 'djangoql/js/completion.js',
             ]
             if self.search_mode_toggle_enabled():
@@ -120,6 +123,14 @@ class DjangoQLSearchMixin(object):
                     ),
                 ),
                 url(
+                    r'^suggestions/$',
+                    self.admin_site.admin_view(self.suggestions),
+                    name='%s_%s_djangoql_suggestions' % (
+                        self.model._meta.app_label,
+                        self.model._meta.model_name,
+                    ),
+                ),
+                url(
                     r'^djangoql-syntax/$',
                     self.admin_site.admin_view(TemplateView.as_view(
                         template_name=self.djangoql_syntax_help_template,
@@ -130,8 +141,19 @@ class DjangoQLSearchMixin(object):
         return custom_urls + super(DjangoQLSearchMixin, self).get_urls()
 
     def introspect(self, request):
-        response = self.djangoql_schema(self.model).as_dict()
+        suggestions_url = reverse('admin:%s_%s_djangoql_suggestions' % (
+            self.model._meta.app_label,
+            self.model._meta.model_name,
+        ))
+        serializer = SuggestionsAPISerializer(suggestions_url)
+        response = serializer.serialize(self.djangoql_schema(self.model))
         return HttpResponse(
             content=json.dumps(response, indent=2),
             content_type='application/json; charset=utf-8',
         )
+
+    def suggestions(self, request):
+        view = SuggestionsAPIView.as_view(
+            schema=self.djangoql_schema(self.model),
+        )
+        return view(request)

@@ -1,4 +1,5 @@
 import inspect
+import warnings
 from collections import OrderedDict, deque
 from datetime import datetime
 from decimal import Decimal
@@ -37,32 +38,31 @@ class DjangoQLField(object):
         if suggest_options is not None:
             self.suggest_options = suggest_options
 
-    def as_dict(self):
-        return {
-            'type': self.type,
-            'nullable': self.nullable,
-            'options': list(self.get_options()) if self.suggest_options else [],
-        }
-
     def _field_choices(self):
         if self.model:
             try:
                 return self.model._meta.get_field(self.name).choices
-            except FieldDoesNotExist:
+            except (AttributeError, FieldDoesNotExist):
                 pass
         return []
 
-    def get_options(self):
+    @property
+    def async_options(self):
+        return not self._field_choices()
+
+    def get_options(self, search):
         """
         Override this method to provide custom suggestion options
         """
+        result = []
         choices = self._field_choices()
         if choices:
-            return [c[1] for c in choices]
-        else:
-            return self.model.objects.\
-                order_by(self.name).\
-                values_list(self.name, flat=True)
+            search = search.lower()
+            for c in choices:
+                choice = text_type(c[1])
+                if search in choice.lower():
+                    result.append(choice)
+        return result
 
     def get_lookup_name(self):
         """
@@ -186,6 +186,19 @@ class StrField(DjangoQLField):
     value_types = [text_type]
     value_types_description = 'strings'
 
+    def get_options(self, search):
+        choice_options = super(StrField, self).get_options(search)
+        if choice_options:
+            return choice_options
+        lookup = {}
+        if search:
+            lookup['%s__icontains' % self.name] = search
+        return self.model.objects\
+            .filter(**lookup)\
+            .order_by(self.name)\
+            .values_list(self.name, flat=True)\
+            .distinct()
+
 
 class BoolField(DjangoQLField):
     type = 'bool'
@@ -285,11 +298,6 @@ class RelationField(DjangoQLField):
     @property
     def relation(self):
         return DjangoQLSchema.model_label(self.related_model)
-
-    def as_dict(self):
-        dikt = super(RelationField, self).as_dict()
-        dikt['relation'] = self.relation
-        return dikt
 
 
 class DjangoQLSchema(object):
@@ -422,15 +430,12 @@ class DjangoQLSchema(object):
         return DjangoQLField
 
     def as_dict(self):
-        models = {}
-        for model_label, fields in self.models.items():
-            models[model_label] = OrderedDict(
-                [(name, field.as_dict()) for name, field in fields.items()]
-            )
-        return {
-            'current_model': self.model_label(self.current_model),
-            'models': models,
-        }
+        from .serializers import DjangoQLSchemaSerializer
+        warnings.warn(
+            'DjangoQLSchema.as_dict() is deprecated and will be removed in '
+            'future releases. Please use DjangoQLSchemaSerializer instead.'
+        )
+        return DjangoQLSchemaSerializer().serialize(self)
 
     def resolve_name(self, name):
         assert isinstance(name, Name)

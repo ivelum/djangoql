@@ -459,6 +459,7 @@ Template code, ``completion_demo.html``:
       <title>DjangoQL completion demo</title>
       <link rel="stylesheet" type="text/css" href="{% static 'djangoql/css/completion.css' %}" />
       <script src="{% static 'djangoql/js/lib/lexer.js' %}"></script>
+      <script src="{% static 'djangoql/js/lib/LRUCache.js' %}"></script>
       <script src="{% static 'djangoql/js/completion.js' %}"></script>
     </head>
     <body>
@@ -514,10 +515,14 @@ And in your ``views.py``:
     from djangoql.exceptions import DjangoQLError
     from djangoql.queryset import apply_search
     from djangoql.schema import DjangoQLSchema
+    from djangoql.serializers import DjangoQLSchemaSerializer
 
 
     class UserQLSchema(DjangoQLSchema):
         include = (User, Group)
+        suggest_options = {
+            Group: ['name'],
+        }
 
 
     @require_GET
@@ -531,11 +536,16 @@ And in your ``views.py``:
             except DjangoQLError as e:
                 query = query.none()
                 error = str(e)
+        # You may want to use SuggestionsAPISerializer and an additional API
+        # endpoint (see in djangoql.views) for asynchronous suggestions loading
+        introspections = DjangoQLSchemaSerializer().serialize(
+          UserQLSchema(query.model),
+        )
         return render_to_response('completion_demo.html', {
             'q': q,
             'error': error,
             'search_results': query,
-            'introspections': json.dumps(UserQLSchema(query.model).as_dict()),
+            'introspections': json.dumps(introspections),
         })
 
 
