@@ -13,8 +13,8 @@ class DjangoQLAdminTest(TestCase):
         self.credentials = {'username': 'test', 'password': 'lol'}
         User.objects.create_superuser(email='herp@derp.rr', **self.credentials)
 
-    def get_json(self, *args, status=200, **kwargs):
-        response = self.client.get(*args, **kwargs)
+    def get_json(self, url, status=200, **kwargs):
+        response = self.client.get(url, **kwargs)
         self.assertEqual(status, response.status_code)
         try:
             return json.loads(response.content.decode('utf8'))
