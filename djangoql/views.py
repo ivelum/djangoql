@@ -2,7 +2,7 @@ import json
 
 from django.apps import apps
 from django.core.exceptions import FieldDoesNotExist
-from django.core.paginator import Paginator
+from django.core.paginator import EmptyPage, Paginator
 from django.http import HttpResponse
 from django.views.generic.base import View
 
@@ -31,16 +31,19 @@ class SuggestionsAPIView(View):
             )
 
         paginator = Paginator(suggestions, self.items_per_page)
-        page = paginator.get_page(page_number)
-        # By default, Django Paginator returns the last available page if the
-        # page number provided is greater than the total number of pages. I
-        # find this confusing, and here's a workaround:
-        items = [] if page.number < page_number else list(page.object_list)
+        try:
+            page = paginator.page(page_number)
+        except EmptyPage:
+            items = []
+            has_next = False
+        else:
+            items = list(page.object_list)
+            has_next = page.has_next()
 
         response = {
             'items': items,
             'page': page_number,
-            'has_next': page.has_next(),
+            'has_next': has_next,
         }
         return HttpResponse(
             content=json.dumps(response, indent=2),
