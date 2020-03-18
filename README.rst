@@ -225,10 +225,11 @@ filter by it. It just needs to be included in the schema. In
         name = 'name'
         suggest_options = True
 
-        def get_options(self):
-            return super(GroupNameField, self).get_options().\
-                annotate(users_count=Count('user')).\
-                order_by('-users_count')
+        def get_options(self, search):
+            return super(GroupNameField, self)\
+                .get_options(search)\
+                .annotate(users_count=Count('user'))\
+                .order_by('-users_count')
 
 
     class UserQLSchema(DjangoQLSchema):
