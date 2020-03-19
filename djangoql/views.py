@@ -1,7 +1,5 @@
 import json
 
-from django.apps import apps
-from django.core.exceptions import FieldDoesNotExist
 from django.core.paginator import EmptyPage, Paginator
 from django.http import HttpResponse
 from django.views.generic.base import View
