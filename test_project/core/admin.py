@@ -5,7 +5,7 @@ from django.db.models import Q, Count
 from django.utils.timezone import now
 
 from djangoql.admin import DjangoQLSearchMixin
-from djangoql.schema import DjangoQLSchema, IntField
+from djangoql.schema import DjangoQLSchema, IntField, StrField
 
 from .models import Book
 
@@ -13,10 +13,32 @@ from .models import Book
 admin.site.unregister(User)
 
 
+class AuthorField(StrField):
+    name = 'author'
+    model = Book
+    suggest_options = True
+
+    def get_lookup_name(self):
+        return 'author__username'
+
+    def get_options(self, search):
+        return Book.objects\
+            .filter(author__username__icontains=search)\
+            .values_list('author__username', flat=True)\
+            .order_by('author__username')\
+            .distinct()
+
+
 class BookQLSchema(DjangoQLSchema):
     suggest_options = {
         Book: ['genre'],
     }
+
+    def get_fields(self, model):
+        fields = super(BookQLSchema, self).get_fields(model)
+        if model == Book:
+            fields += [AuthorField()]
+        return fields
 
 
 @admin.register(Book)

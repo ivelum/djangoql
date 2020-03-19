@@ -62,16 +62,13 @@ class SuggestionsAPIView(View):
             app_label = '.'.join(parts[:-1])
             if not app_label:
                 app_label = self.schema.current_model._meta.app_label
-            try:
-                model = apps.get_model(app_label, model_name)
-            except LookupError as e:
-                raise ValueError(e)
+            model_label = '.'.join([app_label, model_name])
         else:
-            model = self.schema.current_model
-        try:
-            field_instance = self.schema.get_field_instance(model, field_name)
-        except FieldDoesNotExist as e:
-            raise ValueError(e)
+            model_label = self.schema.model_label(self.schema.current_model)
+        schema_model = self.schema.models.get(model_label)
+        if not schema_model:
+            raise ValueError('Unknown model: %s' % model_label)
+        field_instance = schema_model.get(field_name)
         if not field_instance:
             raise ValueError('Unknown field: %s' % field_name)
         return field_instance
