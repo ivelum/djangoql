@@ -910,7 +910,12 @@
     },
 
     populateFieldOptions: function (loadMore) {
-      var fieldOptions = this.getCurrentFieldOptions() || {};
+      var fieldOptions = this.getCurrentFieldOptions();
+      if (fieldOptions === null) {
+        // 1) we are out of field options context
+        // 2) field has no options
+        return;
+      }
       var options = fieldOptions.options;
       var prefix = fieldOptions.context && fieldOptions.context.prefix;
       var input = this.textarea;
@@ -978,6 +983,7 @@
       var scrollBottom = this.completionUL.scrollTop + rectHeight;
       if (scrollBottom > rectHeight
           && scrollBottom > (this.completionUL.scrollHeight - rectHeight)) {
+        // TODO: add some checks of context?
         this.populateFieldOptions(true);
       }
     },
