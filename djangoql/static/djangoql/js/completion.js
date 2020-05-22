@@ -177,8 +177,6 @@
     // so it's handy to have them already bound
     this.onCompletionMouseClick = this.onCompletionMouseClick.bind(this);
     this.onCompletionMouseDown = this.onCompletionMouseDown.bind(this);
-    this.onCompletionMouseOut = this.onCompletionMouseOut.bind(this);
-    this.onCompletionMouseOver = this.onCompletionMouseOver.bind(this);
     this.popupCompletion = this.popupCompletion.bind(this);
     this.debouncedRenderCompletion = this.debounce(
         this.renderCompletion.bind(this),
@@ -278,28 +276,39 @@
     },
 
     getJson: function (url, settings) {
+      this.loading = true;
+
       var onLoadError = function () {
+        this.loading = false;
+        this.request = null;
         this.logError('failed to fetch from ' + url);
       }.bind(this);
-      var request = new XMLHttpRequest();
-      request.open('GET', url, true);
-      request.onload = function () {
-        if (request.status === 200) {
+
+      if (this.request) {
+        this.request.abort();
+      }
+      this.request = new XMLHttpRequest();
+
+      this.request.open('GET', url, true);
+      this.request.onload = function () {
+        this.loading = false;
+        if (this.request.status === 200) {
           if (typeof settings.success === 'function') {
-            settings.success(JSON.parse(request.responseText));
+            settings.success(JSON.parse(this.request.responseText));
           }
         } else {
           onLoadError();
         }
-      };
-      request.ontimeout = onLoadError;
-      request.onerror = onLoadError;
+        this.request = null;
+      }.bind(this);
+      this.request.ontimeout = onLoadError;
+      this.request.onerror = onLoadError;
       /* eslint-disable max-len */
       // Workaround for IE9, see
       // https://cypressnorth.com/programming/internet-explorer-aborting-ajax-requests-fixed/
       /* eslint-enable max-len */
-      request.onprogress = function () {};
-      window.setTimeout(request.send.bind(request));
+      this.request.onprogress = function () {};
+      window.setTimeout(this.request.send.bind(this.request));
     },
 
     loadIntrospections: function (introspections) {
@@ -472,16 +481,6 @@
       e.preventDefault();
     },
 
-    onCompletionMouseOut: function () {
-      this.selected = null;
-      this.debouncedRenderCompletion();
-    },
-
-    onCompletionMouseOver: function (e) {
-      this.selected = parseInt(e.target.getAttribute('data-index'), 10);
-      this.debouncedRenderCompletion();
-    },
-
     onKeydown: function (e) {
       switch (e.keyCode) {
         case 38:  // up arrow
@@ -647,7 +646,7 @@
       }
 
       suggestionsLen = this.suggestions.length;
-      li = [].slice.call(this.completionUL.querySelectorAll('li'));
+      li = [].slice.call(this.completionUL.querySelectorAll('li[data-index]'));
       liLen = li.length;
 
       // Update or create necessary elements
@@ -657,11 +656,9 @@
         } else {
           currentLi = document.createElement('li');
           currentLi.setAttribute('data-index', i);
-          this.completionUL.appendChild(currentLi);
           currentLi.addEventListener('click', this.onCompletionMouseClick);
           currentLi.addEventListener('mousedown', this.onCompletionMouseDown);
-          currentLi.addEventListener('mouseout', this.onCompletionMouseOut);
-          currentLi.addEventListener('mouseover', this.onCompletionMouseOver);
+          this.completionUL.appendChild(currentLi);
         }
         currentLi.innerHTML = this.highlight(
             this.suggestions[i].text,
@@ -686,12 +683,11 @@
         liLen--;
         li[liLen].removeEventListener('click', this.onCompletionMouseClick);
         li[liLen].removeEventListener('mousedown', this.onCompletionMouseDown);
-        li[liLen].removeEventListener('mouseout', this.onCompletionMouseOut);
-        li[liLen].removeEventListener('mouseover', this.onCompletionMouseOver);
         this.completionUL.removeChild(li[liLen]);
       }
 
-      loadingElement = this.completionUL.querySelector('.djangoql-loading');
+      loadingElement = this.completionUL.querySelector('li.djangoql-loading');
+
       if (this.loading) {
         if (!loadingElement) {
           loadingElement = document.createElement('li');
@@ -888,9 +884,6 @@
 
       cached.loading = true;
       this.suggestionsCache.set(fieldOptions.cacheKey, cached);
-      // Render 'loading' element
-      this.populateFieldOptions();
-      this.renderCompletion();
 
       requestUrl = this.setUrlParams(this.suggestionsAPIUrl, requestParams);
       this.getJson(requestUrl, {
@@ -903,10 +896,14 @@
           }
           data.items = (cached.items || []).concat(data.items);
           this.suggestionsCache.set(fieldOptions.cacheKey, data);
+          this.loading = false;
           this.populateFieldOptions();
           this.renderCompletion();
         }.bind(this)
       });
+      // Render 'loading' element
+      this.populateFieldOptions();
+      this.renderCompletion();
     },
 
     populateFieldOptions: function (loadMore) {
@@ -925,7 +922,6 @@
       var textBefore;
       var textAfter;
 
-      this.loading = false;
       if (options) {
         // filter them locally
         if (this.valuesCaseSensitive) {
@@ -946,10 +942,8 @@
         }
         cached = this.suggestionsCache.get(fieldOptions.cacheKey) || {};
         options = cached.items || [];
-        this.loading = Boolean(cached.has_next);
         if (!cached.loading
             && (!cached.page || (loadMore && cached.has_next))) {
-          this.loading = true;
           this.debouncedLoadFieldOptions(loadMore);
         }
         if (!options.length) {

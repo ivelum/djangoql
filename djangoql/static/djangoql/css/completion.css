@@ -26,6 +26,11 @@
   cursor: pointer;
 }
 
+.djangoql-completion li:hover {
+  background-color: #c4e9fa;
+  color: black;
+}
+
 .djangoql-completion .syntax-help {
   padding: 4px 10px 6px 10px;
   margin: 0;
