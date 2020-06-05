@@ -473,7 +473,9 @@
     },
 
     onCompletionMouseClick: function (e) {
-      this.selectCompletion(parseInt(e.target.getAttribute('data-index'), 10));
+      this.selectCompletion(
+        parseInt(e.currentTarget.getAttribute('data-index'), 10)
+      );
     },
 
     onCompletionMouseDown: function (e) {
@@ -529,7 +531,7 @@
             if (typeof this.options.onSubmit === 'function') {
               this.options.onSubmit(this.textarea.value);
             } else {
-              e.target.form.submit();
+              e.currentTarget.form.submit();
             }
           }
           e.preventDefault();
@@ -573,9 +575,25 @@
     },
 
     selectCompletion: function (index) {
+      var currentFullToken = this.getContext(
+        this.textarea.value,
+        this.textarea.selectionStart
+      ).currentFullToken;
+
+      var textValue = this.textarea.value;
       var startPos = this.textarea.selectionStart - this.prefix.length;
-      var textAfter = this.textarea.value.slice(startPos + this.prefix.length);
-      var textBefore = this.textarea.value.slice(0, startPos);
+      var tokenEndPos = null;
+
+      // cutting current token from the string
+      if (currentFullToken) {
+        tokenEndPos = currentFullToken.end;
+        textValue = (
+          textValue.slice(0, startPos) + textValue.slice(tokenEndPos)
+        );
+      }
+
+      var textBefore = textValue.slice(0, startPos);
+      var textAfter = textValue.slice(startPos);
 
       var snippetAfterParts = this.suggestions[index].snippetAfter.split('|');
       var textToPaste = this.suggestions[index].snippetBefore +
@@ -746,9 +764,12 @@
       var lastToken = null;
       var nextToLastToken = null;
       var tokens = this.lexer.setInput(text.slice(0, cursorPos)).lexAll();
+      var allTokens = this.lexer.setInput(text).lexAll();
+      var currentFullToken = null;
       if (tokens.length && tokens[tokens.length - 1].end >= cursorPos) {
         // if cursor is positioned on the last token then remove it.
         // We are only interested in tokens preceding current.
+        currentFullToken = allTokens[tokens.length - 1];
         tokens.pop();
       }
       if (tokens.length) {
@@ -826,7 +847,13 @@
               .indexOf(lastToken.name) >= 0) {
         scope = 'logical';
       }
-      return { prefix: prefix, scope: scope, model: model, field: field };
+      return {
+        prefix: prefix,
+        scope: scope,
+        model: model,
+        field: field,
+        currentFullToken: currentFullToken
+      };
     },
 
     getCurrentFieldOptions: function () {
