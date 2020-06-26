@@ -2,6 +2,12 @@
   'use strict';
 
   /* global define, require */
+  if (!String.prototype.trim) {
+    // eslint-disable-next-line no-extend-native
+    String.prototype.trim = function () {
+      return this.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, '');
+    };
+  }
 
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
@@ -594,6 +600,8 @@
 
       var textBefore = textValue.slice(0, startPos);
       var textAfter = textValue.slice(startPos);
+      // preventing double spaces after pasting the suggestion
+      textAfter = textAfter.trim();
 
       var snippetAfterParts = this.suggestions[index].snippetAfter.split('|');
       var textToPaste = this.suggestions[index].snippetBefore +
