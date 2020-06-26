@@ -1,4 +1,4 @@
-0.14.0 (unreleased yet)
+0.14.0
 -----------------------
 
 * New feature: field suggestion options are now loaded asynchronously via
