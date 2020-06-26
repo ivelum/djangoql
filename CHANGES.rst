@@ -16,6 +16,7 @@
   ``serializers.py``);
 * Improved field customization examples in the docs (#55, thanks to
   @joeydebreuk);
+* Added support for Django 3.1.x (#57, thanks to @jleclanche)
 
 0.13.1
 ------
