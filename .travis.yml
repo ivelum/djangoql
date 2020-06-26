@@ -16,7 +16,7 @@ env:
   - DJANGO="Django==2.1.*"
   - DJANGO="Django==2.2.*"
   - DJANGO="Django==3.0.*"
-  - DJANGO="Django==3.1b*"
+  - DJANGO="Django==3.1b1"
 install:
   - pip install PLY
   - pip install -U $DJANGO
@@ -39,9 +39,9 @@ matrix:
     - python: 3.5
       env: DJANGO="Django==3.0.*"
     - python: 2.7
-      env: DJANGO="Django==3.1b*"
+      env: DJANGO="Django==3.1b1"
     - python: 3.5
-      env: DJANGO="Django==3.1b*"
+      env: DJANGO="Django==3.1b1"
     - python: 3.7
       env: DJANGO="Django==1.11.*"
     - python: 3.8
