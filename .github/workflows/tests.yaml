@@ -52,5 +52,5 @@ jobs:
           path: ${{ steps.pip-cache.outputs.dir }}
           key: pip|${{ matrix.python }}|${{ matrix.django }}
       - run: pip install PLY
-      - run: pip install Django=${{ matrix.django }}
+      - run: pip install Django==${{ matrix.django }}
       - run: python test_project/manage.py test core.tests
