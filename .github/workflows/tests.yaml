@@ -53,4 +53,5 @@ jobs:
           key: pip|${{ matrix.python }}|${{ matrix.django }}
       - run: pip install PLY
       - run: pip install Django==${{ matrix.django }}
+      - run: pip install -e .
       - run: python test_project/manage.py test core.tests
