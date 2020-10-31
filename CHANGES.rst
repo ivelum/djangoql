@@ -1,5 +1,13 @@
+0.14.1
+------
+
+* fixed inconsistency in search by fields with choices (#58, thanks to
+  @pandichef for reporting this);
+* Officially compatible with Python 3.9 (no changes in the code, just added it
+  to the test matrix);
+
 0.14.0
------------------------
+------
 
 * New feature: field suggestion options are now loaded asynchronously via
   Suggestions API;

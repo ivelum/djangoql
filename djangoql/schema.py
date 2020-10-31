@@ -78,10 +78,10 @@ class DjangoQLField(object):
         choices = self._field_choices()
         if choices:
             if isinstance(value, list):
-                return [c[0] for c in choices if c[1] in value]
+                return [c[0] for c in choices if c[0] in value or c[1] in value]
             else:
                 for c in choices:
-                    if c[1] == value:
+                    if value in c:
                         return c[0]
         return value
 
