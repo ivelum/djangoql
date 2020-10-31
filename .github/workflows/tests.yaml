@@ -5,7 +5,19 @@ on:
   pull_request:
     branches: [master]
 jobs:
+  notify-build-start:
+    steps:
+      # Send build notifications to Slack
+      - uses: voxmedia/github-action-slack-notify-build@v1
+        id: slack
+        with:
+          channel_id: C0PT3267R
+          status: STARTED
+          color: warning
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
   tests:
+    needs: notify-build-start
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -38,16 +50,6 @@ jobs:
           - python: 3.9
             django: 1.10.*
     steps:
-      # Send build notifications to Slack
-      - uses: voxmedia/github-action-slack-notify-build@v1
-        id: slack
-        with:
-          channel: teamplify
-          status: STARTED
-          color: warning
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
         with:
@@ -70,26 +72,26 @@ jobs:
       - run: pip install -e .
       - run: python test_project/manage.py test core.tests
 
-      # Send notification on build success
-      - name: Notify slack success
-        if: success()
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-        uses: voxmedia/github-action-slack-notify-build@v1
-        with:
-          message_id: ${{ steps.slack.outputs.message_id }}
-          channel: teamplify
-          status: SUCCESS
-          color: good
-
       # Send notification on build failure
       - name: Notify slack fail
+        uses: voxmedia/github-action-slack-notify-build@v1
         if: failure()
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-        uses: voxmedia/github-action-slack-notify-build@v1
         with:
-          message_id: ${{ steps.slack.outputs.message_id }}
-          channel: teamplify
+          channel_id: C0PT3267R
           status: FAILED
           color: danger
+
+  notify-build-success:
+    needs: tests
+    steps:
+      # Send notification on build success
+      - name: Notify slack success
+        uses: voxmedia/github-action-slack-notify-build@v1
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+        with:
+          channel_id: C0PT3267R
+          status: SUCCESS
+          color: good
