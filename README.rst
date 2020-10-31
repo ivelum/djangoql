@@ -13,6 +13,24 @@ See a video: `DjangoQL demo <https://youtu.be/oKVff4dHZB8>`_
 
 .. image:: https://raw.githubusercontent.com/ivelum/djangoql/master/djangoql/static/djangoql/img/completion_example_scaled.png
 
+DjangoQL is used by:
+
+|logo1| |logo2| |logo3|
+
+.. |logo1| image:: https://raw.githubusercontent.com/ivelum/djangoql/master/assets/redhat.svg
+   :width: 20%
+   :target: https://www.redhat.com
+
+.. |logo2| image:: https://raw.githubusercontent.com/ivelum/djangoql/master/assets/teamplify.svg
+   :width: 20%
+   :target: https://teamplify.com
+
+.. |logo3| image:: https://raw.githubusercontent.com/ivelum/djangoql/master/assets/police1.svg
+   :width: 20%
+   :target: https://www.police1.com
+
+Is your project using DjangoQL? Please submit a PR and let us know!
+
 Contents
 --------
 
