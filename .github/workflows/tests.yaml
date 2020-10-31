@@ -38,6 +38,16 @@ jobs:
           - python: 3.9
             django: 1.10.*
     steps:
+      # Send build notifications to Slack
+      - uses: voxmedia/github-action-slack-notify-build@v1
+        id: slack
+        with:
+          channel: teamplify
+          status: STARTED
+          color: warning
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
         with:
@@ -59,3 +69,27 @@ jobs:
       - run: pip install Django==${{ matrix.django }}
       - run: pip install -e .
       - run: python test_project/manage.py test core.tests
+
+      # Send notification on build success
+      - name: Notify slack success
+        if: success()
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+        uses: voxmedia/github-action-slack-notify-build@v1
+        with:
+          message_id: ${{ steps.slack.outputs.message_id }}
+          channel: teamplify
+          status: SUCCESS
+          color: good
+
+      # Send notification on build failure
+      - name: Notify slack fail
+        if: failure()
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+        uses: voxmedia/github-action-slack-notify-build@v1
+        with:
+          message_id: ${{ steps.slack.outputs.message_id }}
+          channel: teamplify
+          status: FAILED
+          color: danger
