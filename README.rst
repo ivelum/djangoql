@@ -1,8 +1,8 @@
 DjangoQL
 ========
 
-.. image:: https://travis-ci.org/ivelum/djangoql.svg?branch=master
-        :target: https://travis-ci.org/ivelum/djangoql
+.. image:: https://github.com/ivelum/djangoql/workflows/Tests/badge.svg
+        :target: https://github.com/ivelum/djangoql/actions?query=workflow%3ATests
 
 Advanced search language for Django, with auto-completion. Supports logical
 operators, parenthesis, table joins, and works with any Django model. Tested on
