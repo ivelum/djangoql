@@ -6,6 +6,7 @@ on:
     branches: [master]
 jobs:
   notify-build-start:
+    runs-on: ubuntu-latest
     steps:
       # Send build notifications to Slack
       - uses: voxmedia/github-action-slack-notify-build@v1
@@ -85,6 +86,7 @@ jobs:
 
   notify-build-success:
     needs: tests
+    runs-on: ubuntu-latest
     steps:
       # Send notification on build success
       - name: Notify slack success
