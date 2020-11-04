@@ -1,3 +1,8 @@
+0.14.2
+------
+
+* add basic support for models.BinaryField (thanks to @Akay7);
+
 0.14.1
 ------
 
