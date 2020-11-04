@@ -7,6 +7,12 @@ on:
   workflow_dispatch:
 jobs:
   notify-build-start:
+    # Secrets are not available for forks for security reasons, so pull
+    # request checks will fail when trying to send the Slack notification.
+    # Unfortunately, there's no way to explicitly check that a secret is
+    # available, so we check for repository owner instead:
+    # https://github.com/actions/runner/issues/520
+    if: ${{ github.repository_owner == 'ivelum' }}
     runs-on: ubuntu-latest
     steps:
       # Send build notifications to Slack
@@ -86,6 +92,7 @@ jobs:
           color: danger
 
   notify-build-success:
+    if: ${{ github.repository_owner == 'ivelum' }}
     needs: tests
     runs-on: ubuntu-latest
     steps:
