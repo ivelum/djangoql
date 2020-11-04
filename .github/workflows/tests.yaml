@@ -25,7 +25,6 @@ jobs:
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
   tests:
-    needs: notify-build-start
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
