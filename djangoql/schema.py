@@ -415,7 +415,12 @@ class DjangoQLSchema(object):
         return field_cls(**field_kwargs)
 
     def get_field_cls(self, field):
-        str_fields = (models.CharField, models.TextField, models.UUIDField, models.BinaryField)
+        str_fields = (
+            models.CharField,
+            models.TextField,
+            models.UUIDField,
+            models.BinaryField,
+        )
         if isinstance(field, str_fields):
             return StrField
         elif isinstance(field, (models.AutoField, models.IntegerField)):
