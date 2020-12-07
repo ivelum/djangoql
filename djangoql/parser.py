@@ -36,7 +36,8 @@ class DjangoQLParser(object):
         self.default_lexer = DjangoQLLexer()
         self.tokens = self.default_lexer.tokens
         kwargs['debug'] = debug
-        kwargs['write_tables'] = False
+        if 'write_tables' not in kwargs:
+            kwargs['write_tables'] = False
         self.yacc = yacc.yacc(module=self, **kwargs)
 
     def parse(self, input=None, lexer=None, **kwargs):
