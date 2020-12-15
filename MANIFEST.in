@@ -1,6 +1,6 @@
-recursive-include djangoql/static *
-recursive-include djangoql/templates *
-recursive-include test_project *
+recursive-include djangoql/static *.css *.png *.gif *.js
+recursive-include djangoql/templates *.html
+recursive-include test_project *.py *.html
 include README.rst LICENSE
 
-global-exclude .DS_Store
+global-exclude .DS_Store __pycache__
