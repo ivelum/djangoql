@@ -8,6 +8,26 @@
       return this.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, '');
     };
   }
+  /* eslint-disable */
+  if (!String.prototype.startsWith) {
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/startsWith#Polyfill
+    Object.defineProperty(String.prototype, 'startsWith', {
+      value: function (search, rawPos) {
+        var pos = rawPos > 0 ? rawPos | 0 : 0;
+        return this.substring(pos, pos + search.length) === search;
+      }
+    });
+  }
+  if (!String.prototype.endsWith) {
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/endsWith#Polyfill
+    String.prototype.endsWith = function(search, this_len) {
+      if (this_len === undefined || this_len > this.length) {
+        this_len = this.length;
+      }
+      return this.substring(this_len - search.length, this_len) === search;
+    };
+  }
+  /* eslint-enable */
 
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
@@ -581,13 +601,13 @@
     },
 
     selectCompletion: function (index) {
-      var currentFullToken = this.getContext(
+      var context = this.getContext(
         this.textarea.value,
         this.textarea.selectionStart
-      ).currentFullToken;
-
+      );
+      var currentFullToken = context.currentFullToken;
       var textValue = this.textarea.value;
-      var startPos = this.textarea.selectionStart - this.prefix.length;
+      var startPos = this.textarea.selectionStart - context.prefix.length;
       var tokenEndPos = null;
 
       // cutting current token from the string
@@ -603,10 +623,24 @@
       // preventing double spaces after pasting the suggestion
       textAfter = textAfter.trim();
 
-      var snippetAfterParts = this.suggestions[index].snippetAfter.split('|');
-      var textToPaste = this.suggestions[index].snippetBefore +
-          this.suggestions[index].text +
-          snippetAfterParts.join('');
+      var completion = this.suggestions[index];
+      var snippetBefore = completion.snippetBefore;
+      var snippetAfter = completion.snippetAfter;
+      var snippetAfterParts = snippetAfter.split('|');
+      if (snippetAfterParts.length > 1) {
+        snippetAfter = snippetAfterParts.join('');
+        if (!snippetBefore && !completion.text) {
+          snippetBefore = snippetAfterParts[0];
+          snippetAfter = snippetAfterParts[1];
+        }
+      }
+      if (textBefore.endsWith(snippetBefore)) {
+        snippetBefore = '';
+      }
+      if (textAfter.startsWith(snippetAfter)) {
+        snippetAfter = '';
+      }
+      var textToPaste = snippetBefore + completion.text + snippetAfter;
       var cursorPosAfter = textBefore.length + textToPaste.length;
       if (snippetAfterParts.length > 1) {
         cursorPosAfter -= snippetAfterParts[1].length;
@@ -950,12 +984,7 @@
       }
       var options = fieldOptions.options;
       var prefix = fieldOptions.context && fieldOptions.context.prefix;
-      var input = this.textarea;
       var cached;
-      var snippetBefore;
-      var snippetAfter;
-      var textBefore;
-      var textAfter;
 
       if (options) {
         // filter them locally
@@ -987,23 +1016,9 @@
         }
       }
 
-      textBefore = input.value.slice(
-        0, input.selectionStart - this.prefix.length);
-      textAfter = input.value.slice(input.selectionStart);
-      if (textBefore && textBefore[textBefore.length - 1] === '"') {
-        snippetBefore = '';
-      } else {
-        snippetBefore = '"';
-      }
-      if (textAfter[0] !== '"') {
-        snippetAfter = '" ';
-      } else {
-        snippetAfter = '';
-      }
-
       this.highlightCaseSensitive = this.valuesCaseSensitive;
       this.suggestions = options.map(function (f) {
-        return suggestion(f, snippetBefore, snippetAfter);
+        return suggestion(f, '"', '"');
       });
     },
 
