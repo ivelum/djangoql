@@ -1,3 +1,12 @@
+0.14.3
+------
+
+* ``write_tables`` argument for PLY parser is now disabled by default. This
+  change prevents an error that may arise if DjangoQL is installed into
+  un-writeable location (#63, #53. Thanks to @sochotnicky for the PR);
+* fixed quotes handling in completion widget (#62, thanks to @nicolazilio for
+  reporting this);
+
 0.14.2
 ------
 
