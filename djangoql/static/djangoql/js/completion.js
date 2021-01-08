@@ -728,7 +728,7 @@
           this.completionUL.appendChild(currentLi);
         }
         currentLi.innerHTML = this.highlight(
-            this.suggestions[i].suggestion_text,
+            this.suggestions[i].suggestionText,
             this.prefix);
         if (i === this.selected) {
           currentLi.className = 'active';
