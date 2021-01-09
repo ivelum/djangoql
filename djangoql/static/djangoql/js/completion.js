@@ -1085,7 +1085,7 @@
           break;
 
         case 'comparison':
-          suggestions = [['=', 'is equal to'], ['!=', 'is not equal to']];
+          suggestions = ['=', ['!=', 'is not equal to']];
           snippetAfter = ' ';
           if (field && field.type !== 'bool') {
             if (field.type === 'str') {
@@ -1096,15 +1096,9 @@
                        || field.options) {
               snippetAfter = ' "|"';
             }
-            Array.prototype.push.apply(
-                suggestions,
-                [
-                  ['>', 'is greater than'],
-                  ['>=', 'is greater than or equal to'],
-                  ['<', 'is less than'],
-                  ['<=', 'is less than or equal to']
-                ]
-            );
+            if (field.type !== 'str') {
+              Array.prototype.push.apply(suggestions, ['>', '>=', '<', '<=']);
+            }
           }
           this.suggestions = suggestions.map(function (s) {
             if (typeof s === 'string') {
