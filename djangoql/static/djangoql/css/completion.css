@@ -31,6 +31,13 @@
   color: black;
 }
 
+.djangoql-completion li i {
+  font-size: 0.9em;
+  color: #ccc;
+  float: right;
+  font-style: normal;
+}
+
 .djangoql-completion .syntax-help {
   padding: 4px 10px 6px 10px;
   margin: 0;

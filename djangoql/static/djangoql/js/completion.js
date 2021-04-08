@@ -129,10 +129,9 @@
     // snippetBefore is an optional extra text to be pasted before main text.
     // snippetAfter is an optional text to be pasted after. It may also include
     // "|" symbol to designate desired cursor position after paste.
+    var suggestionText = text;
     if (typeof explanation !== 'undefined') {
-      var suggestionText = text + ' (' + explanation + ')';
-    } else {
-      var suggestionText = text;
+      suggestionText += '<i>' + explanation + '</i>';
     }
 
     return {
