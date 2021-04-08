@@ -1,3 +1,9 @@
+0.14.5
+------
+
+* added a help text to some operators;
+* fixed the background color in the dark mode (django 3.2+);
+
 0.14.4
 ------
 
