@@ -300,7 +300,9 @@ describe('DjangoQL completion', function () {
         }
       ];
       examples.forEach(function (e) {
-        expect(djangoQL.getContext.apply(djangoQL, e.args)).to.eql(e.result);
+        var result = djangoQL.getContext.apply(djangoQL, e.args);
+        delete result.currentFullToken; // it's not relevant in this case
+        expect(result).to.eql(e.result);
       });
     });
 

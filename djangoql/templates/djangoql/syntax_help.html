@@ -279,7 +279,8 @@
       <ol>
         <li>
           <code>~</code> and <code>!~</code> operators can be applied only to
-          string fields;
+          string and date/datetime fields. A date/datetime field will be handled
+          as a string one (ex., <code>payment_date ~ "2020-12-01"</code>)
         </li>
         <li>
           <code>True</code>, <code>False</code> and <code>None</code> values can

@@ -1088,12 +1088,11 @@
           suggestions = ['=', ['!=', 'is not equal to']];
           snippetAfter = ' ';
           if (field && field.type !== 'bool') {
-            if (field.type === 'str') {
+            if (['str', 'date', 'datetime'].indexOf(field.type) >= 0) {
               suggestions.push(['~', 'contains']);
               suggestions.push(['!~', 'does not contain']);
               snippetAfter = ' "|"';
-            } else if (field.type === 'date' || field.type === 'datetime'
-                       || field.options) {
+            } else if (field.options) {
               snippetAfter = ' "|"';
             }
             if (field.type !== 'str') {
