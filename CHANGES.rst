@@ -1,3 +1,8 @@
+0.14.4
+------
+
+* add ``~`` operator for date/datetime fields;
+
 0.14.3
 ------
 
