@@ -101,6 +101,7 @@ class DjangoQLField(object):
             '<': '__lt',
             '<=': '__lte',
             '~': '__icontains',
+            'regex': '__iregex',
             'in': '__in',
         }.get(operator)
         if op is not None:
@@ -124,11 +125,12 @@ class DjangoQLField(object):
             be ['author', 'groups']. 'name' is not included, because it's the
             current field instance itself.
         :param operator: a string with comparison operator. It could be one of
-            the following: '=', '!=', '>', '>=', '<', '<=', '~', '!~', 'in',
-            'not in'. Depending on the field type, some operators may be
-            excluded. '~' and '!~' can be applied to StrField only and aren't
-            allowed for any other fields. BoolField can't be used with less or
-            greater operators, '>', '>=', '<' and '<=' are excluded for it.
+            the following: '=', '!=', '>', '>=', '<', '<=', '~', '!~', 'regex',
+            'in', 'not in'. Depending on the field type, some operators
+            may be excluded. '~' and '!~' can be applied to StrField only and
+            aren't allowed for any other fields. BoolField can't be used with
+            less or greater operators, '>', '>=', '<' and '<=' are excluded
+            for it.
         :param value: value passed for comparison
         :return: Q-object
         """
@@ -277,7 +279,7 @@ class DateTimeField(DjangoQLField):
         # and resulting comparison would look like
         #       'created LIKE %2017-01-30 00:00:00%'
         # which is not what we want for this case.
-        val = value if operator in ('~', '!~') else self.get_lookup_value(value)
+        val = value if operator in ('~', '!~', 'regex') else self.get_lookup_value(value)
 
         q = models.Q(**{'%s%s' % (search, op): val})
         return ~q if invert else q
