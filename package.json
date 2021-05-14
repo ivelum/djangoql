@@ -1,5 +1,6 @@
 {
   "name": "djangoql",
+  "version": "0.14.5",
   "description": "Query mini-language that translates into Django ORM",
   "repository": {
     "type": "git",
