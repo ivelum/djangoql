@@ -92,8 +92,6 @@ class DjangoQLSearchMixin(object):
         media = super(DjangoQLSearchMixin, self).media
         if self.djangoql_completion:
             js = [
-                'djangoql/js/lib/lexer.js',
-                'djangoql/js/lib/LRUCache.js',
                 'djangoql/js/completion.js',
             ]
             if self.search_mode_toggle_enabled():
