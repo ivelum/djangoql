@@ -11,15 +11,16 @@ import djangoql
 def download_completion_widget():
     # TODO: use some versioning mechanism
     # instead of pulling from the master branch
-    base_url = 'https://github.com/ivelum/djangoql-completion/raw/main/dist/'
-    target_folder = 'djangoql/static/djangoql/js/'
-    files = [
-        'completion.js',
-        'completion.js.map',
-    ]
+    src_base = 'https://github.com/ivelum/djangoql-completion/raw/main/dist/'
+    target_base = 'djangoql/static/djangoql/'
+    files = {
+        'completion.js': target_base + 'js/',
+        'completion.js.map': target_base + 'js/',
+        'completion.css': target_base + 'css/',
+    }
     # Not using urllib b/c Python won't have SSL certificates on all platforms
-    for file in files:
-        check_call(['curl', '-L', base_url + file, '-o', target_folder + file])
+    for file, target_dir in files.items():
+        check_call(['curl', '-fL', src_base + file, '-o', target_dir + file])
 
 
 class PreDevelopCommand(develop):
