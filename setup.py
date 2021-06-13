@@ -9,9 +9,7 @@ import djangoql
 
 
 def download_completion_widget():
-    # TODO: use some versioning mechanism
-    # instead of pulling from the master branch
-    src_base = 'https://github.com/ivelum/djangoql-completion/raw/main/dist/'
+    src_base = 'https://github.com/ivelum/djangoql-completion/raw/0.2.0/dist/'
     target_base = 'djangoql/static/djangoql/'
     files = {
         'completion.js': target_base + 'js/',
