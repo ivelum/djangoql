@@ -477,8 +477,6 @@ Template code, ``completion_demo.html``:
       <meta charset="UTF-8">
       <title>DjangoQL completion demo</title>
       <link rel="stylesheet" type="text/css" href="{% static 'djangoql/css/completion.css' %}" />
-      <script src="{% static 'djangoql/js/lib/lexer.js' %}"></script>
-      <script src="{% static 'djangoql/js/lib/LRUCache.js' %}"></script>
       <script src="{% static 'djangoql/js/completion.js' %}"></script>
     </head>
     <body>
