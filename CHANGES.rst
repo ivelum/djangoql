@@ -1,3 +1,14 @@
+0.15.0 (unreleased yet)
+------
+
+* the completion JavaScript widget has been moved to
+  `its own repo <https://github.com/ivelum/djangoql-completion>`_ and is now
+  available as a standalone
+  `package on npm <https://www.npmjs.com/package/djangoql-completion>`_. It
+  still ships with the Python package, though, so if you don't need to embed
+  the completion widget in your custom JavaScript application, no additional
+  installation steps are required;
+
 0.14.5
 ------
 
