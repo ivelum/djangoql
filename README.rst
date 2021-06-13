@@ -463,8 +463,18 @@ You can also provide schema as an option for ``apply_search()``
 Using completion widget outside of Django admin
 -----------------------------------------------
 
-Completion widget is not tightly coupled to Django admin, so you can easily
-use it outside of admin if you want. Here is an example:
+The completion widget is not tightly coupled to Django admin, so you can easily
+use it outside of the admin if you want. The widget is
+`available on npm <https://www.npmjs.com/package/djangoql-completion>`_ as a
+standalone package.
+See the source code and the docs in the
+`djangoql-completion <https://github.com/ivelum/djangoql-completion>`_
+repo on GitHub.
+
+The completion widget is also bundled with the
+`djangoql <https://pypi.org/project/djangoql/>`_ Python package on PyPI. If
+you're not using Webpack or another JavaScript bundler, you can use the
+pre-built version that ships with the Python package. Here is an example:
 
 Template code, ``completion_demo.html``:
 
