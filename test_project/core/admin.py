@@ -1,3 +1,5 @@
+import time
+
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User, Group
@@ -108,6 +110,18 @@ class UserAgeField(IntField):
             return timestamp.replace(month=2, day=28, year=timestamp.year - n)
 
 
+class BookGenreField(StrField):
+    model = Book
+    name = 'name'
+    suggest_options = True
+
+    def get_options(self, search):
+        time.sleep(1)
+        return Book.objects.filter(
+            name__icontains=search,
+        ).values_list('name', flat=True)
+
+
 class UserQLSchema(DjangoQLSchema):
     suggest_options = {
         Book: ['genre'],
@@ -118,13 +132,14 @@ class UserQLSchema(DjangoQLSchema):
         fields = super(UserQLSchema, self).get_fields(model)
         if model == User:
             fields += [UserAgeField(), IntField(name='groups_count')]
+        elif model == Book:
+            fields += [BookGenreField()]
         return fields
 
 
 @admin.register(User)
 class CustomUserAdmin(DjangoQLSearchMixin, UserAdmin):
     djangoql_schema = UserQLSchema
-    djangoql_completion_enabled_by_default = False
     search_fields = ('username', 'first_name', 'last_name')
 
     list_display = ('username', 'first_name', 'last_name', 'is_staff', 'group')
