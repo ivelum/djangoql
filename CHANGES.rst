@@ -10,6 +10,7 @@
   installation steps are required;
 * added support for GenericIPAddressField (thanks to @HannaShalamitskaya for
   reporting the issue);
+* the source code is now linted with flake8 and isort;
 
 0.14.5
 ------
