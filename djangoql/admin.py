@@ -4,6 +4,7 @@ from django.conf.urls import url
 from django.contrib import messages
 from django.contrib.admin.views.main import ChangeList
 from django.core.exceptions import FieldError, ValidationError
+from django.db import DataError
 from django.forms import Media
 from django.http import HttpResponse
 from django.template.loader import render_to_string
@@ -68,15 +69,25 @@ class DjangoQLSearchMixin(object):
         use_distinct = False
         if not search_term:
             return queryset, use_distinct
+
         try:
-            return (
-                apply_search(queryset, search_term, self.djangoql_schema),
-                use_distinct,
-            )
+            qs = apply_search(queryset, search_term, self.djangoql_schema)
         except (DjangoQLError, ValueError, FieldError, ValidationError) as e:
             msg = self.djangoql_error_message(e)
             messages.add_message(request, messages.WARNING, msg)
-            return queryset.none(), use_distinct
+            qs = queryset.none()
+        else:
+            # Hack to handle 'inet' comparison errors in Postgres. If you
+            # know a better way to check for such an error, please submit a PR.
+            try:
+                qs.explain()
+            except DataError as e:
+                if '::inet' in str(e):
+                    msg = self.djangoql_error_message(e)
+                    messages.add_message(request, messages.WARNING, msg)
+                    qs = queryset.none()
+
+        return qs, use_distinct
 
     def djangoql_error_message(self, exception):
         if isinstance(exception, ValidationError):

@@ -8,6 +8,8 @@
   still ships with the Python package, though, so if you don't need to embed
   the completion widget in your custom JavaScript application, no additional
   installation steps are required;
+* added support for GenericIPAddressField (thanks to @HannaShalamitskaya for
+  reporting the issue);
 
 0.14.5
 ------

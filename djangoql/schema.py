@@ -420,6 +420,7 @@ class DjangoQLSchema(object):
             models.TextField,
             models.UUIDField,
             models.BinaryField,
+            models.GenericIPAddressField,
         )
         if isinstance(field, str_fields):
             return StrField
