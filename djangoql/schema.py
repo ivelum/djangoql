@@ -141,7 +141,7 @@ class DjangoQLField(object):
         if not self.nullable and value is None:
             raise DjangoQLSchemaError(
                 'Field %s is not nullable, '
-                'can\'t compare it to None' % self.name
+                "can't compare it to None" % self.name,
             )
         if value is not None and type(value) not in self.value_types:
             if self.nullable:
@@ -222,7 +222,7 @@ class DateField(DjangoQLField):
                 '"YYYY-MM-DD" format, but not to %s' % (
                     self.name,
                     repr(value),
-                )
+                ),
             )
 
     def get_lookup_value(self, value):
@@ -246,7 +246,7 @@ class DateTimeField(DjangoQLField):
                 '"YYYY-MM-DD HH:MM" format, but not to %s' % (
                     self.name,
                     repr(value),
-                )
+                ),
             )
 
     def get_lookup_value(self, value):
@@ -309,18 +309,18 @@ class DjangoQLSchema(object):
     def __init__(self, model):
         if not inspect.isclass(model) or not issubclass(model, models.Model):
             raise DjangoQLSchemaError(
-                'Schema must be initialized with a subclass of Django model'
+                'Schema must be initialized with a subclass of Django model',
             )
         if self.include and self.exclude:
             raise DjangoQLSchemaError(
-                'Either include or exclude can be specified, but not both'
+                'Either include or exclude can be specified, but not both',
             )
         if self.excluded(model):
             raise DjangoQLSchemaError(
                 "%s can't be used with %s because it's excluded from it" % (
                     model,
                     self.__class__,
-                )
+                ),
             )
         self.current_model = model
         self._models = None
@@ -328,8 +328,9 @@ class DjangoQLSchema(object):
             self.suggest_options = {}
 
     def excluded(self, model):
-        return model in self.exclude or \
-               (self.include and model not in self.include)
+        return model in self.exclude or (
+            self.include and model not in self.include
+        )
 
     @property
     def models(self):
@@ -388,7 +389,7 @@ class DjangoQLSchema(object):
         .super() and exclude unwanted fields from its result.
         """
         return sorted(
-            [f.name for f in model._meta.get_fields() if f.name != 'password']
+            [f.name for f in model._meta.get_fields() if f.name != 'password'],
         )
 
     def get_field_instance(self, model, field_name):
@@ -440,7 +441,7 @@ class DjangoQLSchema(object):
         from .serializers import DjangoQLSchemaSerializer
         warnings.warn(
             'DjangoQLSchema.as_dict() is deprecated and will be removed in '
-            'future releases. Please use DjangoQLSchemaSerializer instead.'
+            'future releases. Please use DjangoQLSchemaSerializer instead.',
         )
         return DjangoQLSchemaSerializer().serialize(self)
 
@@ -455,7 +456,7 @@ class DjangoQLSchema(object):
                     'Unknown field: %s. Possible choices are: %s' % (
                         name_part,
                         ', '.join(sorted(self.models[model].keys())),
-                    )
+                    ),
                 )
             if field.type == 'relation':
                 model = field.relation
@@ -482,7 +483,7 @@ class DjangoQLSchema(object):
             if value is not None:
                 raise DjangoQLSchemaError(
                     'Related model %s can be compared to None only, but not to '
-                    '%s' % (node.left.value, type(value).__name__)
+                    '%s' % (node.left.value, type(value).__name__),
                 )
         else:
             values = value if isinstance(node.right, List) else [value]

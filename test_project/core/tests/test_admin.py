@@ -98,4 +98,3 @@ class DjangoQLAdminTest(TestCase):
             'has_next': False,
             'items': [],
         })
-

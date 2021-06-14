@@ -73,7 +73,7 @@ class SuggestionsAPIView(View):
 
     def get_suggestions(self, field, search):
         if not field.suggest_options:
-            raise ValueError('%s.%s doesn\'t support suggestions' % (
+            raise ValueError("%s.%s doesn't support suggestions" % (
                 field.model._meta.object_name,
                 field.name,
             ))

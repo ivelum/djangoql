@@ -30,7 +30,8 @@ class BookCustomSearchSchema(DjangoQLSchema):
 class DjangoQLQuerySetTest(TestCase):
     def do_simple_query_test(self):
         qs = Book.objects.djangoql(
-            'name = "foo" and author.email = "em@il" and written > "2017-01-30"'
+            'name = "foo" and author.email = "em@il" '
+            'and written > "2017-01-30"',
         )
         where_clause = str(qs.query).split('WHERE')[1].strip()
         self.assertEqual(
@@ -83,7 +84,7 @@ class DjangoQLQuerySetTest(TestCase):
         )
         where_clause = str(qs.query).split('WHERE')[1].strip()
         self.assertTrue(
-            where_clause.startswith('"core_book"."written" BETWEEN 2017-01-01')
+            where_clause.startswith('"core_book"."written" BETWEEN 2017-01-01'),
         )
 
     def test_empty_datetime(self):

@@ -5,15 +5,15 @@ from decimal import Decimal
 
 import ply.yacc as yacc
 
-from .ast import *  # noqa
+from .ast import Comparison, Const, Expression, List, Logical, Name
 from .compat import binary_type, text_type
 from .exceptions import DjangoQLParserError
 from .lexer import DjangoQLLexer
 
 
 unescape_pattern = re.compile(
-    '(' +  DjangoQLLexer.re_escaped_char + '|' +
-    DjangoQLLexer.re_escaped_unicode + ')'
+    '(' + DjangoQLLexer.re_escaped_char + '|' +
+    DjangoQLLexer.re_escaped_unicode + ')',
 )
 
 
@@ -40,7 +40,7 @@ class DjangoQLParser(object):
             kwargs['write_tables'] = False
         self.yacc = yacc.yacc(module=self, **kwargs)
 
-    def parse(self, input=None, lexer=None, **kwargs):
+    def parse(self, input=None, lexer=None, **kwargs):  # noqa: A002
         lexer = lexer or self.default_lexer
         return self.yacc.parse(input=input, lexer=lexer, **kwargs)
 

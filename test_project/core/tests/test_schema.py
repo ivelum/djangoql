@@ -75,7 +75,7 @@ class DjangoQLSchemaTest(TestCase):
             'auth.group',
             'auth.permission',
             'contenttypes.contenttype',
-            'core.book'
+            'core.book',
         ])
 
     def test_include(self):
@@ -172,6 +172,6 @@ class DjangoQLSchemaTest(TestCase):
             ast = DjangoQLParser().parse(query)
             try:
                 IncludeUserGroupSchema(User).validate(ast)
-                self.fail('This query should\'t pass validation: %s' % query)
-            except DjangoQLSchemaError as e:
+                self.fail("This query should't pass validation: %s" % query)
+            except DjangoQLSchemaError:
                 pass

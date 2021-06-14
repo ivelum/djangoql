@@ -41,7 +41,9 @@ class DjangoQLLexer(object):
         """
         Returns token position in current text, starting from 1
         """
-        cr = max(self.text.rfind(l, 0, t.lexpos) for l in self.line_terminators)
+        cr = max(
+            self.text.rfind(lt, 0, t.lexpos) for lt in self.line_terminators
+        )
         if cr == -1:
             return t.lexpos + 1
         return t.lexpos - cr

@@ -1,4 +1,3 @@
-from decimal import Decimal
 from unittest import TestCase
 
 from djangoql.lexer import DjangoQLLexer
@@ -17,7 +16,7 @@ class DjangoQLLexerTest(TestCase):
             len_expected,
             'Actual output length %s does not match expected length %s\n'
             'Actual: %s\n'
-            'Expected: %s' % (len_actual, len_expected, actual, expected)
+            'Expected: %s' % (len_actual, len_expected, actual, expected),
         )
         for i, token in enumerate(actual):
             self.assertEqual(token.type, expected[i][0])
@@ -73,7 +72,7 @@ class DjangoQLLexerTest(TestCase):
         for s in ('""', u'""', '"42"', r'"\t\n\u0042 ^"'):
             self.assert_output(
                 self.lexer.input(s),
-                [('STRING_VALUE', s.strip('"'))]
+                [('STRING_VALUE', s.strip('"'))],
             )
 
     def test_illegal_chars(self):
@@ -85,7 +84,7 @@ class DjangoQLLexerTest(TestCase):
                 self.assertEqual(1, e.line)
                 self.assertEqual(1, e.column)
                 self.assertTrue(
-                    str(e).startswith('Line 1, col 1: Illegal character')
+                    str(e).startswith('Line 1, col 1: Illegal character'),
                 )
                 self.assertEqual(s, e.value)
 

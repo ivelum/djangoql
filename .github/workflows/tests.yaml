@@ -80,6 +80,8 @@ jobs:
           key: pip|${{ matrix.python }}|${{ matrix.django }}
       - run: pip install PLY
       - run: pip install Django==${{ matrix.django }}
+      - run: pip install -r requirements-dev.txt
+      - run: flake8
       - run: pip install -e .
       - run: python test_project/manage.py test core.tests
 

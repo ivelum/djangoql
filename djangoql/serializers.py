@@ -8,7 +8,7 @@ class DjangoQLSchemaSerializer(object):
         models = {}
         for model_label, fields in schema.models.items():
             models[model_label] = OrderedDict(
-                [(name, self.serialize_field(f)) for name, f in fields.items()]
+                [(name, self.serialize_field(f)) for name, f in fields.items()],
             )
         return {
             'current_model': schema.model_label(schema.current_model),
