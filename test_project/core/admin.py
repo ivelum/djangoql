@@ -2,8 +2,8 @@ import time
 
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from django.contrib.auth.models import User, Group
-from django.db.models import Q, Count
+from django.contrib.auth.models import Group, User
+from django.db.models import Count, Q
 from django.utils.timezone import now
 
 from djangoql.admin import DjangoQLSearchMixin

@@ -17,6 +17,7 @@ from .schema import DjangoQLSchema
 from .serializers import SuggestionsAPISerializer
 from .views import SuggestionsAPIView
 
+
 try:
     from django.core.urlresolvers import reverse
 except ImportError:  # Django 2.0

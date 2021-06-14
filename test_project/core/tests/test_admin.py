@@ -2,6 +2,8 @@ import json
 
 from django.contrib.auth.models import User
 from django.test import TestCase
+
+
 try:
     from django.core.urlresolvers import reverse
 except ImportError:  # Django 2.0

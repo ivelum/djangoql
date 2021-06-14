@@ -1,7 +1,7 @@
 from unittest import TestCase
 
-from djangoql.lexer import DjangoQLLexer
 from djangoql.exceptions import DjangoQLLexerError
+from djangoql.lexer import DjangoQLLexer
 
 
 class DjangoQLLexerTest(TestCase):

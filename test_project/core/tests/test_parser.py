@@ -2,7 +2,7 @@
 import unittest.util
 from unittest import TestCase
 
-from djangoql.ast import Expression, Name, Comparison, Logical, Const, List
+from djangoql.ast import Comparison, Const, Expression, List, Logical, Name
 from djangoql.exceptions import DjangoQLParserError
 from djangoql.parser import DjangoQLParser
 

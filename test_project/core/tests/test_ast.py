@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from djangoql.ast import Expression, Name, Comparison, Const
+from djangoql.ast import Comparison, Const, Expression, Name
 
 
 class DjangoQLASTTest(TestCase):
