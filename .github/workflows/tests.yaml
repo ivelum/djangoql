@@ -44,15 +44,15 @@ jobs:
       - run: flake8
 
       # Send notification on build failure
-       - name: Notify slack fail
-         uses: voxmedia/github-action-slack-notify-build@v1
-         if: failure()
-         env:
-           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-         with:
-           channel_id: C0PT3267R
-           status: FAILED
-           color: danger
+      - name: Notify slack fail
+        uses: voxmedia/github-action-slack-notify-build@v1
+        if: failure()
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+        with:
+          channel_id: C0PT3267R
+          status: FAILED
+          color: danger
 
   tests:
     needs: lint
