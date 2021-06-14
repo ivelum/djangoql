@@ -42,6 +42,7 @@ jobs:
           key: pip|lint
       - run: pip install -r requirements-dev.txt
       - run: flake8
+      - run: isort --diff -c .
 
       # Send notification on build failure
       - name: Notify slack fail
