@@ -10,6 +10,7 @@ import djangoql
 
 
 def download_completion_widget():
+    import requests
     src_base = 'https://github.com/ivelum/djangoql-completion/raw/0.3.2/dist/'
     target_base = 'djangoql/static/djangoql/'
     files = {
@@ -17,9 +18,10 @@ def download_completion_widget():
         'completion.js.map': target_base + 'js/',
         'completion.css': target_base + 'css/',
     }
-    # Not using urllib b/c Python won't have SSL certificates on all platforms
     for file, target_dir in files.items():
-        check_call(['wget', '-O', target_dir + file, src_base + file])
+        source = requests.get(src_base + file, allow_redirects=True)
+        with open(target_dir + file, 'wb') as f:
+            f.write(source.content)
 
 
 class PreDevelopCommand(develop):
@@ -35,7 +37,7 @@ class PreInstallCommand(install):
 
 
 packages = ['djangoql']
-requires = ['ply>=3.8']
+requires = ['ply>=3.8', 'requests']
 
 setup(
     name='djangoql',
