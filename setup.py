@@ -19,7 +19,7 @@ def download_completion_widget():
     }
     # Not using urllib b/c Python won't have SSL certificates on all platforms
     for file, target_dir in files.items():
-        check_call(['curl', '-fL', src_base + file, '-o', target_dir + file])
+        check_call(['wget', '-O', target_dir + file, src_base + file])
 
 
 class PreDevelopCommand(develop):
