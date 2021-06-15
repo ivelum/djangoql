@@ -10,7 +10,7 @@ import djangoql
 
 
 def download_completion_widget():
-    src_base = 'https://github.com/ivelum/djangoql-completion/raw/0.3.1/dist/'
+    src_base = 'https://github.com/ivelum/djangoql-completion/raw/0.3.2/dist/'
     target_base = 'djangoql/static/djangoql/'
     files = {
         'completion.js': target_base + 'js/',
