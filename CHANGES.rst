@@ -1,4 +1,4 @@
-0.15.0 (unreleased yet)
+0.15.0
 ------
 
 * the completion JavaScript widget has been moved to
