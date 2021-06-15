@@ -83,10 +83,11 @@ class DjangoQLSearchMixin(object):
             try:
                 qs.explain()
             except DataError as e:
-                if '::inet' in str(e):
-                    msg = self.djangoql_error_message(e)
-                    messages.add_message(request, messages.WARNING, msg)
-                    qs = queryset.none()
+                if '::inet' not in str(e):
+                    raise
+                msg = self.djangoql_error_message(e)
+                messages.add_message(request, messages.WARNING, msg)
+                qs = queryset.none()
 
         return qs, use_distinct
 
