@@ -1,8 +1,0 @@
-{
-  "extends": "airbnb-base/legacy",
-  "rules": {
-    "func-names": "off",
-    "max-len": [2, 80, 4],
-    "no-plusplus": "off"
-  }
-}
