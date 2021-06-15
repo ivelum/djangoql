@@ -2,8 +2,7 @@
 .idea
 *.py[co]
 
-djangoql/static/djangoql/css/completion.css*
-djangoql/static/djangoql/js/completion.js*
+node_modules
 test_project/db.sqlite3
 
 build

@@ -1,41 +1,12 @@
 #!/usr/bin/env python
 
 from setuptools import setup
-from setuptools.command.develop import develop
-from setuptools.command.install import install
 
 import djangoql
 
 
-def download_completion_widget():
-    import requests
-    src_base = 'https://github.com/ivelum/djangoql-completion/raw/0.3.2/dist/'
-    target_base = 'djangoql/static/djangoql/'
-    files = {
-        'completion.js': target_base + 'js/',
-        'completion.js.map': target_base + 'js/',
-        'completion.css': target_base + 'css/',
-    }
-    for file, target_dir in files.items():
-        source = requests.get(src_base + file, allow_redirects=True)
-        with open(target_dir + file, 'wb') as f:
-            f.write(source.content)
-
-
-class PreDevelopCommand(develop):
-    def run(self):
-        download_completion_widget()
-        develop.run(self)
-
-
-class PreInstallCommand(install):
-    def run(self):
-        download_completion_widget()
-        install.run(self)
-
-
 packages = ['djangoql']
-requires = ['ply>=3.8', 'requests']
+requires = ['ply>=3.8']
 
 setup(
     name='djangoql',
@@ -64,8 +35,4 @@ setup(
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
     ],
-    cmdclass={
-        'develop': PreDevelopCommand,
-        'install': PreInstallCommand,
-    },
 )

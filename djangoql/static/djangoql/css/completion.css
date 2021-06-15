@@ -1,0 +1,85 @@
+.djangoql-completion {
+  position: absolute;
+  display: none;
+  border: solid 1px #ccc;
+  border-radius: 4px;
+  background: white;
+  background: var(--body-bg, white);
+  min-width: 183px;
+  font-size: 13px;
+}
+
+.djangoql-completion .active {
+  background-color: #79aec8;
+  color: white;
+}
+
+.djangoql-completion ul {
+  padding: 2px 0;
+  margin: 0;
+  max-height: 295px;
+  overflow: auto;
+}
+
+.djangoql-completion li {
+  list-style: none;
+  padding: 4px 10px;
+  cursor: pointer;
+}
+
+.djangoql-completion li:hover {
+  background-color: #c4e9fa;
+  color: black;
+}
+
+.djangoql-completion li i {
+  font-size: 0.9em;
+  color: #ccc;
+  float: right;
+  font-style: normal;
+}
+
+.djangoql-completion .syntax-help {
+  padding: 4px 10px 6px 10px;
+  margin: 0;
+  border-top: solid 1px #ccc;
+  font-size: inherit;
+}
+
+/*
+Pure CSS loading icon. Credit: https://loading.io/css/
+*/
+.djangoql-loading {
+  display: block;
+  position: relative;
+}
+
+.djangoql-loading:after {
+  -moz-animation: djangoql-loading 1.2s linear infinite;
+  -ms-animation: djangoql-loading 1.2s linear infinite;
+  -webkit-animation: djangoql-loading 1.2s linear infinite;
+  animation: djangoql-loading 1.2s linear infinite;
+  border: 2px solid #aaa;
+  border-color: #aaa transparent #aaa transparent;
+  border-radius: 50%;
+  content: " ";
+  display: block;
+  height: 12px;
+  left: 50%;
+  margin: -8px;
+  position: absolute;
+  top: 50%;
+  width: 12px;
+}
+
+@keyframes djangoql-loading {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+
+/*# sourceMappingURL=completion.css.map*/
