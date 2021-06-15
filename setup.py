@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 
-from subprocess import check_call
-
 from setuptools import setup
 from setuptools.command.develop import develop
 from setuptools.command.install import install
