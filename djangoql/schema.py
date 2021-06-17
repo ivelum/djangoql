@@ -370,10 +370,8 @@ class DjangoQLSchema(object):
                     continue
                 if isinstance(field, RelationField):
                     if field.relation not in closed_set:
-                        model_fields[field.name] = field
                         open_set.append(field.related_model)
-                else:
-                    model_fields[field.name] = field
+                model_fields[field.name] = field
 
             result[model_label] = model_fields
             closed_set.append(model_label)
