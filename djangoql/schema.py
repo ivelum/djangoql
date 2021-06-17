@@ -353,7 +353,7 @@ class DjangoQLSchema(object):
         """
         result = {}
         open_set = deque([model])
-        closed_set = list(exclude)
+        closed_set = set(exclude)
 
         while open_set:
             model = open_set.popleft()
@@ -369,14 +369,11 @@ class DjangoQLSchema(object):
                 if not field:
                     continue
                 if isinstance(field, RelationField):
-                    if field.relation not in closed_set:
-                        model_fields[field.name] = field
-                        open_set.append(field.related_model)
-                else:
-                    model_fields[field.name] = field
+                    open_set.append(field.related_model)
+                model_fields[field.name] = field
 
             result[model_label] = model_fields
-            closed_set.append(model_label)
+            closed_set.add(model_label)
 
         return result
 

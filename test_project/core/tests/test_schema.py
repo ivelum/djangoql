@@ -108,12 +108,12 @@ class DjangoQLSchemaTest(TestCase):
 
     def test_circular_references(self):
         models = serializer.serialize(DjangoQLSchema(Book))['models']
-        # If Book references Author then Author shouldn't reference Book back
+        # If Book references Author then Author should also reference Book back
         book_author_field = models['core.book'].get('author')
         self.assertIsNotNone(book_author_field)
         self.assertEqual('relation', book_author_field['type'])
         self.assertEqual('auth.user', book_author_field['relation'])
-        self.assertNotIn('book', models['auth.user'])
+        self.assertEqual('relation', models['auth.user']['book']['type'])
 
     def test_custom_search(self):
         models = serializer.serialize(BookCustomSearchSchema(Book))['models']
