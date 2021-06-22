@@ -1,3 +1,8 @@
+0.15.1
+------
+
+* fixed ``url()`` deprecation warnings for Django 3.1+ (thanks to @ecilveks);
+
 0.15.0
 ------
 
