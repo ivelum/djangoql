@@ -1,6 +1,5 @@
 import json
 
-from django.conf.urls import re_path
 from django.contrib import messages
 from django.contrib.admin.views.main import ChangeList
 from django.core.exceptions import FieldError, ValidationError
@@ -23,6 +22,10 @@ try:
 except ImportError:  # Django 2.0
     from django.urls import reverse
 
+try:
+    from django.conf.urls import re_path
+except ImportError:  # Django <2.0
+    from django.conf.urls import url as re_path
 
 DJANGOQL_SEARCH_MARKER = 'q-l'
 
