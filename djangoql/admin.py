@@ -1,6 +1,6 @@
 import json
 
-from django.conf.urls import url
+from django.conf.urls import re_path
 from django.contrib import messages
 from django.contrib.admin.views.main import ChangeList
 from django.core.exceptions import FieldError, ValidationError
@@ -125,7 +125,7 @@ class DjangoQLSearchMixin(object):
         custom_urls = []
         if self.djangoql_completion:
             custom_urls += [
-                url(
+                re_path(
                     r'^introspect/$',
                     self.admin_site.admin_view(self.introspect),
                     name='%s_%s_djangoql_introspect' % (
@@ -133,7 +133,7 @@ class DjangoQLSearchMixin(object):
                         self.model._meta.model_name,
                     ),
                 ),
-                url(
+                re_path(
                     r'^suggestions/$',
                     self.admin_site.admin_view(self.suggestions),
                     name='%s_%s_djangoql_suggestions' % (
@@ -141,7 +141,7 @@ class DjangoQLSearchMixin(object):
                         self.model._meta.model_name,
                     ),
                 ),
-                url(
+                re_path(
                     r'^djangoql-syntax/$',
                     self.admin_site.admin_view(TemplateView.as_view(
                         template_name=self.djangoql_syntax_help_template,
