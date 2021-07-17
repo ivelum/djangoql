@@ -84,9 +84,14 @@ class DjangoQLSearchMixin(object):
             # Hack to handle 'inet' comparison errors in Postgres. If you
             # know a better way to check for such an error, please submit a PR.
             try:
-                qs.explain()
+                # Django >= 2.1 has built-in .explain() method
+                explain = getattr(qs, 'explain', None)
+                if callable(explain):
+                    explain()
+                else:
+                    list(qs[:1])
             except DataError as e:
-                if '::inet' not in str(e):
+                if 'inet' not in str(e):
                     raise
                 msg = self.djangoql_error_message(e)
                 messages.add_message(request, messages.WARNING, msg)
