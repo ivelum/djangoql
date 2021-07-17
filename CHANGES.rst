@@ -1,3 +1,9 @@
+0.15.2
+------
+
+* fixed regression for Django < 2.1 (thanks to @derekenos for reporting the
+  issue);
+
 0.15.1
 ------
 
