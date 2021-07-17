@@ -100,3 +100,10 @@ class DjangoQLAdminTest(TestCase):
             'has_next': False,
             'items': [],
         })
+
+    def test_query(self):
+        url = reverse('admin:core_book_changelist') + '?q=price=0'
+        self.assertTrue(self.client.login(**self.credentials))
+        response = self.client.get(url)
+        # There should be no error at least
+        self.assertEqual(200, response.status_code)
