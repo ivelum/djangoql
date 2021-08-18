@@ -4,7 +4,7 @@
     "build": "webpack --mode production"
   },
   "dependencies": {
-    "djangoql-completion": "0.3.3"
+    "djangoql-completion": "0.4.0"
   },
   "devDependencies": {
     "@babel/core": "7.14.3",
