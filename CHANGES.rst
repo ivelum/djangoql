@@ -1,3 +1,14 @@
+0.15.3
+------
+
+* fixed ``django-completion`` bugs:
+ - removed chained models from suggestions;
+ - fixed circular dependencies.
+
+Related pull requests:
+1) `https://github.com/ivelum/djangoql-completion/pull/2 <https://github.com/ivelum/djangoql-completion/pull/2>`
+2) `https://github.com/ivelum/djangoql/pull/77 <https://github.com/ivelum/djangoql/pull/77>`
+
 0.15.2
 ------
 
