@@ -15,7 +15,7 @@ See a video: `DjangoQL demo <https://youtu.be/oKVff4dHZB8>`_
 
 DjangoQL is used by:
 
-|logo1| |logo2| |logo3|
+|logo1| |logo2| |logo3| |logo4|
 
 .. |logo1| image:: https://raw.githubusercontent.com/ivelum/djangoql/master/assets/redhat.svg
    :width: 25%
@@ -28,6 +28,10 @@ DjangoQL is used by:
 .. |logo3| image:: https://raw.githubusercontent.com/ivelum/djangoql/master/assets/police1.svg
    :width: 25%
    :target: https://www.police1.com
+   
+.. |logo4| image:: https://raw.githubusercontent.com/ivelum/djangoql/master/assets/15Five.svg
+   :width: 25%
+   :target: https://www.15five.com
 
 Is your project using DjangoQL? Please submit a PR and let us know!
 
