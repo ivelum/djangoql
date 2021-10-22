@@ -18,19 +18,19 @@ DjangoQL is used by:
 |logo1| |logo2| |logo3| |logo4|
 
 .. |logo1| image:: https://raw.githubusercontent.com/ivelum/djangoql/master/assets/redhat.svg
-   :width: 25%
+   :width: 22%
    :target: https://www.redhat.com
 
 .. |logo2| image:: https://raw.githubusercontent.com/ivelum/djangoql/master/assets/teamplify.svg
-   :width: 25%
+   :width: 22%
    :target: https://teamplify.com
 
 .. |logo3| image:: https://raw.githubusercontent.com/ivelum/djangoql/master/assets/police1.svg
-   :width: 25%
+   :width: 22%
    :target: https://www.police1.com
-   
-.. |logo4| image:: https://raw.githubusercontent.com/ivelum/djangoql/master/assets/15Five.svg
-   :width: 25%
+
+.. |logo4| image:: https://raw.githubusercontent.com/ivelum/djangoql/master/assets/15-five.svg
+   :width: 22%
    :target: https://www.15five.com
 
 Is your project using DjangoQL? Please submit a PR and let us know!
