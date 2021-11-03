@@ -1,7 +1,13 @@
+0.15.4
+------
+
+* fixed a deprecation warning for Django 3.1 (thanks to @sainAk);
+
 0.15.3
 ------
 
-* fixed ``django-completion`` bug related to removed chained models from suggestions;
+* fixed ``django-completion`` bug related to removed chained models from
+  suggestions;
 * fixed ``django-completion`` bug related to fixed circular dependencies.
 
 Related pull requests:
