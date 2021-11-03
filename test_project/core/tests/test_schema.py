@@ -142,6 +142,9 @@ class DjangoQLSchemaTest(TestCase):
     def test_validation_pass(self):
         samples = [
             'first_name = "Lolita"',
+            'first_name regex "^Lol"',
+            'first_name regex "ita$"',
+            r'first_name regex "\w+i\w+a"',
             'groups.id < 42',
             'groups = None',  # that's ok to compare a model to None
             'groups != None',

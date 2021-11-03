@@ -93,6 +93,7 @@ class DjangoQLParser(object):
         comparison_string : comparison_equality
                           | comparison_greater_less
                           | comparison_contains
+                          | comparison_regex
         """
         p[0] = p[1]
 
@@ -116,6 +117,12 @@ class DjangoQLParser(object):
         """
         comparison_contains : CONTAINS
                             | NOT_CONTAINS
+        """
+        p[0] = Comparison(operator=p[1])
+
+    def p_comparison_regex(self, p):
+        """
+        comparison_regex : REGEX
         """
         p[0] = Comparison(operator=p[1])
 

@@ -53,7 +53,7 @@ class DjangoQLLexerTest(TestCase):
             pass
 
     def test_reserved_words(self):
-        reserved = ('True', 'False', 'None', 'or', 'and', 'in')
+        reserved = ('True', 'False', 'None', 'or', 'and', 'in', 'regex')
         for word in reserved:
             self.assert_output(self.lexer.input(word), [(word.upper(), word)])
         # A word made of reserved words should be treated as a name

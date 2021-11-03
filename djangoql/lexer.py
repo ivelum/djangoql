@@ -55,7 +55,7 @@ class DjangoQLLexer(object):
 
     re_escaped_char = r'\\[\"\\/bfnrt]'
     re_escaped_unicode = r'\\u[0-9A-Fa-f]{4}'
-    re_string_char = r'[^\"\\' + re_line_terminators + u']'
+    re_string_char = r'[^\"' + re_line_terminators + u']'
 
     re_int_value = r'(-?0|-?[1-9][0-9]*)'
     re_fraction_part = r'\.[0-9]+'
@@ -84,6 +84,7 @@ class DjangoQLLexer(object):
         'LESS_EQUAL',
         'CONTAINS',
         'NOT_CONTAINS',
+        'REGEX',
     ]
 
     t_COMMA = ','
@@ -135,6 +136,10 @@ class DjangoQLLexer(object):
 
     @TOKEN('in' + not_followed_by_name)
     def t_IN(self, t):
+        return t
+
+    @TOKEN('regex' + not_followed_by_name)
+    def t_REGEX(self, t):
         return t
 
     @TOKEN('True' + not_followed_by_name)

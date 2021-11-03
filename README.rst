@@ -137,6 +137,7 @@ parenthesis. DjangoQL is case-sensitive.
 - comparison operators: ``=``, ``!=``, ``<``, ``<=``, ``>``, ``>=``
   - work as you expect. ``~`` and ``!~`` - test whether or not a string contains
   a substring (translated into ``__icontains``);
+- ``regex`` - find based on regular expression (translated into ``__iregex``);
 - test a value vs. list: ``in``, ``not in``. Example:
   ``pk in (2, 3)``.
 
