@@ -23,7 +23,7 @@ except ImportError:  # Django 2.0
     from django.urls import reverse
 
 try:
-    from django.conf.urls import re_path
+    from django.urls import re_path
 except ImportError:  # Django <2.0
     from django.conf.urls import url as re_path
 
