@@ -60,6 +60,7 @@ class DjangoQLLexer(object):
     re_int_value = r'(-?0|-?[1-9][0-9]*)'
     re_fraction_part = r'\.[0-9]+'
     re_exponent_part = r'[eE][\+-]?[0-9]+'
+    re_name = r'[_A-Za-z][_0-9A-Za-z]*(\.[_A-Za-z][_0-9A-Za-z]*)*'
 
     tokens = [
         'COMMA',
@@ -84,6 +85,8 @@ class DjangoQLLexer(object):
         'LESS_EQUAL',
         'CONTAINS',
         'NOT_CONTAINS',
+        'REGEX',
+        'NOT_REGEX'
     ]
 
     t_COMMA = ','
@@ -97,10 +100,19 @@ class DjangoQLLexer(object):
     t_LESS_EQUAL = '<='
     t_CONTAINS = '~'
     t_NOT_CONTAINS = '!~'
-
-    t_NAME = r'[_A-Za-z][_0-9A-Za-z]*(\.[_A-Za-z][_0-9A-Za-z]*)*'
+    t_REGEX = 're'
+    t_NOT_REGEX = '!re'
 
     t_ignore = whitespace
+
+    reserved_names = {
+        t_REGEX: 'REGEX'
+    }
+
+    @TOKEN(re_name)
+    def t_NAME(self, t):
+        t.type = self.reserved_names.get(t.value, 'NAME')
+        return t
 
     @TOKEN(r'\"(' + re_escaped_char +
            '|' + re_escaped_unicode +
