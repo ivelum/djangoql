@@ -101,6 +101,7 @@ class DjangoQLField(object):
             '<': '__lt',
             '<=': '__lte',
             '~': '__icontains',
+            're': '__iregex',
             'in': '__in',
         }.get(operator)
         if op is not None:
@@ -108,6 +109,7 @@ class DjangoQLField(object):
         op = {
             '!=': '',
             '!~': '__icontains',
+            '!re': '__iregex',
             'not in': '__in',
         }[operator]
         return op, True
