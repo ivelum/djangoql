@@ -103,18 +103,11 @@ class DjangoQLLexer(object):
     t_REGEX = 're'
     t_NOT_REGEX = '!re'
 
-    t_NAME = r'[_A-Za-z][_0-9A-Za-z]*(\.[_A-Za-z][_0-9A-Za-z]*)*'
-
     t_ignore = whitespace
 
     reserved_names = {
         t_REGEX: 'REGEX'
     }
-
-    @TOKEN(re_name)
-    def t_NAME(self, t):
-        t.type = self.reserved_names.get(t.value, 'NAME')
-        return t
 
     @TOKEN(r'\"(' + re_escaped_char +
            '|' + re_escaped_unicode +
@@ -175,3 +168,10 @@ class DjangoQLLexer(object):
     def t_newline(self, t):
         t.lexer.lineno += len(t.value)
         return
+
+    @TOKEN(re_name)
+    def t_NAME(self, t):
+        print("in", t.value, t.type)
+        t.type = self.reserved_names.get(t.value, 'NAME')
+        print("out", t.value, t.type)
+        return t
