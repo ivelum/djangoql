@@ -109,11 +109,6 @@ class DjangoQLLexer(object):
         t_REGEX: 'REGEX'
     }
 
-    @TOKEN(re_name)
-    def t_NAME(self, t):
-        t.type = self.reserved_names.get(t.value, 'NAME')
-        return t
-
     @TOKEN(r'\"(' + re_escaped_char +
            '|' + re_escaped_unicode +
            '|' + re_string_char + r')*\"')
@@ -173,3 +168,10 @@ class DjangoQLLexer(object):
     def t_newline(self, t):
         t.lexer.lineno += len(t.value)
         return
+
+    @TOKEN(re_name)
+    def t_NAME(self, t):
+        print("in", t.value, t.type)
+        t.type = self.reserved_names.get(t.value, 'NAME')
+        print("out", t.value, t.type)
+        return t
