@@ -103,6 +103,8 @@ class DjangoQLLexer(object):
     t_REGEX = 're'
     t_NOT_REGEX = '!re'
 
+    t_NAME = r'[_A-Za-z][_0-9A-Za-z]*(\.[_A-Za-z][_0-9A-Za-z]*)*'
+
     t_ignore = whitespace
 
     reserved_names = {
