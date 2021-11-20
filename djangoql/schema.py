@@ -102,6 +102,8 @@ class DjangoQLField(object):
             '<=': '__lte',
             '~': '__icontains',
             'in': '__in',
+            'startswith': '__istartswith',
+            'endswith': '__iendswith',
         }.get(operator)
         if op is not None:
             return op, False
@@ -109,6 +111,8 @@ class DjangoQLField(object):
             '!=': '',
             '!~': '__icontains',
             'not in': '__in',
+            'not startswith': '__istartswith',
+            'not endswith': '__iendswith',
         }[operator]
         return op, True
 

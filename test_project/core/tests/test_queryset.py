@@ -55,6 +55,26 @@ class DjangoQLQuerySetTest(TestCase):
             where_clause,
         )
 
+    def test_advanced_string_comparison(self):
+        qs = Book.objects.djangoql('name ~ "war"')
+        where_clause = str(qs.query).split('WHERE')[1].strip()
+        self.assertEqual(
+            '"core_book"."name" LIKE %war% ESCAPE \'\\\'',
+            where_clause,
+        )
+        qs = Book.objects.djangoql('name startswith "war"')
+        where_clause = str(qs.query).split('WHERE')[1].strip()
+        self.assertEqual(
+            '"core_book"."name" LIKE war% ESCAPE \'\\\'',
+            where_clause,
+        )
+        qs = Book.objects.djangoql('name not endswith "peace"')
+        where_clause = str(qs.query).split('WHERE')[1].strip()
+        self.assertEqual(
+            'NOT ("core_book"."name" LIKE %peace ESCAPE \'\\\')',
+            where_clause,
+        )
+
     def test_apply_search(self):
         qs = User.objects.all()
         try:

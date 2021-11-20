@@ -84,6 +84,8 @@ class DjangoQLLexer(object):
         'LESS_EQUAL',
         'CONTAINS',
         'NOT_CONTAINS',
+        'STARTSWITH',
+        'ENDSWITH',
     ]
 
     t_COMMA = ','
@@ -135,6 +137,14 @@ class DjangoQLLexer(object):
 
     @TOKEN('in' + not_followed_by_name)
     def t_IN(self, t):
+        return t
+
+    @TOKEN('startswith' + not_followed_by_name)
+    def t_STARTSWITH(self, t):
+        return t
+
+    @TOKEN('endswith' + not_followed_by_name)
+    def t_ENDSWITH(self, t):
         return t
 
     @TOKEN('True' + not_followed_by_name)
