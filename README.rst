@@ -135,8 +135,14 @@ parenthesis. DjangoQL is case-sensitive.
   ``published > False`` will cause an error;
 - logical operators: ``and``, ``or``;
 - comparison operators: ``=``, ``!=``, ``<``, ``<=``, ``>``, ``>=``
-  - work as you expect. ``~`` and ``!~`` - test whether or not a string contains
-  a substring (translated into ``__icontains``);
+  - work as you expect;
+- string-specific comparison operators: ``startswith``, ``not startswith``,
+  ``endswith``, ``not endswith`` - work as you expect. Test whether or not a
+  string contains a substring: ``~`` and ``!~`` (translated into
+  ``__icontains`` under the hood).
+  Example: ``name endswith "peace" or author.last_name ~ "tolstoy"``;
+- date-specific comparison operators, compare by date part: ``~`` and ``!~``.
+  Example: ``date_published ~ "2021-11"`` - find books published in Nov, 2021;
 - test a value vs. list: ``in``, ``not in``. Example:
   ``pk in (2, 3)``.
 

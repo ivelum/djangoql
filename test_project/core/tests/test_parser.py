@@ -42,6 +42,32 @@ class DjangoQLParseTest(TestCase):
             self.parser.parse('job.best.title > "none"'),
         )
 
+    def test_string_comparisons(self):
+        self.assertEqual(
+            Expression(Name('name'), Comparison('~'), Const('gav')),
+            self.parser.parse('name ~ "gav"'),
+        )
+        self.assertEqual(
+            Expression(Name('name'), Comparison('!~'), Const('gav')),
+            self.parser.parse('name !~ "gav"'),
+        )
+        self.assertEqual(
+            Expression(Name('name'), Comparison('startswith'), Const('gav')),
+            self.parser.parse('name startswith "gav"'),
+        )
+        self.assertEqual(
+            Expression(Name('name'), Comparison('not startswith'), Const('rr')),
+            self.parser.parse('name not startswith "rr"'),
+        )
+        self.assertEqual(
+            Expression(Name('name'), Comparison('endswith'), Const('gav')),
+            self.parser.parse('name endswith "gav"'),
+        )
+        self.assertEqual(
+            Expression(Name('name'), Comparison('not endswith'), Const('gav')),
+            self.parser.parse('name not endswith "gav"'),
+        )
+
     def test_escaped_chars(self):
         self.assertEqual(
             Expression(Name('name'), Comparison('~'),
@@ -91,7 +117,17 @@ class DjangoQLParseTest(TestCase):
         )
 
     def test_invalid_comparison(self):
-        for expr in ('foo > None', 'b <= True', 'c in False', '1 = 1', 'a > b'):
+        invalid_comparisons = (
+            'foo > None',
+            'b <= True',
+            'c in False',
+            '1 = 1',
+            'a > b',
+            'lol ~ None',
+            'gav endswith 1',
+            'nor not startswith False',
+        )
+        for expr in invalid_comparisons:
             self.assertRaises(DjangoQLParserError, self.parser.parse, expr)
 
     def test_entity_props(self):

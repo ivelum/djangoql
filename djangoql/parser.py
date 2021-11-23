@@ -92,7 +92,7 @@ class DjangoQLParser(object):
         """
         comparison_string : comparison_equality
                           | comparison_greater_less
-                          | comparison_contains
+                          | comparison_string_specific
                           | comparison_regex
         """
         p[0] = p[1]
@@ -113,12 +113,19 @@ class DjangoQLParser(object):
         """
         p[0] = Comparison(operator=p[1])
 
-    def p_comparison_contains(self, p):
+    def p_comparison_string_specific(self, p):
         """
-        comparison_contains : CONTAINS
-                            | NOT_CONTAINS
+        comparison_string_specific : CONTAINS
+                                   | NOT_CONTAINS
+                                   | STARTSWITH
+                                   | NOT STARTSWITH
+                                   | ENDSWITH
+                                   | NOT ENDSWITH
         """
-        p[0] = Comparison(operator=p[1])
+        if len(p) == 2:
+            p[0] = Comparison(operator=p[1])
+        else:
+            p[0] = Comparison(operator='%s %s' % (p[1], p[2]))
 
     def p_comparison_regex(self, p):
         """

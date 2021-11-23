@@ -1273,10 +1273,10 @@ define-properties@^1.1.3:
   dependencies:
     object-keys "^1.0.12"
 
-djangoql-completion@0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/djangoql-completion/-/djangoql-completion-0.4.0.tgz#b80cbe256a3310f1cba129c080e4113a6706012c"
-  integrity sha512-L8ZX5Y/5rhRo123JBxpJIjsa9eWdg6lwF+gqzdUrG9dkUdNl0rbsCIeh3CaMwXzHKc6YEJYhZ79FSKUBUooIbg==
+djangoql-completion@0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/djangoql-completion/-/djangoql-completion-0.5.0.tgz#984fcef2cf25499b44722b3ef36d5e63e210749f"
+  integrity sha512-07P9Ksyb9Urnb/I/DfSIIw41xXdps9mTcIXR7PYbz/vryBUQSEc4tYC3CZ3dHJXQVk665kzseNxXBxqOvpzxSQ==
   dependencies:
     lex "1.7.9"
     lodash "4.17.21"

@@ -243,6 +243,26 @@
             <td>username !~ "test"</td>
           </tr>
           <tr>
+            <td>startswith</td>
+            <td>starts with a substring</td>
+            <td>last_name startswith "do"</td>
+          </tr>
+          <tr>
+            <td>not startswith</td>
+            <td>does not start with a substring</td>
+            <td>last_name not startswith "do"</td>
+          </tr>
+          <tr>
+            <td>endswith</td>
+            <td>ends with a substring</td>
+            <td>last_name endswith "oe"</td>
+          </tr>
+          <tr>
+            <td>not endswith</td>
+            <td>does not end with a substring</td>
+            <td>last_name not endswith "oe"</td>
+          </tr>
+          <tr>
             <td>re</td>
             <td>matches regular expression, case insensitive</td>
             <td>username re "^test$"</td>
@@ -291,6 +311,11 @@
           <code>~</code> and <code>!~</code> operators can be applied only to
           string and date/datetime fields. A date/datetime field will be handled
           as a string one (ex., <code>payment_date ~ "2020-12-01"</code>)
+        </li>
+        <li>
+          <code>startswith</code>, <code>not startswith</code>,
+          <code>endswith</code>, and <code>not endswith</code> can be applied
+          to string fields only;
         </li>
         <li>
           <code>True</code>, <code>False</code> and <code>None</code> values can

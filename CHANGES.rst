@@ -1,3 +1,9 @@
+0.16.0
+------
+
+* added support for new string-specific comparison operators: ``startswith``,
+  ``not startswith``, ``endswith``, ``not endswith``;
+
 0.15.4
 ------
 
