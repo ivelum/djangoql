@@ -23,9 +23,12 @@ except ImportError:  # Django 2.0
     from django.urls import reverse
 
 try:
-    from django.urls import re_path
-except ImportError:  # Django <2.0
-    from django.conf.urls import url as re_path
+    from django.conf.urls import re_path
+except ImportError:
+    try:  # Django >= 4.0
+        from django.urls import re_path
+    except ImportError:  # Django < 2.0
+        from django.conf.urls import url as re_path
 
 DJANGOQL_SEARCH_MARKER = 'q-l'
 
