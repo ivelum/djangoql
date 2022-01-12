@@ -1,3 +1,8 @@
+0.17.0
+------
+
+* Django 4.0 compatibility (thanks to @Lotfull);
+
 0.16.0
 ------
 
