@@ -25,7 +25,6 @@ except ImportError:
     except ImportError:  # Django < 2.0
         from django.conf.urls import url as re_path
 
-
 from core.views import completion_demo
 
 
