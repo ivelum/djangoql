@@ -1,3 +1,9 @@
+0.17.1
+------
+
+* Added the ``completion.js.map`` file into the distribution to fix
+  compatibility with Django 4.0 collectstatic (thanks to @magdapoppins);
+
 0.17.0
 ------
 
