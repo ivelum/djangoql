@@ -3,7 +3,7 @@ import json
 from django.contrib import messages
 from django.contrib.admin.views.main import ChangeList
 from django.core.exceptions import FieldError, ValidationError
-from django.db import DataError
+from django.db import DataError, NotSupportedError
 from django.forms import Media
 from django.http import HttpResponse
 from django.template.loader import render_to_string
@@ -90,7 +90,10 @@ class DjangoQLSearchMixin(object):
                 # Django >= 2.1 has built-in .explain() method
                 explain = getattr(qs, 'explain', None)
                 if callable(explain):
-                    explain()
+                    try:
+                        explain()
+                    except NotSupportedError:
+                        list(qs[:1])
                 else:
                     list(qs[:1])
             except DataError as e:
