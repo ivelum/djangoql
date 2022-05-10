@@ -27,7 +27,6 @@ class AuthorField(StrField):
         return Book.objects\
             .filter(author__username__icontains=search)\
             .values_list('author__username', flat=True)\
-            .order_by('author__username')\
             .distinct()
 
 

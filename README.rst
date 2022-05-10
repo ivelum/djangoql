@@ -113,6 +113,9 @@ also an option that controls if that checkbox is enabled by default -
 If you don't want two search modes, simply remove ``search_fields`` from your
 ModelAdmin class.
 
+Note that ``DjangoSQLSearchMixin`` overwrites the ``ordering`` field
+of your view.
+
 Language reference
 ------------------
 
@@ -145,6 +148,11 @@ parenthesis. DjangoQL is case-sensitive.
   Example: ``date_published ~ "2021-11"`` - find books published in Nov, 2021;
 - test a value vs. list: ``in``, ``not in``. Example:
   ``pk in (2, 3)``.
+- results can be sorted with a SQL-style ``order by`` clause at the end of 
+  the query. Sorting direction is either ``asc`` or ``desc`` (default ``asc``).
+  Example:
+  ``name endswith "peace" order by name desc, author.last_name``
+- an ``order by`` clause alone is also a valid query.
 
 
 DjangoQL Schema

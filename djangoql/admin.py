@@ -46,6 +46,7 @@ class DjangoQLChangeList(ChangeList):
 
 class DjangoQLSearchMixin(object):
     search_fields = ('_djangoql',)  # just a stub to have search input displayed
+    ordering = ()
     djangoql_completion = True
     djangoql_completion_enabled_by_default = True
     djangoql_schema = DjangoQLSchema

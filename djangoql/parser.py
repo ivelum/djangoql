@@ -5,7 +5,8 @@ from decimal import Decimal
 
 import ply.yacc as yacc
 
-from .ast import Comparison, Const, Expression, List, Logical, Name
+from .ast import Comparison, Const, Expression, List, Logical, Name, Ordering, \
+    OrderingKey, Query
 from .compat import binary_type, text_type
 from .exceptions import DjangoQLParserError
 from .lexer import DjangoQLLexer
@@ -44,7 +45,25 @@ class DjangoQLParser(object):
         lexer = lexer or self.default_lexer
         return self.yacc.parse(input=input, lexer=lexer, **kwargs)
 
-    start = 'expression'
+    start = 'query'
+
+    def p_query(self, p):
+        """
+        query : expression
+        """
+        p[0] = Query(expression=p[1], ordering=None)
+
+    def p_query_only_ordering(self, p):
+        """
+        query : ordering
+        """
+        p[0] = Query(expression=None, ordering=p[1])
+
+    def p_ordered_query(self, p):
+        """
+        query : expression ordering
+        """
+        p[0] = Query(expression=p[1], ordering=p[2])
 
     def p_expression_parens(self, p):
         """
@@ -135,6 +154,37 @@ class DjangoQLParser(object):
             p[0] = Comparison(operator=p[1])
         else:
             p[0] = Comparison(operator='%s %s' % (p[1], p[2]))
+
+    def p_undirected_ordering_key(self, p):
+        """
+        ordering_key : name
+        """
+        p[0] = OrderingKey(name=p[1], direction=None)
+
+    def p_directed_ordering_key(self, p):
+        """
+        ordering_key : name ASC
+                     | name DESC
+        """
+        p[0] = OrderingKey(name=p[1], direction=p[2])
+
+    def p_ordering_key_list_single(self, p):
+        """
+        ordering_key_list : ordering_key
+        """
+        p[0] = [p[1]]
+
+    def p_ordering_key_list(self, p):
+        """
+        ordering_key_list : ordering_key_list COMMA ordering_key
+        """
+        p[0] = p[1] + [p[3]]
+
+    def p_ordering(self, p):
+        """
+        ordering : ORDER BY ordering_key_list
+        """
+        p[0] = Ordering(keys=p[3])
 
     def p_const_value(self, p):
         """

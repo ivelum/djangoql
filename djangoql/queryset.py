@@ -29,6 +29,17 @@ def build_filter(expr, schema_instance):
     )
 
 
+def build_order_by(expr):
+    ordering = expr.ordering
+    keys = []
+    for field in ordering.fields if ordering else []:
+        key = '__'.join(field.name.parts)
+        if field.direction == 'desc':
+            key = f'-{key}'
+        keys.append(key)
+    return keys
+
+
 def apply_search(queryset, search, schema=None):
     """
     Applies search written in DjangoQL mini-language to given queryset
@@ -37,7 +48,11 @@ def apply_search(queryset, search, schema=None):
     schema = schema or DjangoQLSchema
     schema_instance = schema(queryset.model)
     schema_instance.validate(ast)
-    return queryset.filter(build_filter(ast, schema_instance))
+    if ast.expression:
+        queryset = queryset.filter(
+            build_filter(ast.expression, schema_instance)
+        )
+    return queryset.order_by(*build_order_by(ast))
 
 
 class DjangoQLQuerySet(QuerySet):

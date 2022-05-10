@@ -76,3 +76,20 @@ class Logical(Operator):
 
 class Comparison(Operator):
     pass
+
+
+class OrderingKey(Node):
+    def __init__(self, name, direction):
+        self.name = name
+        self.direction = direction
+
+
+class Ordering(Node):
+    def __init__(self, keys):
+        self.fields = keys
+
+
+class Query(Node):
+    def __init__(self, expression, ordering):
+        self.expression = expression
+        self.ordering = ordering
