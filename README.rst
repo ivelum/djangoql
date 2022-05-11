@@ -113,8 +113,6 @@ also an option that controls if that checkbox is enabled by default -
 If you don't want two search modes, simply remove ``search_fields`` from your
 ModelAdmin class.
 
-Note that ``DjangoSQLSearchMixin`` overwrites the ``ordering`` field
-of your view.
 
 Language reference
 ------------------
