@@ -74,13 +74,13 @@ class DjangoQLParseTest(TestCase):
             Expression(Name('name'), Comparison('~'),
                        Const(u'Contains a "quoted" str, 年年有余')),
             self.parser.parse(
-                u'name ~ "Contains a \\"quoted\\" str, 年年有余"'
+                u'name ~ "Contains a \\"quoted\\" str, 年年有余"',
             ).expression,
         )
         self.assertEqual(
             Expression(Name('options'), Comparison('='), Const(u'П и Щ')),
             self.parser.parse(
-                u'options = "\\u041f \\u0438 \\u0429"'
+                u'options = "\\u041f \\u0438 \\u0429"',
             ).expression,
         )
 
@@ -146,10 +146,10 @@ class DjangoQLParseTest(TestCase):
         self.assertEqual(
             Query(
                 Expression(Name(['user', 'group']),
-                           Comparison('='), Const("admin")),
+                           Comparison('='), Const('admin')),
                 ordering=Ordering(
                     keys=[OrderingKey(name=Name(['user', 'name']),
-                          direction=None)]
+                          direction=None)],
                 ),
             ),
             self.parser.parse('user.group = "admin" order by user.name'),
@@ -160,7 +160,7 @@ class DjangoQLParseTest(TestCase):
                 expression=None,
                 ordering=Ordering(
                     keys=[OrderingKey(name=Name(['user', 'name']),
-                          direction=None)]
+                          direction=None)],
                 ),
             ),
             self.parser.parse('order by user.name'),
@@ -168,12 +168,12 @@ class DjangoQLParseTest(TestCase):
 
         self.assertEqual(
             Query(
-                Expression(Name(['title']), Comparison('~'), Const("short")),
+                Expression(Name(['title']), Comparison('~'), Const('short')),
                 ordering=Ordering(
                     keys=[
                         OrderingKey(name=Name(['published']), direction='desc'),
                         OrderingKey(name=Name(['title']), direction=None),
-                    ]
+                    ],
                 ),
             ),
             self.parser.parse('title ~ "short" order by published desc, title'),

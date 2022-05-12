@@ -50,7 +50,7 @@ def apply_search(queryset, search, schema=None):
     schema_instance.validate(ast)
     if ast.expression:
         queryset = queryset.filter(
-            build_filter(ast.expression, schema_instance)
+            build_filter(ast.expression, schema_instance),
         )
     return queryset.order_by(*build_order_by(ast))
 
