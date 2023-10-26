@@ -6,7 +6,7 @@ DjangoQL
 
 Advanced search language for Django, with auto-completion. Supports logical
 operators, parenthesis, table joins, and works with any Django model. Tested on
-Python 2.7, 3.5 - 3.10, Django 1.8 - 4.0. The auto-completion feature has been
+Python 2.7, 3.5 - 3.11, Django 1.8 - 4.2. The auto-completion feature has been
 tested in Chrome, Firefox, Safari, IE9+.
 
 See a video: `DjangoQL demo <https://youtu.be/oKVff4dHZB8>`_
@@ -68,7 +68,7 @@ Add ``'djangoql'`` to ``INSTALLED_APPS`` in your ``settings.py``:
 Add it to your Django admin
 ---------------------------
 
-Adding ``DjangoQLSearchMixin`` your model admin will replace the standard
+Adding ``DjangoQLSearchMixin`` to your model admin will replace the standard
 Django search functionality with DjangoQL search. Example:
 
 .. code:: python
