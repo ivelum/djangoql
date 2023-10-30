@@ -120,13 +120,21 @@ jobs:
           - {django: '==4.2.*', python: '3.10', os: 'ubuntu-latest'}
           - {django: '==4.2.*', python: '3.11', os: 'ubuntu-latest'}
 
-          - {django: '==5.0.*', python: '3.12', os: 'ubuntu-latest'}
-
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
+      - name: Setup Python v. >2.7
+        if: ${{ matrix.python != '2.7' }}
+        uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python }}
+      - name: Setup Python v2.7
+        if: ${{ matrix.python == '2.7' }}
+        uses: MatteoH2O1999/setup-python@v1
+        with:
+          python-version: ${{ matrix.python }}
+          allow-build: info
+          cache-build: true
+          cache: pip
       - name: update pip
         run: |
           pip install -U wheel
