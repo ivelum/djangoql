@@ -129,12 +129,11 @@ jobs:
           python-version: ${{ matrix.python }}
       - name: Setup Python v2.7
         if: ${{ matrix.python == '2.7' }}
-        uses: MatteoH2O1999/setup-python@v1
+        uses: MatteoH2O1999/setup-python@v2
         with:
           python-version: ${{ matrix.python }}
           allow-build: info
           cache-build: true
-          cache: pip
       - name: update pip
         run: |
           pip install -U wheel
