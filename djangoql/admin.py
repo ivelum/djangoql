@@ -166,7 +166,8 @@ class DjangoQLSearchMixin(object):
         return custom_urls + super(DjangoQLSearchMixin, self).get_urls()
 
     def introspect(self, request):
-        suggestions_url = reverse('admin:%s_%s_djangoql_suggestions' % (
+        suggestions_url = reverse('%s:%s_%s_djangoql_suggestions' % (
+            self.admin_site.name,
             self.model._meta.app_label,
             self.model._meta.model_name,
         ))
