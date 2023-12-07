@@ -15,6 +15,15 @@ from .models import Book
 admin.site.unregister(User)
 
 
+class ZaibatsuAdminSite(admin.AdminSite):
+    site_header = 'Zaibatsu Admin'
+    site_title = 'Zaibatsu Admin Portal'
+    index_title = 'Welcome to Zaibatsu Admin Portal'
+
+
+zaibatsu_admin_site = ZaibatsuAdminSite(name='zaibatsu')
+
+
 class AuthorField(StrField):
     name = 'author'
     model = Book
@@ -137,7 +146,6 @@ class UserQLSchema(DjangoQLSchema):
         return fields
 
 
-@admin.register(User)
 class CustomUserAdmin(DjangoQLSearchMixin, UserAdmin):
     djangoql_schema = UserQLSchema
     search_fields = ('username', 'first_name', 'last_name')
@@ -153,3 +161,7 @@ class CustomUserAdmin(DjangoQLSearchMixin, UserAdmin):
         return qs.\
             annotate(groups_count=Count('groups')).\
             prefetch_related('groups')
+
+
+admin.site.register(User, CustomUserAdmin)
+zaibatsu_admin_site.register(User, CustomUserAdmin)

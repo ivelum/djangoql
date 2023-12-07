@@ -35,6 +35,16 @@ class DjangoQLAdminTest(TestCase):
         for model in ('core.book', 'auth.user', 'auth.group'):
             self.assertIn(model, introspections['models'])
 
+    def test_introspection_suggestion_api_url(self):
+        self.assertTrue(self.client.login(**self.credentials))
+        for app in ['admin', 'zaibatsu']:
+            url = reverse('%s:auth_user_djangoql_introspect' % app)
+            introspections = self.get_json(url)
+            self.assertEqual(
+                reverse('%s:auth_user_djangoql_suggestions' % app),
+                introspections['suggestions_api_url'],
+            )
+
     def test_djangoql_syntax_help(self):
         url = reverse('admin:djangoql_syntax_help')
         # unauthorized request should be redirected

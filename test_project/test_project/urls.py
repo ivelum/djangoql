@@ -26,11 +26,13 @@ except ImportError:
     except ImportError:  # Django < 2.0
         from django.conf.urls import url as re_path
 
+from core.admin import zaibatsu_admin_site
 from core.views import completion_demo
 
 
 urlpatterns = [
     re_path(r'^admin/', admin.site.urls),
+    re_path(r'^zaibatsu-admin/', zaibatsu_admin_site.urls),
     re_path(r'^$', completion_demo),
 ]
 
