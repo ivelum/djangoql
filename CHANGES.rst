@@ -1,3 +1,11 @@
+0.18.0
+------
+
+* Add support for multiple django admin sites (`#110`_)
+* Add support for Django 5.0 and Python 3.12
+
+.. _#110: https://github.com/ivelum/djangoql/pull/110
+
 0.17.1
 ------
 
