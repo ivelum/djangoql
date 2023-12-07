@@ -119,6 +119,11 @@ jobs:
           - {django: '==4.2.*', python: '3.9', os: 'ubuntu-latest'}
           - {django: '==4.2.*', python: '3.10', os: 'ubuntu-latest'}
           - {django: '==4.2.*', python: '3.11', os: 'ubuntu-latest'}
+          - {django: '~=4.2.8', python: '3.12', os: 'ubuntu-latest'}
+
+          - {django: '==5.0.*', python: '3.10', os: 'ubuntu-latest'}
+          - {django: '==5.0.*', python: '3.11', os: 'ubuntu-latest'}
+          - {django: '==5.0.*', python: '3.12', os: 'ubuntu-latest'}
 
     steps:
       - uses: actions/checkout@v2
