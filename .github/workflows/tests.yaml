@@ -16,12 +16,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Send build notifications to Slack
-      - uses: voxmedia/github-action-slack-notify-build@v1
+      - uses: ivelum/github-action-slack-notify-build@v1.7.2
         id: slack
         with:
           channel_id: C0PT3267R
           status: STARTED
-          color: warning
+          color: '#ee9b00'
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
 
@@ -46,14 +46,14 @@ jobs:
 
       # Send notification on build failure
       - name: Notify slack fail
-        uses: voxmedia/github-action-slack-notify-build@v1
+        uses: ivelum/github-action-slack-notify-build@v1.7.2
         if: failure()
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
         with:
           channel_id: C0PT3267R
           status: FAILED
-          color: danger
+          color: '#d7263d'
 
   tests:
     needs: lint
@@ -159,14 +159,14 @@ jobs:
 
       # Send notification on build failure
       - name: Notify slack fail
-        uses: voxmedia/github-action-slack-notify-build@v1
+        uses: ivelum/github-action-slack-notify-build@v1.7.2
         if: failure()
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
         with:
           channel_id: C0PT3267R
           status: FAILED
-          color: danger
+          color: '#d7263d'
 
   notify-build-success:
     if: ${{ github.event_name == 'push' }}
@@ -175,10 +175,10 @@ jobs:
     steps:
       # Send notification on build success
       - name: Notify slack success
-        uses: voxmedia/github-action-slack-notify-build@v1
+        uses: ivelum/github-action-slack-notify-build@v1.7.2
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
         with:
           channel_id: C0PT3267R
           status: SUCCESS
-          color: good
+          color: '#16db65'
