@@ -1,3 +1,10 @@
+0.18.1
+------
+
+* Fixed serialization for `options` element (`#112`_)
+
+.. _#112: https://github.com/ivelum/djangoql/pull/112
+
 0.18.0
 ------
 
