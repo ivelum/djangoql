@@ -26,7 +26,7 @@ class DjangoQLSchemaSerializer(object):
         return result
 
     def serialize_field_options(self, field):
-        return list(field.get_options('')) if field.suggest_options else []
+        return list(field.get_options('')) if field.suggest_options else None
 
 
 class SuggestionsAPISerializer(DjangoQLSchemaSerializer):
