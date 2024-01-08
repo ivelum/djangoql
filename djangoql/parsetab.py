@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'expressionAND COMMA CONTAINS EQUALS FALSE FLOAT_VALUE GREATER GREATER_EQUAL IN INT_VALUE LESS LESS_EQUAL NAME NONE NOT NOT_CONTAINS NOT_EQUALS OR PAREN_L PAREN_R STRING_VALUE TRUE\n        expression : PAREN_L expression PAREN_R\n        \n        expression : expression logical expression\n        \n        expression : name comparison_number number\n                   | name comparison_string string\n                   | name comparison_equality boolean_value\n                   | name comparison_equality none\n                   | name comparison_in_list const_list_value\n        \n        name : NAME\n        \n        logical : AND\n                | OR\n        \n        comparison_number : comparison_equality\n                          | comparison_greater_less\n        \n        comparison_string : comparison_equality\n                          | comparison_greater_less\n                          | comparison_contains\n        \n        comparison_equality : EQUALS\n                            | NOT_EQUALS\n        \n        comparison_greater_less : GREATER\n                                | GREATER_EQUAL\n                                | LESS\n                                | LESS_EQUAL\n        \n        comparison_contains : CONTAINS\n                            | NOT_CONTAINS\n        \n        comparison_in_list : IN\n                           | NOT IN\n        \n        const_value : number\n                    | string\n                    | none\n                    | boolean_value\n        \n        number : INT_VALUE\n        \n        number : FLOAT_VALUE\n        \n        string : STRING_VALUE\n        \n        none : NONE\n        \n        boolean_value : true\n                      | false\n        \n        true : TRUE\n        \n        false : FALSE\n        \n        const_list_value : PAREN_L const_value_list PAREN_R\n        \n        const_value_list : const_value_list COMMA const_value\n        \n        const_value_list : const_value\n        '
+_lr_signature = 'queryAND ASC BY COMMA CONTAINS DESC ENDSWITH EQUALS FALSE FLOAT_VALUE GREATER GREATER_EQUAL IN INT_VALUE LESS LESS_EQUAL NAME NONE NOT NOT_CONTAINS NOT_EQUALS OR ORDER PAREN_L PAREN_R STARTSWITH STRING_VALUE TRUE\n        query : expression\n        \n        query : expression ordering\n        \n        expression : PAREN_L expression PAREN_R\n        \n        expression : expression logical expression\n        \n        expression : name comparison_number number\n                   | name comparison_string string\n                   | name comparison_equality boolean_value\n                   | name comparison_equality none\n                   | name comparison_in_list const_list_value\n        \n        name : NAME\n        \n        logical : AND\n                | OR\n        \n        comparison_number : comparison_equality\n                          | comparison_greater_less\n        \n        comparison_string : comparison_equality\n                          | comparison_greater_less\n                          | comparison_string_specific\n        \n        comparison_equality : EQUALS\n                            | NOT_EQUALS\n        \n        comparison_greater_less : GREATER\n                                | GREATER_EQUAL\n                                | LESS\n                                | LESS_EQUAL\n        \n        comparison_string_specific : CONTAINS\n                                   | NOT_CONTAINS\n                                   | STARTSWITH\n                                   | NOT STARTSWITH\n                                   | ENDSWITH\n                                   | NOT ENDSWITH\n        \n        comparison_in_list : IN\n                           | NOT IN\n        \n        ordering_key : name\n        \n        ordering_key : name ASC\n                     | name DESC\n        \n        ordering_key_list : ordering_key\n        \n        ordering_key_list : ordering_key_list COMMA ordering_key\n        \n        ordering : ORDER BY ordering_key_list\n        \n        const_value : number\n                    | string\n                    | none\n                    | boolean_value\n        \n        number : INT_VALUE\n        \n        number : FLOAT_VALUE\n        \n        string : STRING_VALUE\n        \n        none : NONE\n        \n        boolean_value : true\n                      | false\n        \n        true : TRUE\n        \n        false : FALSE\n        \n        const_list_value : PAREN_L const_value_list PAREN_R\n        \n        const_value_list : const_value_list COMMA const_value\n        \n        const_value_list : const_value\n        '
     
-_lr_action_items = {'PAREN_L':([0,2,5,6,7,12,17,41,],[2,2,2,-9,-10,40,-24,-25,]),'NAME':([0,2,5,6,7,],[4,4,4,-9,-10,]),'$end':([1,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,48,],[0,-2,-1,-3,-30,-31,-4,-32,-5,-6,-34,-35,-33,-36,-37,-7,-38,]),'AND':([1,8,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,48,],[6,6,6,-1,-3,-30,-31,-4,-32,-5,-6,-34,-35,-33,-36,-37,-7,-38,]),'OR':([1,8,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,48,],[7,7,7,-1,-3,-30,-31,-4,-32,-5,-6,-34,-35,-33,-36,-37,-7,-38,]),'EQUALS':([3,4,],[15,-8,]),'NOT_EQUALS':([3,4,],[16,-8,]),'IN':([3,4,18,],[17,-8,41,]),'NOT':([3,4,],[18,-8,]),'GREATER':([3,4,],[19,-8,]),'GREATER_EQUAL':([3,4,],[20,-8,]),'LESS':([3,4,],[21,-8,]),'LESS_EQUAL':([3,4,],[22,-8,]),'CONTAINS':([3,4,],[23,-8,]),'NOT_CONTAINS':([3,4,],[24,-8,]),'PAREN_R':([8,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,42,43,44,45,46,47,48,50,],[26,-2,-1,-3,-30,-31,-4,-32,-5,-6,-34,-35,-33,-36,-37,-7,48,-40,-26,-27,-28,-29,-38,-39,]),'INT_VALUE':([9,11,13,15,16,19,20,21,22,40,49,],[28,-11,-12,-16,-17,-18,-19,-20,-21,28,28,]),'FLOAT_VALUE':([9,11,13,15,16,19,20,21,22,40,49,],[29,-11,-12,-16,-17,-18,-19,-20,-21,29,29,]),'STRING_VALUE':([10,11,13,14,15,16,19,20,21,22,23,24,40,49,],[31,-13,-14,-15,-16,-17,-18,-19,-20,-21,-22,-23,31,31,]),'NONE':([11,15,16,40,49,],[36,-16,-17,36,36,]),'TRUE':([11,15,16,40,49,],[37,-16,-17,37,37,]),'FALSE':([11,15,16,40,49,],[38,-16,-17,38,38,]),'COMMA':([28,29,31,34,35,36,37,38,42,43,44,45,46,47,50,],[-30,-31,-32,-34,-35,-33,-36,-37,49,-40,-26,-27,-28,-29,-39,]),}
+_lr_action_items = {'PAREN_L':([0,3,7,9,10,15,20,47,],[3,3,3,-11,-12,46,-30,-31,]),'NAME':([0,3,7,9,10,31,59,],[5,5,5,-11,-12,5,5,]),'$end':([1,2,5,6,30,32,33,34,35,36,37,38,39,40,41,42,43,44,45,50,51,52,60,61,62,64,],[0,-1,-10,-2,-4,-3,-5,-42,-43,-6,-44,-7,-8,-46,-47,-45,-48,-49,-9,-37,-35,-32,-33,-34,-50,-36,]),'ORDER':([2,30,32,33,34,35,36,37,38,39,40,41,42,43,44,45,62,],[8,-4,-3,-5,-42,-43,-6,-44,-7,-8,-46,-47,-45,-48,-49,-9,-50,]),'AND':([2,11,30,32,33,34,35,36,37,38,39,40,41,42,43,44,45,62,],[9,9,9,-3,-5,-42,-43,-6,-44,-7,-8,-46,-47,-45,-48,-49,-9,-50,]),'OR':([2,11,30,32,33,34,35,36,37,38,39,40,41,42,43,44,45,62,],[10,10,10,-3,-5,-42,-43,-6,-44,-7,-8,-46,-47,-45,-48,-49,-9,-50,]),'EQUALS':([4,5,],[18,-10,]),'NOT_EQUALS':([4,5,],[19,-10,]),'IN':([4,5,21,],[20,-10,47,]),'NOT':([4,5,],[21,-10,]),'GREATER':([4,5,],[22,-10,]),'GREATER_EQUAL':([4,5,],[23,-10,]),'LESS':([4,5,],[24,-10,]),'LESS_EQUAL':([4,5,],[25,-10,]),'CONTAINS':([4,5,],[26,-10,]),'NOT_CONTAINS':([4,5,],[27,-10,]),'STARTSWITH':([4,5,21,],[28,-10,48,]),'ENDSWITH':([4,5,21,],[29,-10,49,]),'ASC':([5,52,],[-10,60,]),'DESC':([5,52,],[-10,61,]),'COMMA':([5,34,35,37,40,41,42,43,44,50,51,52,53,54,55,56,57,58,60,61,64,65,],[-10,-42,-43,-44,-46,-47,-45,-48,-49,59,-35,-32,63,-52,-38,-39,-40,-41,-33,-34,-36,-51,]),'BY':([8,],[31,]),'PAREN_R':([11,30,32,33,34,35,36,37,38,39,40,41,42,43,44,45,53,54,55,56,57,58,62,65,],[32,-4,-3,-5,-42,-43,-6,-44,-7,-8,-46,-47,-45,-48,-49,-9,62,-52,-38,-39,-40,-41,-50,-51,]),'INT_VALUE':([12,14,16,18,19,22,23,24,25,46,63,],[34,-13,-14,-18,-19,-20,-21,-22,-23,34,34,]),'FLOAT_VALUE':([12,14,16,18,19,22,23,24,25,46,63,],[35,-13,-14,-18,-19,-20,-21,-22,-23,35,35,]),'STRING_VALUE':([13,14,16,17,18,19,22,23,24,25,26,27,28,29,46,48,49,63,],[37,-15,-16,-17,-18,-19,-20,-21,-22,-23,-24,-25,-26,-28,37,-27,-29,37,]),'NONE':([14,18,19,46,63,],[42,-18,-19,42,42,]),'TRUE':([14,18,19,46,63,],[43,-18,-19,43,43,]),'FALSE':([14,18,19,46,63,],[44,-18,-19,44,44,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'expression':([0,2,5,],[1,8,25,]),'name':([0,2,5,],[3,3,3,]),'logical':([1,8,25,],[5,5,5,]),'comparison_number':([3,],[9,]),'comparison_string':([3,],[10,]),'comparison_equality':([3,],[11,]),'comparison_in_list':([3,],[12,]),'comparison_greater_less':([3,],[13,]),'comparison_contains':([3,],[14,]),'number':([9,40,49,],[27,44,44,]),'string':([10,40,49,],[30,45,45,]),'boolean_value':([11,40,49,],[32,47,47,]),'none':([11,40,49,],[33,46,46,]),'true':([11,40,49,],[34,34,34,]),'false':([11,40,49,],[35,35,35,]),'const_list_value':([12,],[39,]),'const_value_list':([40,],[42,]),'const_value':([40,49,],[43,50,]),}
+_lr_goto_items = {'query':([0,],[1,]),'expression':([0,3,7,],[2,11,30,]),'name':([0,3,7,31,59,],[4,4,4,52,52,]),'ordering':([2,],[6,]),'logical':([2,11,30,],[7,7,7,]),'comparison_number':([4,],[12,]),'comparison_string':([4,],[13,]),'comparison_equality':([4,],[14,]),'comparison_in_list':([4,],[15,]),'comparison_greater_less':([4,],[16,]),'comparison_string_specific':([4,],[17,]),'number':([12,46,63,],[33,55,55,]),'string':([13,46,63,],[36,56,56,]),'boolean_value':([14,46,63,],[38,58,58,]),'none':([14,46,63,],[39,57,57,]),'true':([14,46,63,],[40,40,40,]),'false':([14,46,63,],[41,41,41,]),'const_list_value':([15,],[45,]),'ordering_key_list':([31,],[50,]),'ordering_key':([31,59,],[51,64,]),'const_value_list':([46,],[53,]),'const_value':([46,63,],[54,65,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -26,45 +26,57 @@ for _k, _v in _lr_goto_items.items():
        _lr_goto[_x][_k] = _y
 del _lr_goto_items
 _lr_productions = [
-  ("S' -> expression","S'",1,None,None,None),
-  ('expression -> PAREN_L expression PAREN_R','expression',3,'p_expression_parens','parser.py',49),
-  ('expression -> expression logical expression','expression',3,'p_expression_logical','parser.py',55),
-  ('expression -> name comparison_number number','expression',3,'p_expression_comparison','parser.py',61),
-  ('expression -> name comparison_string string','expression',3,'p_expression_comparison','parser.py',62),
-  ('expression -> name comparison_equality boolean_value','expression',3,'p_expression_comparison','parser.py',63),
-  ('expression -> name comparison_equality none','expression',3,'p_expression_comparison','parser.py',64),
-  ('expression -> name comparison_in_list const_list_value','expression',3,'p_expression_comparison','parser.py',65),
-  ('name -> NAME','name',1,'p_name','parser.py',71),
-  ('logical -> AND','logical',1,'p_logical','parser.py',77),
-  ('logical -> OR','logical',1,'p_logical','parser.py',78),
-  ('comparison_number -> comparison_equality','comparison_number',1,'p_comparison_number','parser.py',84),
-  ('comparison_number -> comparison_greater_less','comparison_number',1,'p_comparison_number','parser.py',85),
-  ('comparison_string -> comparison_equality','comparison_string',1,'p_comparison_string','parser.py',91),
-  ('comparison_string -> comparison_greater_less','comparison_string',1,'p_comparison_string','parser.py',92),
-  ('comparison_string -> comparison_contains','comparison_string',1,'p_comparison_string','parser.py',93),
-  ('comparison_equality -> EQUALS','comparison_equality',1,'p_comparison_equality','parser.py',99),
-  ('comparison_equality -> NOT_EQUALS','comparison_equality',1,'p_comparison_equality','parser.py',100),
-  ('comparison_greater_less -> GREATER','comparison_greater_less',1,'p_comparison_greater_less','parser.py',106),
-  ('comparison_greater_less -> GREATER_EQUAL','comparison_greater_less',1,'p_comparison_greater_less','parser.py',107),
-  ('comparison_greater_less -> LESS','comparison_greater_less',1,'p_comparison_greater_less','parser.py',108),
-  ('comparison_greater_less -> LESS_EQUAL','comparison_greater_less',1,'p_comparison_greater_less','parser.py',109),
-  ('comparison_contains -> CONTAINS','comparison_contains',1,'p_comparison_contains','parser.py',115),
-  ('comparison_contains -> NOT_CONTAINS','comparison_contains',1,'p_comparison_contains','parser.py',116),
-  ('comparison_in_list -> IN','comparison_in_list',1,'p_comparison_in_list','parser.py',122),
-  ('comparison_in_list -> NOT IN','comparison_in_list',2,'p_comparison_in_list','parser.py',123),
-  ('const_value -> number','const_value',1,'p_const_value','parser.py',132),
-  ('const_value -> string','const_value',1,'p_const_value','parser.py',133),
-  ('const_value -> none','const_value',1,'p_const_value','parser.py',134),
-  ('const_value -> boolean_value','const_value',1,'p_const_value','parser.py',135),
-  ('number -> INT_VALUE','number',1,'p_number_int','parser.py',141),
-  ('number -> FLOAT_VALUE','number',1,'p_number_float','parser.py',147),
-  ('string -> STRING_VALUE','string',1,'p_string','parser.py',153),
-  ('none -> NONE','none',1,'p_none','parser.py',159),
-  ('boolean_value -> true','boolean_value',1,'p_boolean_value','parser.py',165),
-  ('boolean_value -> false','boolean_value',1,'p_boolean_value','parser.py',166),
-  ('true -> TRUE','true',1,'p_true','parser.py',172),
-  ('false -> FALSE','false',1,'p_false','parser.py',178),
-  ('const_list_value -> PAREN_L const_value_list PAREN_R','const_list_value',3,'p_const_list_value','parser.py',184),
-  ('const_value_list -> const_value_list COMMA const_value','const_value_list',3,'p_const_value_list','parser.py',190),
-  ('const_value_list -> const_value','const_value_list',1,'p_const_value_list_single','parser.py',196),
+  ("S' -> query","S'",1,None,None,None),
+  ('query -> expression','query',1,'p_query','parser.py',54),
+  ('query -> expression ordering','query',2,'p_ordered_query','parser.py',60),
+  ('expression -> PAREN_L expression PAREN_R','expression',3,'p_expression_parens','parser.py',66),
+  ('expression -> expression logical expression','expression',3,'p_expression_logical','parser.py',72),
+  ('expression -> name comparison_number number','expression',3,'p_expression_comparison','parser.py',78),
+  ('expression -> name comparison_string string','expression',3,'p_expression_comparison','parser.py',79),
+  ('expression -> name comparison_equality boolean_value','expression',3,'p_expression_comparison','parser.py',80),
+  ('expression -> name comparison_equality none','expression',3,'p_expression_comparison','parser.py',81),
+  ('expression -> name comparison_in_list const_list_value','expression',3,'p_expression_comparison','parser.py',82),
+  ('name -> NAME','name',1,'p_name','parser.py',88),
+  ('logical -> AND','logical',1,'p_logical','parser.py',94),
+  ('logical -> OR','logical',1,'p_logical','parser.py',95),
+  ('comparison_number -> comparison_equality','comparison_number',1,'p_comparison_number','parser.py',101),
+  ('comparison_number -> comparison_greater_less','comparison_number',1,'p_comparison_number','parser.py',102),
+  ('comparison_string -> comparison_equality','comparison_string',1,'p_comparison_string','parser.py',108),
+  ('comparison_string -> comparison_greater_less','comparison_string',1,'p_comparison_string','parser.py',109),
+  ('comparison_string -> comparison_string_specific','comparison_string',1,'p_comparison_string','parser.py',110),
+  ('comparison_equality -> EQUALS','comparison_equality',1,'p_comparison_equality','parser.py',116),
+  ('comparison_equality -> NOT_EQUALS','comparison_equality',1,'p_comparison_equality','parser.py',117),
+  ('comparison_greater_less -> GREATER','comparison_greater_less',1,'p_comparison_greater_less','parser.py',123),
+  ('comparison_greater_less -> GREATER_EQUAL','comparison_greater_less',1,'p_comparison_greater_less','parser.py',124),
+  ('comparison_greater_less -> LESS','comparison_greater_less',1,'p_comparison_greater_less','parser.py',125),
+  ('comparison_greater_less -> LESS_EQUAL','comparison_greater_less',1,'p_comparison_greater_less','parser.py',126),
+  ('comparison_string_specific -> CONTAINS','comparison_string_specific',1,'p_comparison_string_specific','parser.py',132),
+  ('comparison_string_specific -> NOT_CONTAINS','comparison_string_specific',1,'p_comparison_string_specific','parser.py',133),
+  ('comparison_string_specific -> STARTSWITH','comparison_string_specific',1,'p_comparison_string_specific','parser.py',134),
+  ('comparison_string_specific -> NOT STARTSWITH','comparison_string_specific',2,'p_comparison_string_specific','parser.py',135),
+  ('comparison_string_specific -> ENDSWITH','comparison_string_specific',1,'p_comparison_string_specific','parser.py',136),
+  ('comparison_string_specific -> NOT ENDSWITH','comparison_string_specific',2,'p_comparison_string_specific','parser.py',137),
+  ('comparison_in_list -> IN','comparison_in_list',1,'p_comparison_in_list','parser.py',146),
+  ('comparison_in_list -> NOT IN','comparison_in_list',2,'p_comparison_in_list','parser.py',147),
+  ('ordering_key -> name','ordering_key',1,'p_undirected_ordering_key','parser.py',156),
+  ('ordering_key -> name ASC','ordering_key',2,'p_directed_ordering_key','parser.py',162),
+  ('ordering_key -> name DESC','ordering_key',2,'p_directed_ordering_key','parser.py',163),
+  ('ordering_key_list -> ordering_key','ordering_key_list',1,'p_ordering_key_list_single','parser.py',169),
+  ('ordering_key_list -> ordering_key_list COMMA ordering_key','ordering_key_list',3,'p_ordering_key_list','parser.py',175),
+  ('ordering -> ORDER BY ordering_key_list','ordering',3,'p_ordering','parser.py',181),
+  ('const_value -> number','const_value',1,'p_const_value','parser.py',187),
+  ('const_value -> string','const_value',1,'p_const_value','parser.py',188),
+  ('const_value -> none','const_value',1,'p_const_value','parser.py',189),
+  ('const_value -> boolean_value','const_value',1,'p_const_value','parser.py',190),
+  ('number -> INT_VALUE','number',1,'p_number_int','parser.py',196),
+  ('number -> FLOAT_VALUE','number',1,'p_number_float','parser.py',202),
+  ('string -> STRING_VALUE','string',1,'p_string','parser.py',208),
+  ('none -> NONE','none',1,'p_none','parser.py',214),
+  ('boolean_value -> true','boolean_value',1,'p_boolean_value','parser.py',220),
+  ('boolean_value -> false','boolean_value',1,'p_boolean_value','parser.py',221),
+  ('true -> TRUE','true',1,'p_true','parser.py',227),
+  ('false -> FALSE','false',1,'p_false','parser.py',233),
+  ('const_list_value -> PAREN_L const_value_list PAREN_R','const_list_value',3,'p_const_list_value','parser.py',239),
+  ('const_value_list -> const_value_list COMMA const_value','const_value_list',3,'p_const_value_list','parser.py',245),
+  ('const_value_list -> const_value','const_value_list',1,'p_const_value_list_single','parser.py',251),
 ]

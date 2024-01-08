@@ -86,6 +86,10 @@ class DjangoQLLexer(object):
         'NOT_CONTAINS',
         'STARTSWITH',
         'ENDSWITH',
+        'ORDER',
+        'BY',
+        'ASC',
+        'DESC',
     ]
 
     t_COMMA = ','
@@ -157,6 +161,22 @@ class DjangoQLLexer(object):
 
     @TOKEN('None' + not_followed_by_name)
     def t_NONE(self, t):
+        return t
+
+    @TOKEN('order' + not_followed_by_name)
+    def t_ORDER(self, t):
+        return t
+
+    @TOKEN('by' + not_followed_by_name)
+    def t_BY(self, t):
+        return t
+
+    @TOKEN('asc' + not_followed_by_name)
+    def t_ASC(self, t):
+        return t
+
+    @TOKEN('desc' + not_followed_by_name)
+    def t_DESC(self, t):
         return t
 
     def t_error(self, t):
