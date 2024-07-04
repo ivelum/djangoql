@@ -220,14 +220,8 @@ class DateField(DjangoQLField):
         super(DateField, self).validate(value)
         try:
             self.get_lookup_value(value)
-        except ValueError:
-            raise DjangoQLSchemaError(
-                'Field "%s" can be compared to dates in '
-                '"YYYY-MM-DD" format, but not to %s' % (
-                    self.name,
-                    repr(value),
-                ),
-            )
+        except ValueError as exc:
+            raise DjangoQLSchemaError('Field "%s" can be compared to dates in "YYYY-MM-DD" format, but not to %s' % (self.name, repr(value))) from exc
 
     def get_lookup_value(self, value):
         if not value:
@@ -244,14 +238,14 @@ class DateTimeField(DjangoQLField):
         super(DateTimeField, self).validate(value)
         try:
             self.get_lookup_value(value)
-        except ValueError:
+        except ValueError as exc:
             raise DjangoQLSchemaError(
                 'Field "%s" can be compared to timestamps in '
                 '"YYYY-MM-DD HH:MM" format, but not to %s' % (
                     self.name,
                     repr(value),
-                ),
-            )
+                )
+            ) from exc
 
     def get_lookup_value(self, value):
         if not value:
