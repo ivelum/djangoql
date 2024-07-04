@@ -111,3 +111,21 @@ class DjangoQLQuerySetTest(TestCase):
         qs = apply_search(User.objects.all(), 'last_login = None')
         where_clause = str(qs.query).split('WHERE')[1].strip()
         self.assertEqual('"auth_user"."last_login" IS NULL', where_clause)
+
+    def test_simple_ordering(self):
+        qs = apply_search(User.objects.all(),
+                          'last_login = None order by username desc')
+        order_by_clause = str(qs.query).split('ORDER BY')[1].strip()
+        self.assertEqual('"auth_user"."username" DESC', order_by_clause)
+
+        qs = apply_search(User.objects.all(),
+                          'last_login = None order by username')
+        order_by_clause = str(qs.query).split('ORDER BY')[1].strip()
+        self.assertEqual('"auth_user"."username" ASC', order_by_clause)
+
+    def test_ordering_by_multiple_keys(self):
+        qs = apply_search(User.objects.all(),
+                          'order by last_name desc, book.name')
+        order_by_clause = str(qs.query).split('ORDER BY')[1].strip()
+        self.assertEqual('"auth_user"."last_name" DESC, '
+                         '"core_book"."name" ASC', order_by_clause)

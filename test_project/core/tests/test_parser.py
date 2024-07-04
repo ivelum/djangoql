@@ -2,7 +2,8 @@
 import unittest.util
 from unittest import TestCase
 
-from djangoql.ast import Comparison, Const, Expression, List, Logical, Name
+from djangoql.ast import Comparison, Const, Expression, List, Logical, Name, \
+    Ordering, OrderingKey, Query
 from djangoql.exceptions import DjangoQLParserError
 from djangoql.parser import DjangoQLParser
 
@@ -17,76 +18,80 @@ class DjangoQLParseTest(TestCase):
     def test_comparisons(self):
         self.assertEqual(
             Expression(Name('age'), Comparison('>='), Const(18)),
-            self.parser.parse('age >= 18'),
+            self.parser.parse('age >= 18').expression,
         )
         self.assertEqual(
             Expression(Name('gender'), Comparison('='), Const('female')),
-            self.parser.parse('gender = "female"'),
+            self.parser.parse('gender = "female"').expression,
         )
         self.assertEqual(
             Expression(Name('name'), Comparison('!='), Const('Gennady')),
-            self.parser.parse('name != "Gennady"'),
+            self.parser.parse('name != "Gennady"').expression,
         )
         self.assertEqual(
             Expression(Name('married'), Comparison('in'),
                        List([Const(True), Const(False)])),
-            self.parser.parse('married in (True, False)'),
+            self.parser.parse('married in (True, False)').expression,
         )
         self.assertEqual(
             Expression(Name('smile'), Comparison('!='), Const(None)),
-            self.parser.parse('(smile != None)'),
+            self.parser.parse('(smile != None)').expression,
         )
         self.assertEqual(
             Expression(Name(['job', 'best', 'title']), Comparison('>'),
                        Const('none')),
-            self.parser.parse('job.best.title > "none"'),
+            self.parser.parse('job.best.title > "none"').expression,
         )
 
     def test_string_comparisons(self):
         self.assertEqual(
             Expression(Name('name'), Comparison('~'), Const('gav')),
-            self.parser.parse('name ~ "gav"'),
+            self.parser.parse('name ~ "gav"').expression,
         )
         self.assertEqual(
             Expression(Name('name'), Comparison('!~'), Const('gav')),
-            self.parser.parse('name !~ "gav"'),
+            self.parser.parse('name !~ "gav"').expression,
         )
         self.assertEqual(
             Expression(Name('name'), Comparison('startswith'), Const('gav')),
-            self.parser.parse('name startswith "gav"'),
+            self.parser.parse('name startswith "gav"').expression,
         )
         self.assertEqual(
             Expression(Name('name'), Comparison('not startswith'), Const('rr')),
-            self.parser.parse('name not startswith "rr"'),
+            self.parser.parse('name not startswith "rr"').expression,
         )
         self.assertEqual(
             Expression(Name('name'), Comparison('endswith'), Const('gav')),
-            self.parser.parse('name endswith "gav"'),
+            self.parser.parse('name endswith "gav"').expression,
         )
         self.assertEqual(
             Expression(Name('name'), Comparison('not endswith'), Const('gav')),
-            self.parser.parse('name not endswith "gav"'),
+            self.parser.parse('name not endswith "gav"').expression,
         )
 
     def test_escaped_chars(self):
         self.assertEqual(
             Expression(Name('name'), Comparison('~'),
                        Const(u'Contains a "quoted" str, 年年有余')),
-            self.parser.parse(u'name ~ "Contains a \\"quoted\\" str, 年年有余"'),
+            self.parser.parse(
+                u'name ~ "Contains a \\"quoted\\" str, 年年有余"',
+            ).expression,
         )
         self.assertEqual(
             Expression(Name('options'), Comparison('='), Const(u'П и Щ')),
-            self.parser.parse(u'options = "\\u041f \\u0438 \\u0429"'),
+            self.parser.parse(
+                u'options = "\\u041f \\u0438 \\u0429"',
+            ).expression,
         )
 
     def test_numbers(self):
         self.assertEqual(
             Expression(Name('pk'), Comparison('>'), Const(5)),
-            self.parser.parse('pk > 5'),
+            self.parser.parse('pk > 5').expression,
         )
         self.assertEqual(
             Expression(Name('rating'), Comparison('<='), Const(523)),
-            self.parser.parse('rating <= 5.23e2'),
+            self.parser.parse('rating <= 5.23e2').expression,
         )
 
     def test_logical(self):
@@ -96,7 +101,7 @@ class DjangoQLParseTest(TestCase):
                 Logical('and'),
                 Expression(Name('age'), Comparison('<='), Const(45)),
             ),
-            self.parser.parse('age >= 18 and age <= 45'),
+            self.parser.parse('age >= 18 and age <= 45').expression,
         )
         self.assertEqual(
             Expression(
@@ -113,7 +118,7 @@ class DjangoQLParseTest(TestCase):
                 ),
             ),
             self.parser.parse('(city = "Ivanovo" and age <= 35) or '
-                              '(city = "Paris" and age <= 45)'),
+                              '(city = "Paris" and age <= 45)').expression,
         )
 
     def test_invalid_comparison(self):
@@ -134,5 +139,42 @@ class DjangoQLParseTest(TestCase):
         self.assertEqual(
             Expression(Name(['user', 'group', 'id']), Comparison('='),
                        Const(5)),
-            self.parser.parse('user.group.id = 5'),
+            self.parser.parse('user.group.id = 5').expression,
+        )
+
+    def test_ordering(self):
+        self.assertEqual(
+            Query(
+                Expression(Name(['user', 'group']),
+                           Comparison('='), Const('admin')),
+                ordering=Ordering(
+                    keys=[OrderingKey(name=Name(['user', 'name']),
+                          direction=None)],
+                ),
+            ),
+            self.parser.parse('user.group = "admin" order by user.name'),
+        )
+
+        self.assertEqual(
+            Query(
+                expression=None,
+                ordering=Ordering(
+                    keys=[OrderingKey(name=Name(['user', 'name']),
+                          direction=None)],
+                ),
+            ),
+            self.parser.parse('order by user.name'),
+        )
+
+        self.assertEqual(
+            Query(
+                Expression(Name(['title']), Comparison('~'), Const('short')),
+                ordering=Ordering(
+                    keys=[
+                        OrderingKey(name=Name(['published']), direction='desc'),
+                        OrderingKey(name=Name(['title']), direction=None),
+                    ],
+                ),
+            ),
+            self.parser.parse('title ~ "short" order by published desc, title'),
         )
