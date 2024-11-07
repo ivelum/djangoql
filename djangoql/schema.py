@@ -10,6 +10,7 @@ from django.db import models
 from django.db.models import ManyToManyRel, ManyToOneRel
 from django.db.models.fields.related import ForeignObjectRel
 from django.utils.timezone import get_current_timezone
+from django.db.models.fields.generated import GeneratedField
 
 from .ast import Comparison, Const, List, Logical, Name, Node
 from .compat import text_type
@@ -417,6 +418,8 @@ class DjangoQLSchema(object):
         return field_cls(**field_kwargs)
 
     def get_field_cls(self, field):
+        if isinstance(field, GeneratedField):
+            field = field.output_field
         str_fields = (
             models.CharField,
             models.TextField,
