@@ -8,9 +8,9 @@ from django.conf import settings
 from django.core.exceptions import FieldDoesNotExist
 from django.db import models
 from django.db.models import ManyToManyRel, ManyToOneRel
+from django.db.models.fields.generated import GeneratedField
 from django.db.models.fields.related import ForeignObjectRel
 from django.utils.timezone import get_current_timezone
-from django.db.models.fields.generated import GeneratedField
 
 from .ast import Comparison, Const, List, Logical, Name, Node
 from .compat import text_type
