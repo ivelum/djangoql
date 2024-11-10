@@ -15,10 +15,10 @@ from .ast import Comparison, Const, List, Logical, Name, Node
 from .compat import text_type
 from .exceptions import DjangoQLSchemaError
 
+
 try:
-    from django.db.models.fields.generated import (
+    from django.db.models.fields.generated import \
         GeneratedField  # Django >= 5.0
-    )
 except ImportError:
     GeneratedField = None
 
