@@ -424,7 +424,7 @@ class DjangoQLSchema(object):
         return field_cls(**field_kwargs)
 
     def get_field_cls(self, field):
-        if isinstance(field, GeneratedField):
+        if GeneratedField and isinstance(field, GeneratedField):
             field = field.output_field
         str_fields = (
             models.CharField,
