@@ -118,6 +118,11 @@ jobs:
           - {django: '==5.0.*', python: '3.11', os: 'ubuntu-latest'}
           - {django: '==5.0.*', python: '3.12', os: 'ubuntu-latest'}
 
+          - {django: '==5.1.*', python: '3.10', os: 'ubuntu-latest'}
+          - {django: '==5.1.*', python: '3.11', os: 'ubuntu-latest'}
+          - {django: '==5.1.*', python: '3.12', os: 'ubuntu-latest'}
+          - {django: '==5.1.*', python: '3.13', os: 'ubuntu-latest'}
+
     steps:
       - uses: actions/checkout@v2
       - name: Setup Python v. >2.7
