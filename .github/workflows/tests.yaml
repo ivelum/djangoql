@@ -24,8 +24,11 @@ jobs:
           color: '#ee9b00'
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+    outputs:
+      status_message_id: ${{ steps.slack.outputs.message_id }}
 
   lint:
+    needs: [notify-build-start]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -51,12 +54,13 @@ jobs:
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
         with:
+          message_id: ${{ needs.notify-build-start.outputs.status_message_id }}
           channel_id: C0PT3267R
           status: FAILED
           color: '#d7263d'
 
   tests:
-    needs: lint
+    needs: [notify-build-start, lint]
     runs-on: ubuntu-${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -162,13 +166,14 @@ jobs:
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
         with:
+          message_id: ${{ needs.notify-build-start.outputs.status_message_id }}
           channel_id: C0PT3267R
           status: FAILED
           color: '#d7263d'
 
   notify-build-success:
     if: ${{ github.event_name == 'push' }}
-    needs: tests
+    needs: [notify-build-start, tests]
     runs-on: ubuntu-latest
     steps:
       # Send notification on build success
@@ -177,6 +182,7 @@ jobs:
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
         with:
+          message_id: ${{ needs.notify-build-start.outputs.status_message_id }}
           channel_id: C0PT3267R
           status: SUCCESS
           color: '#16db65'
