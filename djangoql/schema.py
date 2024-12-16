@@ -16,6 +16,13 @@ from .compat import text_type
 from .exceptions import DjangoQLSchemaError
 
 
+try:
+    from django.db.models.fields.generated import \
+        GeneratedField  # Django >= 5.0
+except ImportError:
+    GeneratedField = None
+
+
 class DjangoQLField(object):
     """
     Abstract searchable field
@@ -417,6 +424,8 @@ class DjangoQLSchema(object):
         return field_cls(**field_kwargs)
 
     def get_field_cls(self, field):
+        if GeneratedField and isinstance(field, GeneratedField):
+            field = field.output_field
         str_fields = (
             models.CharField,
             models.TextField,
