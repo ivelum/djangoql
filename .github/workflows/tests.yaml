@@ -57,71 +57,71 @@ jobs:
 
   tests:
     needs: lint
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         include:
-          - {django: '1.8.*', python: '2.7', os: 'ubuntu-20.04'}
+          - {django: '1.8.*', python: '2.7', ubuntu: '20.04'}
 
-          - {django: '1.9.*', python: '2.7', os: 'ubuntu-20.04'}
+          - {django: '1.9.*', python: '2.7', ubuntu: '20.04'}
 
-          - {django: '1.10.*', python: '2.7', os: 'ubuntu-20.04'}
+          - {django: '1.10.*', python: '2.7', ubuntu: '20.04'}
 
-          - {django: '1.11.*', python: '2.7', os: 'ubuntu-20.04'}
-          - {django: '1.11.*', python: '3.6', os: 'ubuntu-20.04'}
-          - {django: '1.11.*', python: '3.7', os: 'ubuntu-latest'}
+          - {django: '1.11.*', python: '2.7', ubuntu: '20.04'}
+          - {django: '1.11.*', python: '3.6', ubuntu: '20.04'}
+          - {django: '1.11.*', python: '3.7', ubuntu: '22.04'}
 
-          - {django: '2.0.*', python: '3.6', os: 'ubuntu-20.04'}
-          - {django: '2.0.*', python: '3.7', os: 'ubuntu-latest'}
+          - {django: '2.0.*', python: '3.6', ubuntu: '20.04'}
+          - {django: '2.0.*', python: '3.7', ubuntu: '22.04'}
 
-          - {django: '2.1.*', python: '3.6', os: 'ubuntu-20.04'}
-          - {django: '2.1.*', python: '3.7', os: 'ubuntu-latest'}
+          - {django: '2.1.*', python: '3.6', ubuntu: '20.04'}
+          - {django: '2.1.*', python: '3.7', ubuntu: '22.04'}
 
-          - {django: '2.2.*', python: '3.6', os: 'ubuntu-20.04'}
-          - {django: '2.2.*', python: '3.7', os: 'ubuntu-latest'}
-          - {django: '2.2.*', python: '3.8', os: 'ubuntu-latest'}
-          - {django: '2.2.*', python: '3.9', os: 'ubuntu-latest'}
+          - {django: '2.2.*', python: '3.6', ubuntu: '20.04'}
+          - {django: '2.2.*', python: '3.7', ubuntu: '22.04'}
+          - {django: '2.2.*', python: '3.8', ubuntu: '24.04'}
+          - {django: '2.2.*', python: '3.9', ubuntu: '24.04'}
 
-          - {django: '3.0.*', python: '3.6', os: 'ubuntu-20.04'}
-          - {django: '3.0.*', python: '3.7', os: 'ubuntu-latest'}
-          - {django: '3.0.*', python: '3.8', os: 'ubuntu-latest'}
-          - {django: '3.0.*', python: '3.9', os: 'ubuntu-latest'}
+          - {django: '3.0.*', python: '3.6', ubuntu: '20.04'}
+          - {django: '3.0.*', python: '3.7', ubuntu: '22.04'}
+          - {django: '3.0.*', python: '3.8', ubuntu: '24.04'}
+          - {django: '3.0.*', python: '3.9', ubuntu: '24.04'}
 
-          - {django: '3.1.*', python: '3.6', os: 'ubuntu-20.04'}
-          - {django: '3.1.*', python: '3.7', os: 'ubuntu-latest'}
-          - {django: '3.1.*', python: '3.8', os: 'ubuntu-latest'}
-          - {django: '3.1.*', python: '3.9', os: 'ubuntu-latest'}
+          - {django: '3.1.*', python: '3.6', ubuntu: '20.04'}
+          - {django: '3.1.*', python: '3.7', ubuntu: '22.04'}
+          - {django: '3.1.*', python: '3.8', ubuntu: '24.04'}
+          - {django: '3.1.*', python: '3.9', ubuntu: '24.04'}
 
-          - {django: '3.2.*', python: '3.6', os: 'ubuntu-20.04'}
-          - {django: '3.2.*', python: '3.7', os: 'ubuntu-latest'}
-          - {django: '3.2.*', python: '3.8', os: 'ubuntu-latest'}
-          - {django: '3.2.*', python: '3.9', os: 'ubuntu-latest'}
-          - {django: '3.2.*', python: '3.10', os: 'ubuntu-latest'}
+          - {django: '3.2.*', python: '3.6', ubuntu: '20.04'}
+          - {django: '3.2.*', python: '3.7', ubuntu: '22.04'}
+          - {django: '3.2.*', python: '3.8', ubuntu: '24.04'}
+          - {django: '3.2.*', python: '3.9', ubuntu: '24.04'}
+          - {django: '3.2.*', python: '3.10', ubuntu: '24.04'}
 
-          - {django: '4.0.*', python: '3.8', os: 'ubuntu-latest'}
-          - {django: '4.0.*', python: '3.9', os: 'ubuntu-latest'}
-          - {django: '4.0.*', python: '3.10', os: 'ubuntu-latest'}
+          - {django: '4.0.*', python: '3.8', ubuntu: '24.04'}
+          - {django: '4.0.*', python: '3.9', ubuntu: '24.04'}
+          - {django: '4.0.*', python: '3.10', ubuntu: '24.04'}
 
-          - {django: '4.1.*', python: '3.8', os: 'ubuntu-latest'}
-          - {django: '4.1.*', python: '3.9', os: 'ubuntu-latest'}
-          - {django: '4.1.*', python: '3.10', os: 'ubuntu-latest'}
-          - {django: '4.1.*', python: '3.11', os: 'ubuntu-latest'}
+          - {django: '4.1.*', python: '3.8', ubuntu: '24.04'}
+          - {django: '4.1.*', python: '3.9', ubuntu: '24.04'}
+          - {django: '4.1.*', python: '3.10', ubuntu: '24.04'}
+          - {django: '4.1.*', python: '3.11', ubuntu: '24.04'}
 
-          - {django: '4.2.*', python: '3.8', os: 'ubuntu-latest'}
-          - {django: '4.2.*', python: '3.9', os: 'ubuntu-latest'}
-          - {django: '4.2.*', python: '3.10', os: 'ubuntu-latest'}
-          - {django: '4.2.*', python: '3.11', os: 'ubuntu-latest'}
-          - {django: '4.2.*', python: '3.12', os: 'ubuntu-latest'}
+          - {django: '4.2.*', python: '3.8', ubuntu: '24.04'}
+          - {django: '4.2.*', python: '3.9', ubuntu: '24.04'}
+          - {django: '4.2.*', python: '3.10', ubuntu: '24.04'}
+          - {django: '4.2.*', python: '3.11', ubuntu: '24.04'}
+          - {django: '4.2.*', python: '3.12', ubuntu: '24.04'}
 
-          - {django: '5.0.*', python: '3.10', os: 'ubuntu-latest'}
-          - {django: '5.0.*', python: '3.11', os: 'ubuntu-latest'}
-          - {django: '5.0.*', python: '3.12', os: 'ubuntu-latest'}
+          - {django: '5.0.*', python: '3.10', ubuntu: '24.04'}
+          - {django: '5.0.*', python: '3.11', ubuntu: '24.04'}
+          - {django: '5.0.*', python: '3.12', ubuntu: '24.04'}
 
-          - {django: '5.1.*', python: '3.10', os: 'ubuntu-latest'}
-          - {django: '5.1.*', python: '3.11', os: 'ubuntu-latest'}
-          - {django: '5.1.*', python: '3.12', os: 'ubuntu-latest'}
-          - {django: '5.1.*', python: '3.13', os: 'ubuntu-latest'}
+          - {django: '5.1.*', python: '3.10', ubuntu: '24.04'}
+          - {django: '5.1.*', python: '3.11', ubuntu: '24.04'}
+          - {django: '5.1.*', python: '3.12', ubuntu: '24.04'}
+          - {django: '5.1.*', python: '3.13', ubuntu: '24.04'}
 
     steps:
       - uses: actions/checkout@v4
