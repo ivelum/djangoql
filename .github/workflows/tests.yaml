@@ -28,15 +28,15 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: 3.9
       - name: get pip cache dir
         id: pip-cache
         run: echo "dir=$(pip cache dir)" >> $GITHUB_OUTPUT
       - name: cache pip
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: ${{ steps.pip-cache.outputs.dir }}
           key: pip|lint
@@ -124,10 +124,10 @@ jobs:
           - {django: '5.1.*', python: '3.13', os: 'ubuntu-latest'}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Setup Python v. >2.7
         if: ${{ matrix.python != '2.7' }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
       - name: Setup Python v2.7
@@ -146,7 +146,7 @@ jobs:
         id: pip-cache
         run: echo "dir=$(pip cache dir)" >> $GITHUB_OUTPUT
       - name: cache pip
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: ${{ steps.pip-cache.outputs.dir }}
           key: pip|${{ matrix.python }}|${{ matrix.django }}
