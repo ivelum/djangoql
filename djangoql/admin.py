@@ -6,6 +6,7 @@ from django.core.exceptions import FieldError, ValidationError
 from django.db import DataError, NotSupportedError
 from django.forms import Media
 from django.http import HttpResponse
+from django.shortcuts import resolve_url
 from django.template.loader import render_to_string
 from django.views.generic import TemplateView
 
@@ -112,6 +113,9 @@ class DjangoQLSearchMixin(object):
             msg = text_type(exception)
         return render_to_string('djangoql/error_message.html', context={
             'error_message': msg,
+            'djangoql_syntax_help_url': resolve_url(
+                f'{self.admin_site.name}:djangoql_syntax_help'
+            ),
         })
 
     @property
