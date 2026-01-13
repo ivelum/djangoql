@@ -79,6 +79,31 @@ class DjangoQLParseTest(TestCase):
             self.parser.parse(u'options = "\\u041f \\u0438 \\u0429"'),
         )
 
+    def test_single_quoted_strings(self):
+        self.assertEqual(
+            Expression(Name('gender'), Comparison('='), Const('female')),
+            self.parser.parse("gender = 'female'"),
+        )
+        self.assertEqual(
+            Expression(Name('name'), Comparison('~'), Const('He said "hello"')),
+            self.parser.parse("""name ~ 'He said "hello"'"""),
+        )
+        self.assertEqual(
+            Expression(Name('name'), Comparison('~'), Const("It's working")),
+            self.parser.parse('''name ~ "It's working"'''),
+        )
+
+    def test_escaped_chars_single_quotes(self):
+        self.assertEqual(
+            Expression(Name('name'), Comparison('~'),
+                       Const(u"It's working")),
+            self.parser.parse(u"name ~ 'It\\'s working'"),
+        )
+        self.assertEqual(
+            Expression(Name('options'), Comparison('='), Const(u'П и Щ')),
+            self.parser.parse(u"options = '\\u041f \\u0438 \\u0429'"),
+        )
+
     def test_numbers(self):
         self.assertEqual(
             Expression(Name('pk'), Comparison('>'), Const(5)),

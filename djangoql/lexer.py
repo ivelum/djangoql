@@ -53,9 +53,10 @@ class DjangoQLLexer(object):
 
     re_line_terminators = r'\n\r\u2028\u2029'
 
-    re_escaped_char = r'\\[\"\\/bfnrt]'
+    re_escaped_char = r'\\[\"\'/\\bfnrt]'
     re_escaped_unicode = r'\\u[0-9A-Fa-f]{4}'
-    re_string_char = r'[^\"\\' + re_line_terminators + u']'
+    re_string_char_double = r'[^\"\\' + re_line_terminators + u']'
+    re_string_char_single = r'[^\'\\' + re_line_terminators + u']'
 
     re_int_value = r'(-?0|-?[1-9][0-9]*)'
     re_fraction_part = r'\.[0-9]+'
@@ -106,7 +107,10 @@ class DjangoQLLexer(object):
 
     @TOKEN(r'\"(' + re_escaped_char +
            '|' + re_escaped_unicode +
-           '|' + re_string_char + r')*\"')
+           '|' + re_string_char_double + r')*\"|' +
+           r'\'(' + re_escaped_char +
+           '|' + re_escaped_unicode +
+           '|' + re_string_char_single + r')*\'')
     def t_STRING_VALUE(self, t):
         t.value = t.value[1:-1]  # cut leading and trailing quotes ""
         return t

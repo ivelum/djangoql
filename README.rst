@@ -127,8 +127,10 @@ parenthesis. DjangoQL is case-sensitive.
 
 - model fields: exactly as they are defined in Python code. Access
   nested properties via ``.``, for example ``author.last_name``;
-- strings must be double-quoted. Single quotes are not supported.
-  To escape a double quote use ``\"``;
+- strings can be enclosed in either double quotes or single quotes.
+  To escape a quote, use ``\"`` for double quotes or ``\'`` for single quotes.
+  You can also use single quotes to enclose strings containing double quotes,
+  and vice versa;
 - boolean and null values: ``True``, ``False``, ``None``. Please note
   that they can be combined only with equality operators, so you can
   write ``published = False or date_published = None``, but
