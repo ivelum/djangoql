@@ -43,6 +43,12 @@ class DjangoQLChangeList(ChangeList):
             del params[DJANGOQL_SEARCH_MARKER]
         return params
 
+    def get_ordering(self, request, queryset):
+        if queryset.ordered:
+            return queryset.query.order_by
+        else:
+            return super().get_ordering(request, queryset)
+
 
 class DjangoQLSearchMixin(object):
     search_fields = ('_djangoql',)  # just a stub to have search input displayed

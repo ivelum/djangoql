@@ -11,7 +11,8 @@ from django.db.models import ManyToManyRel, ManyToOneRel
 from django.db.models.fields.related import ForeignObjectRel
 from django.utils.timezone import get_current_timezone
 
-from .ast import Comparison, Const, List, Logical, Name, Node
+from .ast import Comparison, Const, Expression, List, Logical, Name, Ordering, \
+    Query
 from .compat import text_type
 from .exceptions import DjangoQLSchemaError
 
@@ -200,7 +201,6 @@ class StrField(DjangoQLField):
             lookup['%s__icontains' % self.name] = search
         return self.model.objects\
             .filter(**lookup)\
-            .order_by(self.name)\
             .values_list(self.name, flat=True)\
             .distinct()
 
@@ -468,10 +468,18 @@ class DjangoQLSchema(object):
         """
         Validate DjangoQL AST tree vs. current schema
         """
-        assert isinstance(node, Node)
+        assert isinstance(node, Query)
+        if node.expression:
+            self.validate_expression(node.expression)
+        if node.ordering:
+            self.validate_ordering(node.ordering)
+
+    def validate_expression(self, node):
+        assert isinstance(node, Expression)
+
         if isinstance(node.operator, Logical):
-            self.validate(node.left)
-            self.validate(node.right)
+            self.validate_expression(node.left)
+            self.validate_expression(node.right)
             return
         assert isinstance(node.left, Name)
         assert isinstance(node.operator, Comparison)
@@ -490,3 +498,7 @@ class DjangoQLSchema(object):
             values = value if isinstance(node.right, List) else [value]
             for v in values:
                 field.validate(v)
+
+    def validate_ordering(self, ordering: Ordering):
+        for field in ordering.fields:
+            self.resolve_name(field.name)
