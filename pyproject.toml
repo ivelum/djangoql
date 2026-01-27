@@ -1,0 +1,50 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "djangoql"
+dynamic = ["version"]
+description = "DjangoQL: Advanced search language for Django"
+readme = "README.rst"
+license = "MIT"
+authors = [
+    { name = "Denis Stebunov", email = "support@ivelum.com" },
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Natural Language :: English",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 2.7",
+    "Programming Language :: Python :: 3.5",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+]
+dependencies = [
+    "ply>=3.8",
+]
+
+[project.urls]
+Homepage = "https://github.com/ivelum/djangoql/"
+
+[tool.hatch.version]
+path = "djangoql/__init__.py"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/djangoql",
+    "/test_project",
+]
+
+[tool.hatch.build.targets.wheel]
+include = [
+    "/djangoql",
+]
