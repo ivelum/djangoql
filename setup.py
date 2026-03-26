@@ -5,8 +5,8 @@ from setuptools import setup
 import djangoql
 
 
-packages = ['djangoql']
-requires = ['ply>=3.8']
+packages = ['djangoql', 'djangoql.ply']
+requires = []
 
 setup(
     name='djangoql',
