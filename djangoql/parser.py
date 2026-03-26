@@ -3,12 +3,11 @@ from __future__ import unicode_literals
 import re
 from decimal import Decimal
 
-import ply.yacc as yacc
-
 from .ast import Comparison, Const, Expression, List, Logical, Name
 from .compat import binary_type, text_type
 from .exceptions import DjangoQLParserError
 from .lexer import DjangoQLLexer
+from .ply import yacc
 
 
 unescape_pattern = re.compile(
@@ -36,8 +35,6 @@ class DjangoQLParser(object):
         self.default_lexer = DjangoQLLexer()
         self.tokens = self.default_lexer.tokens
         kwargs['debug'] = debug
-        if 'write_tables' not in kwargs:
-            kwargs['write_tables'] = False
         self.yacc = yacc.yacc(module=self, **kwargs)
 
     def parse(self, input=None, lexer=None, **kwargs):  # noqa: A002

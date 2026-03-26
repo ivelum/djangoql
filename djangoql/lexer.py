@@ -1,9 +1,8 @@
 from __future__ import unicode_literals
 
-import ply.lex as lex
-from ply.lex import TOKEN
-
 from .exceptions import DjangoQLLexerError
+from .ply import lex
+from .ply.lex import TOKEN
 
 
 class DjangoQLLexer(object):
