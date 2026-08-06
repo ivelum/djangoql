@@ -3,10 +3,10 @@
 [![Tests](https://github.com/iplweb/djangoql-iplweb/actions/workflows/tests.yaml/badge.svg)](https://github.com/iplweb/djangoql-iplweb/actions/workflows/tests.yaml)
 [![PyPI](https://img.shields.io/pypi/v/djangoql-iplweb)](https://pypi.org/project/djangoql-iplweb/)
 [![Python Version](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13%20%7C%203.14-blue)](https://github.com/iplweb/djangoql-iplweb)
-[![Django Version](https://img.shields.io/badge/django-5.2%20%7C%206.0-blue)](https://github.com/iplweb/djangoql-iplweb)
+[![Django Version](https://img.shields.io/badge/django-5.2%20%7C%206.0%20%7C%206.1-blue)](https://github.com/iplweb/djangoql-iplweb)
 [![License](https://img.shields.io/github/license/iplweb/djangoql-iplweb)](LICENSE)
 
-Advanced search language for Django, with auto-completion. Supports logical operators, parenthesis, table joins, and works with any Django model. Tested on Python 3.10–3.14, Django 5.2 and 6.0. The auto-completion feature has been tested in Chrome, Firefox, Safari, IE9+.
+Advanced search language for Django, with auto-completion. Supports logical operators, parenthesis, table joins, and works with any Django model. Tested on Python 3.10–3.14, Django 5.2, 6.0 and 6.1. The auto-completion feature has been tested in Chrome, Firefox, Safari, IE9+.
 
 > **This is a community fork.** `djangoql-iplweb` is a fork of the original
 > [**DjangoQL** by ivelum](https://github.com/ivelum/djangoql) — install the
