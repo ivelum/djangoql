@@ -29,6 +29,12 @@ This requires Docker to be running.  The first run will pull the
 image.  The `testcontainers[postgres]` and `psycopg[binary]` packages are
 included in the `dev` extra and are installed by `uv sync --all-extras`.
 
+`test_project/core/tests/test_db_backend.py` asserts that the live connection
+really is the backend you asked for, so a Postgres run that quietly falls back
+to SQLite fails instead of passing.  Tests that assert on generated SQL must
+therefore stay backend-aware — see the `like_ci()` / `dt()` helpers in
+`test_project/core/tests/test_queryset.py`.
+
 The suite runs against the bundled `test_project/`. The compiled `.mo`
 catalogs are **not** tracked in git — they are generated from the source
 `.po` files at build time. To compile them locally (e.g. before running the
