@@ -37,6 +37,9 @@ def postgres_container():
         yield pg
 
 
+POSTGRES_ENGINE = 'django.db.backends.postgresql'
+
+
 @pytest.fixture(scope='session')
 def django_db_modify_db_settings(
     postgres_container,
@@ -47,6 +50,15 @@ def django_db_modify_db_settings(
     This fixture is called by pytest-django right before the test database is
     created, which is the correct point to swap out the connection settings.
     When postgres_container is None (default SQLite run) this is a no-op.
+
+    Swapping ``settings.DATABASES`` is *not* enough on its own.  pytest-django
+    calls ``django.setup()`` from ``pytest_load_initial_conftests`` — before
+    any fixture runs — and app loading materialises the ``default`` connection
+    (``Options.contribute_to_class()`` asks ``connection.ops`` for
+    ``max_name_length()`` when truncating table names).  That connection object
+    keeps its own copy of the settings dict, so without explicitly discarding
+    it the whole suite silently keeps running on SQLite while a Postgres
+    container burns CI minutes next to it.
     """
     if postgres_container is None:
         return
@@ -55,7 +67,7 @@ def django_db_modify_db_settings(
     from django.db import connections
 
     settings.DATABASES['default'] = {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': POSTGRES_ENGINE,
         'NAME': postgres_container.dbname,
         'USER': postgres_container.username,
         'PASSWORD': postgres_container.password,
@@ -63,8 +75,32 @@ def django_db_modify_db_settings(
         'PORT': postgres_container.get_exposed_port(5432),
     }
 
+    # Close and drop every connection object built from the old (SQLite)
+    # settings.  ``del connections[alias]`` is ConnectionHandler's public way
+    # of removing a cached connection; the handler rebuilds it lazily on next
+    # access, this time from the settings above.
+    connections.close_all()
+    for alias in list(settings.DATABASES):
+        try:
+            del connections[alias]
+        except AttributeError:
+            pass  # never materialised — nothing to discard
+
     # The ConnectionHandler caches its normalised settings dict via
     # cached_property.  After mutating settings.DATABASES we must bust that
     # cache so Django re-runs configure_settings() (which populates defaults
     # like ATOMIC_REQUESTS, TIME_ZONE, etc.) on next access.
     connections.__dict__.pop('settings', None)
+
+    # Fail loudly and immediately rather than quietly testing the wrong
+    # database: if a future change to fixture ordering (or to Django's own
+    # start-up) re-materialises the connection before we get here, the whole
+    # session must stop.  test_project/core/tests/test_db_backend.py asserts
+    # the same invariant from the test side.
+    engine = connections['default'].settings_dict['ENGINE']
+    if engine != POSTGRES_ENGINE:
+        raise RuntimeError(
+            'DJANGOQL_TEST_DB=postgres, but the "default" connection is still '
+            'using %s instead of %s. The test suite would silently run '
+            'against the wrong database.' % (engine, POSTGRES_ENGINE)
+        )
