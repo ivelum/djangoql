@@ -1,6 +1,7 @@
+{% load i18n %}
 <div class="clearfix">
   {{ error_message }}
   <a href="{{ djangoql_syntax_help_url }}" class="djangoql-help">
-    DjangoQL syntax help
+    {% trans "DjangoQL syntax help" %}
   </a>
 </div>

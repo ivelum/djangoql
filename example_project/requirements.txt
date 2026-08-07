@@ -1,0 +1,15 @@
+# Dependencies for the DjangoQL example project.
+#
+# djangoql itself does NOT depend on a Markdown compiler: without one, the admin
+# "DjangoQL search syntax" help is shown as raw Markdown inside <pre>. This
+# example deliberately installs `markdown` so that same help page — and the
+# standalone /syntax-help/ page below — render as compiled HTML instead. That is
+# the whole point: the rendering capability lives in djangoql core and is
+# unlocked simply by making a Markdown library importable.
+markdown>=3.4
+
+# The library under demonstration, installed from the repository root.
+-e ..
+
+# A supported Django version to run the demo against.
+Django>=4.2

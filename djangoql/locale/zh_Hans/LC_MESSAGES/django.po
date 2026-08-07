@@ -1,0 +1,223 @@
+# DjangoQL Simplified Chinese translation.
+# Copyright (C) 2026 ivelum and contributors
+# This file is distributed under the same license as the djangoql package.
+#
+# Auto-translated. Review by a native Simplified Chinese speaker welcome — open a PR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: djangoql\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-06-04 06:45+0000\n"
+"PO-Revision-Date: 2026-05-13 00:00+0000\n"
+"Language-Team: Simplified Chinese\n"
+"Language: zh_Hans\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: exceptions.py:15
+#, python-format
+msgid "Line %(line)s, col %(col)s"
+msgstr "第 %(line)s 行,第 %(col)s 列"
+
+#: exceptions.py:20
+#, python-format
+msgid "Line %s"
+msgstr "第 %s 行"
+
+#: extras.py:69
+msgid "times in \"HH:MM[:SS]\" format"
+msgstr "\"HH:MM[:SS]\" 格式的时间"
+
+#: extras.py:99
+#, python-brace-format
+msgid ""
+"Field \"{field}\" can be compared to times in \"HH:MM[:SS]\" format, but not "
+"to {value}"
+msgstr ""
+"字段 \"{field}\" 可与 \"HH:MM[:SS]\" 格式的时间比较,但不能与 {value} 比较"
+
+#: extras.py:224
+msgid "numbers"
+msgstr "数字"
+
+#: extras.py:419
+#, python-brace-format
+msgid ""
+"Relation aggregates are hidden from suggestions: use <relation>__count and "
+"<relation>.<numeric_field>__{{sum,avg,min,max}} — e.g. {examples}."
+msgstr ""
+"关联聚合已从建议中隐藏:请使用 <relation>__count 和 "
+"<relation>.<numeric_field>__{{sum,avg,min,max}} — 例如 {examples}。"
+
+#: extras.py:486
+#, python-brace-format
+msgid ""
+"Date/time parts are hidden too: use <field>__{{year,month,day,hour,...}} — "
+"e.g. {example}."
+msgstr ""
+"日期/时间的各部分也已隐藏:请使用 <field>__{{year,month,day,hour,...}} — 例如 "
+"{example}。"
+
+#: extras.py:702
+#, python-brace-format
+msgid "Field \"{field}\" expects a string value, but got {value}"
+msgstr "字段 \"{field}\" 需要字符串值,但收到 {value}"
+
+#: lexer.py:169
+#, python-format
+msgid "Illegal character %s"
+msgstr "非法字符 %s"
+
+#: parser.py:210
+msgid "Unexpected end of input"
+msgstr "意外的输入结束"
+
+#: parser.py:216
+#, python-format
+msgid "Syntax error at %s"
+msgstr "在 %s 处出现语法错误"
+
+#: schema.py:169
+#, python-format
+msgid "Field %s is not nullable, can't compare it to None"
+msgstr "字段 %s 不可为空,无法与 None 比较"
+
+#: schema.py:175
+#, python-brace-format
+msgid ""
+"Field \"{field}\" has \"nullable {field_type}\" type. It can be compared to "
+"{possible_values} or None, but not to {value}"
+msgstr ""
+"字段 \"{field}\" 的类型为 \"nullable {field_type}\"。可与 {possible_values} "
+"或 None 比较,但不能与 {value} 比较"
+
+#: schema.py:181
+#, python-brace-format
+msgid ""
+"Field \"{field}\" has \"{field_type}\" type. It can be compared to "
+"{possible_values}, but not to {value}"
+msgstr ""
+"字段 \"{field}\" 的类型为 \"{field_type}\"。可与 {possible_values} 比较,但不"
+"能与 {value} 比较"
+
+#: schema.py:198
+msgid "integer numbers"
+msgstr "整数"
+
+#: schema.py:210
+msgid "floating point numbers"
+msgstr "浮点数"
+
+#: schema.py:216
+msgid "strings"
+msgstr "字符串"
+
+#: schema.py:236
+msgid "True or False"
+msgstr "True 或 False"
+
+#: schema.py:242
+msgid "dates in \"YYYY-MM-DD\" format"
+msgstr "\"YYYY-MM-DD\" 格式的日期"
+
+#: schema.py:251
+#, python-brace-format
+msgid ""
+"Field \"{field}\" can be compared to dates in \"YYYY-MM-DD\" format, but not "
+"to {value}"
+msgstr ""
+"字段 \"{field}\" 可与 \"YYYY-MM-DD\" 格式的日期比较,但不能与 {value} 比较"
+
+#: schema.py:273
+msgid "timestamps in \"YYYY-MM-DD HH:MM\" format"
+msgstr "\"YYYY-MM-DD HH:MM\" 格式的时间戳"
+
+#: schema.py:282
+#, python-brace-format
+msgid ""
+"Field \"{field}\" can be compared to timestamps in \"YYYY-MM-DD HH:MM\" "
+"format, but not to {value}"
+msgstr ""
+"字段 \"{field}\" 可与 \"YYYY-MM-DD HH:MM\" 格式的时间戳比较,但不能与 {value} "
+"比较"
+
+#: schema.py:356
+msgid "Schema must be initialized with a subclass of Django model"
+msgstr "Schema 必须使用 Django 模型的子类进行初始化"
+
+#: schema.py:360
+msgid "Either include or exclude can be specified, but not both"
+msgstr "include 与 exclude 只能指定其中一个,不能同时指定"
+
+#: schema.py:365
+#, python-brace-format
+msgid "{model} can't be used with {schema_class} because it's excluded from it"
+msgstr "{model} 被 {schema_class} 排除,无法使用"
+
+#: schema.py:591
+#, python-brace-format
+msgid "Unknown field: {field}. Did you mean: {suggestions}?"
+msgstr "未知字段: {field}。您是否想要: {suggestions}?"
+
+#: schema.py:602
+#, python-brace-format
+msgid "Unknown field: {field}. Possible choices are: {choices}"
+msgstr "未知字段: {field}。可选项: {choices}"
+
+#: schema.py:649
+#, python-brace-format
+msgid ""
+"Related model {model} can be compared to None only, but not to {value_type}"
+msgstr "关联模型 {model} 只能与 None 比较,不能与 {value_type} 比较"
+
+#: templates/djangoql/empty_breakdown.html:3
+msgid "No results. Where the query runs out of data:"
+msgstr "无结果。查询在何处耗尽数据:"
+
+#: templates/djangoql/empty_breakdown.html:7
+msgid ""
+"Breakdown truncated: the query is too large; only the top-level conditions "
+"were evaluated."
+msgstr "明细已截断:查询过大,仅评估了顶层条件。"
+
+#: templates/djangoql/empty_breakdown_node.html:6
+msgid "no data from here on"
+msgstr "从此处起已无数据"
+
+#: templates/djangoql/empty_breakdown_node.html:8
+msgid "this branch is empty"
+msgstr "此分支为空"
+
+#: templates/djangoql/error_message.html:5
+msgid "DjangoQL syntax help"
+msgstr "DjangoQL 语法帮助"
+
+#: views.py:22
+msgid "page must be an integer starting from 1"
+msgstr "page 必须是从 1 开始的整数"
+
+#: views.py:54
+msgid "DjangoQL schema is undefined"
+msgstr "未定义 DjangoQL schema"
+
+#: views.py:56
+msgid "\"field\" parameter is required"
+msgstr "必须提供 \"field\" 参数"
+
+#: views.py:69
+#, python-format
+msgid "Unknown model: %s"
+msgstr "未知模型: %s"
+
+#: views.py:72
+#, python-format
+msgid "Unknown field: %s"
+msgstr "未知字段: %s"
+
+#: views.py:78
+#, python-brace-format
+msgid "{model}.{field} doesn't support suggestions"
+msgstr "{model}.{field} 不支持建议"

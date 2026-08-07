@@ -1,0 +1,30 @@
+# DjangoQL German translation (JavaScript catalog).
+# Copyright (C) 2026 ivelum and contributors
+# This file is distributed under the same license as the djangoql package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: djangoql\n"
+"Report-Msgid-Bugs-To: \n"
+"Language-Team: German\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+
+msgid "is not equal to"
+msgstr "ist ungleich"
+
+msgid "contains"
+msgstr "enthält"
+
+msgid "does not contain"
+msgstr "enthält nicht"
+
+msgid "Advanced search with Query Language"
+msgstr "Erweiterte Suche mit Abfragesprache"
+
+msgid "Syntax Help"
+msgstr "Syntaxhilfe"

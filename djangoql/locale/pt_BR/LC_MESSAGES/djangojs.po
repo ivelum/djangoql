@@ -1,0 +1,30 @@
+# DjangoQL Brazilian Portuguese translation (JavaScript catalog).
+# Copyright (C) 2026 ivelum and contributors
+# This file is distributed under the same license as the djangoql package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: djangoql\n"
+"Report-Msgid-Bugs-To: \n"
+"Language-Team: Brazilian Portuguese\n"
+"Language: pt_BR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+
+msgid "is not equal to"
+msgstr "não é igual a"
+
+msgid "contains"
+msgstr "contém"
+
+msgid "does not contain"
+msgstr "não contém"
+
+msgid "Advanced search with Query Language"
+msgstr "Busca avançada com linguagem de consulta"
+
+msgid "Syntax Help"
+msgstr "Ajuda de sintaxe"

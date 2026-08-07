@@ -1,0 +1,43 @@
+site_name: DjangoQL
+site_description: Advanced search language for Django, with Django admin integration.
+site_url: https://iplweb.github.io/djangoql-iplweb/
+repo_url: https://github.com/iplweb/djangoql-iplweb
+docs_dir: docs
+
+# Process artifacts (design specs / implementation plans) live under
+# docs/superpowers/ and must not be part of the published site.
+exclude_docs: |
+  superpowers/
+
+theme:
+  name: material
+  features:
+    - navigation.sections
+    - content.code.copy
+    - toc.integrate
+
+markdown_extensions:
+  - admonition
+  - toc:
+      permalink: true
+  - pymdownx.highlight
+  - pymdownx.superfences
+
+nav:
+  - Home: index.md
+  - Installation: installation.md
+  - Django admin: admin.md
+  - Language reference: language.md
+  - Multi-line queries: multiline-queries.md
+  - Pretty-print / formatting: pretty-print.md
+  - Schema & custom fields: schema.md
+  - Describe schema for an LLM: llm-schema.md
+  - Derived fields: derived-fields.md
+  - django-autocomplete-light: integrating-django-autocomplete-light.md
+  - Empty-result breakdown: empty-result-breakdown.md
+  - Query breakdown (counts): query-breakdown.md
+  - Outside the admin: queryset.md
+  - Syntax highlighting: syntax-highlighting.md
+  - Completion widget: completion-widget.md
+  - Example project: example-project.md
+  - Internationalization: i18n.md

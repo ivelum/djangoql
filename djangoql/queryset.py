@@ -37,6 +37,9 @@ def apply_search(queryset, search, schema=None):
     schema = schema or DjangoQLSchema
     schema_instance = schema(queryset.model)
     schema_instance.validate(ast)
+    annotations = schema_instance.collect_annotations(ast)
+    if annotations:
+        queryset = queryset.annotate(**annotations)
     return queryset.filter(build_filter(ast, schema_instance))
 
 

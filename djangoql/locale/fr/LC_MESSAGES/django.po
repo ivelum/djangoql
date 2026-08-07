@@ -1,0 +1,240 @@
+# DjangoQL French translation.
+# Copyright (C) 2026 ivelum and contributors
+# This file is distributed under the same license as the djangoql package.
+#
+# Auto-translated. Review by a native French speaker welcome — open a PR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: djangoql\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-06-04 06:45+0000\n"
+"PO-Revision-Date: 2026-05-13 00:00+0000\n"
+"Language-Team: French\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: exceptions.py:15
+#, python-format
+msgid "Line %(line)s, col %(col)s"
+msgstr "Ligne %(line)s, col. %(col)s"
+
+#: exceptions.py:20
+#, python-format
+msgid "Line %s"
+msgstr "Ligne %s"
+
+#: extras.py:69
+#| msgid "timestamps in \"YYYY-MM-DD HH:MM\" format"
+msgid "times in \"HH:MM[:SS]\" format"
+msgstr "des heures au format \"HH:MM[:SS]\""
+
+#: extras.py:99
+#, python-brace-format
+#| msgid ""
+#| "Field \"{field}\" can be compared to timestamps in \"YYYY-MM-DD HH:MM\" "
+#| "format, but not to {value}"
+msgid ""
+"Field \"{field}\" can be compared to times in \"HH:MM[:SS]\" format, but not "
+"to {value}"
+msgstr ""
+"Le champ \"{field}\" peut être comparé à des heures au format \"HH:MM[:SS]\", "
+"mais pas à {value}"
+
+#: extras.py:224
+#| msgid "integer numbers"
+msgid "numbers"
+msgstr "des nombres"
+
+#: extras.py:419
+#, python-brace-format
+msgid ""
+"Relation aggregates are hidden from suggestions: use <relation>__count and "
+"<relation>.<numeric_field>__{{sum,avg,min,max}} — e.g. {examples}."
+msgstr ""
+"Les agrégats de relations sont masqués des suggestions : utilisez "
+"<relation>__count et <relation>.<numeric_field>__{{sum,avg,min,max}} — par "
+"ex. {examples}."
+
+#: extras.py:486
+#, python-brace-format
+msgid ""
+"Date/time parts are hidden too: use <field>__{{year,month,day,hour,...}} — "
+"e.g. {example}."
+msgstr ""
+"Les composantes de date/heure sont également masquées : utilisez "
+"<field>__{{year,month,day,hour,...}} — par ex. {example}."
+
+#: extras.py:702
+#, python-brace-format
+#| msgid ""
+#| "Field \"{field}\" can be compared to dates in \"YYYY-MM-DD\" format, but "
+#| "not to {value}"
+msgid "Field \"{field}\" expects a string value, but got {value}"
+msgstr ""
+"Le champ \"{field}\" attend une chaîne de caractères, mais a reçu {value}"
+
+#: lexer.py:169
+#, python-format
+msgid "Illegal character %s"
+msgstr "Caractère non autorisé %s"
+
+#: parser.py:210
+msgid "Unexpected end of input"
+msgstr "Fin d'entrée inattendue"
+
+#: parser.py:216
+#, python-format
+msgid "Syntax error at %s"
+msgstr "Erreur de syntaxe à %s"
+
+#: schema.py:169
+#, python-format
+msgid "Field %s is not nullable, can't compare it to None"
+msgstr "Le champ %s n'est pas nullable, impossible de le comparer à None"
+
+#: schema.py:175
+#, python-brace-format
+msgid ""
+"Field \"{field}\" has \"nullable {field_type}\" type. It can be compared to "
+"{possible_values} or None, but not to {value}"
+msgstr ""
+"Le champ \"{field}\" est de type \"nullable {field_type}\". Il peut être "
+"comparé à {possible_values} ou à None, mais pas à {value}"
+
+#: schema.py:181
+#, python-brace-format
+msgid ""
+"Field \"{field}\" has \"{field_type}\" type. It can be compared to "
+"{possible_values}, but not to {value}"
+msgstr ""
+"Le champ \"{field}\" est de type \"{field_type}\". Il peut être comparé à "
+"{possible_values}, mais pas à {value}"
+
+#: schema.py:198
+msgid "integer numbers"
+msgstr "des nombres entiers"
+
+#: schema.py:210
+msgid "floating point numbers"
+msgstr "des nombres à virgule flottante"
+
+#: schema.py:216
+msgid "strings"
+msgstr "des chaînes de caractères"
+
+#: schema.py:236
+msgid "True or False"
+msgstr "True ou False"
+
+#: schema.py:242
+msgid "dates in \"YYYY-MM-DD\" format"
+msgstr "des dates au format \"YYYY-MM-DD\""
+
+#: schema.py:251
+#, python-brace-format
+msgid ""
+"Field \"{field}\" can be compared to dates in \"YYYY-MM-DD\" format, but not "
+"to {value}"
+msgstr ""
+"Le champ \"{field}\" peut être comparé à des dates au format \"YYYY-MM-DD\", "
+"mais pas à {value}"
+
+#: schema.py:273
+msgid "timestamps in \"YYYY-MM-DD HH:MM\" format"
+msgstr "des horodatages au format \"YYYY-MM-DD HH:MM\""
+
+#: schema.py:282
+#, python-brace-format
+msgid ""
+"Field \"{field}\" can be compared to timestamps in \"YYYY-MM-DD HH:MM\" "
+"format, but not to {value}"
+msgstr ""
+"Le champ \"{field}\" peut être comparé à des horodatages au format \"YYYY-MM-"
+"DD HH:MM\", mais pas à {value}"
+
+#: schema.py:356
+msgid "Schema must be initialized with a subclass of Django model"
+msgstr "Le schéma doit être initialisé avec une sous-classe d'un modèle Django"
+
+#: schema.py:360
+msgid "Either include or exclude can be specified, but not both"
+msgstr "Vous pouvez spécifier include ou exclude, mais pas les deux"
+
+#: schema.py:365
+#, python-brace-format
+msgid "{model} can't be used with {schema_class} because it's excluded from it"
+msgstr ""
+"{model} ne peut pas être utilisé avec {schema_class} car il en est exclu"
+
+#: schema.py:591
+#, python-brace-format
+#| msgid "Unknown field: {field}. Possible choices are: {choices}"
+msgid "Unknown field: {field}. Did you mean: {suggestions}?"
+msgstr "Champ inconnu : {field}. Vouliez-vous dire : {suggestions} ?"
+
+#: schema.py:602
+#, python-brace-format
+msgid "Unknown field: {field}. Possible choices are: {choices}"
+msgstr "Champ inconnu : {field}. Choix possibles : {choices}"
+
+#: schema.py:649
+#, python-brace-format
+msgid ""
+"Related model {model} can be compared to None only, but not to {value_type}"
+msgstr ""
+"Le modèle lié {model} ne peut être comparé qu'à None, mais pas à {value_type}"
+
+#: templates/djangoql/empty_breakdown.html:3
+msgid "No results. Where the query runs out of data:"
+msgstr "Aucun résultat. Où la requête se retrouve sans données :"
+
+#: templates/djangoql/empty_breakdown.html:7
+msgid ""
+"Breakdown truncated: the query is too large; only the top-level conditions "
+"were evaluated."
+msgstr ""
+"Ventilation tronquée : la requête est trop volumineuse ; seules les "
+"conditions de premier niveau ont été évaluées."
+
+#: templates/djangoql/empty_breakdown_node.html:6
+msgid "no data from here on"
+msgstr "plus aucune donnée à partir d'ici"
+
+#: templates/djangoql/empty_breakdown_node.html:8
+msgid "this branch is empty"
+msgstr "cette branche est vide"
+
+#: templates/djangoql/error_message.html:5
+msgid "DjangoQL syntax help"
+msgstr "Aide sur la syntaxe DjangoQL"
+
+#: views.py:22
+msgid "page must be an integer starting from 1"
+msgstr "page doit être un entier supérieur ou égal à 1"
+
+#: views.py:54
+msgid "DjangoQL schema is undefined"
+msgstr "Le schéma DjangoQL n'est pas défini"
+
+#: views.py:56
+msgid "\"field\" parameter is required"
+msgstr "Le paramètre \"field\" est requis"
+
+#: views.py:69
+#, python-format
+msgid "Unknown model: %s"
+msgstr "Modèle inconnu : %s"
+
+#: views.py:72
+#, python-format
+msgid "Unknown field: %s"
+msgstr "Champ inconnu : %s"
+
+#: views.py:78
+#, python-brace-format
+msgid "{model}.{field} doesn't support suggestions"
+msgstr "{model}.{field} ne prend pas en charge les suggestions"

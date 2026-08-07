@@ -1,0 +1,78 @@
+/*
+ * djangoql syntax highlighting — structural CSS + an overridable default
+ * palette.
+ *
+ * The layout rules (.dql-highlight*) are required for the overlay to line up.
+ * The colours are *defaults only*, expressed through CSS custom properties so
+ * an integrator can recolour everything by redefining the --dql-* variables
+ * (or by overriding the .dql-tok-* rules). DjangoQL imposes no palette; see
+ * example_project for a fully restyled version.
+ */
+
+/* ---- Structural: the transparent-text overlay ------------------------- */
+
+.dql-highlight {
+  position: relative;
+  display: block;
+}
+
+.dql-highlight-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: 0;
+  overflow: hidden;
+  pointer-events: none;
+  /* Wrap exactly like the textarea so columns line up. */
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  color: var(--dql-fg, inherit);
+  background: var(--dql-bg, transparent);
+}
+
+.dql-highlight-code {
+  display: block;
+  white-space: inherit;
+  overflow-wrap: inherit;
+  word-break: inherit;
+}
+
+/* The real input sits on top; its own text is transparent so only the
+   coloured backdrop shows, but the caret stays visible. */
+.dql-highlight-input.dql-highlight-input {
+  position: relative;
+  background: transparent;
+  color: transparent;
+  /* The caret is set to the input's original text colour from JS (so it stays
+     visible against the transparent text); --dql-caret overrides it. Never use
+     currentColor here — it would resolve to the transparent text colour. */
+  caret-color: var(--dql-caret, #000);
+}
+
+/* ---- Default palette (override the variables to restyle) -------------- */
+
+.dql-tok-name { color: var(--dql-name, #1f6feb); }
+.dql-tok-operator { color: var(--dql-operator, #cf222e); }
+.dql-tok-logical { color: var(--dql-logical, #8250df); font-weight: 600; }
+.dql-tok-string { color: var(--dql-string, #0a7d33); }
+.dql-tok-number { color: var(--dql-number, #953800); }
+.dql-tok-bool { color: var(--dql-bool, #953800); }
+.dql-tok-none { color: var(--dql-none, #953800); }
+.dql-tok-paren { color: var(--dql-paren, #57606a); }
+.dql-tok-comma { color: var(--dql-comma, #57606a); }
+.dql-tok-error { color: var(--dql-error, #ffffff); background: var(--dql-error-bg, #cf222e); }
+.dql-tok-ws { color: inherit; }
+
+/* The token flagged as a syntax-error location (overlay.setError / setErrorAt).
+   A red wavy underline, like an editor squiggle; override --dql-error-mark. */
+.dql-tok-errormark {
+  text-decoration: var(--dql-error-mark-line, underline) wavy
+    var(--dql-error-mark, #cf222e);
+  text-decoration-skip-ink: none;
+  text-underline-offset: 3px;
+  background: var(--dql-error-mark-bg, rgba(207, 34, 46, 0.18));
+  border-radius: 3px;
+}

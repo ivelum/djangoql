@@ -26,6 +26,14 @@
     return result;
   }
 
+  function getSyntaxHelpURL() {
+    var lang = document.documentElement.getAttribute('lang');
+    if (!lang) {
+      return 'djangoql-syntax/';
+    }
+    return 'djangoql-syntax/?lang=' + encodeURIComponent(lang);
+  }
+
   // Replace standard search input with textarea and add completion toggle
   DjangoQL.DOMReady(function () {
     // use '-' in the param name to prevent conflicts with any model field name
@@ -34,7 +42,9 @@
     var QLEnabledInURL;
     var QLInput;
     var QLToggle;
-    var QLPlaceholder = 'Advanced search with Query Language';
+    var QLPlaceholder = window.gettext
+      ? window.gettext('Advanced search with Query Language')
+      : 'Advanced search with Query Language';
     var originalPlaceholder;
     var textarea;
     var input = document.querySelector('input[name=q]');
@@ -105,7 +115,7 @@
     djangoQL = new DjangoQL({
       completionEnabled: QLEnabled,
       introspections: 'introspect/',
-      syntaxHelp: 'djangoql-syntax/',
+      syntaxHelp: getSyntaxHelpURL(),
       selector: 'textarea[name=q]',
       autoResize: true
     });

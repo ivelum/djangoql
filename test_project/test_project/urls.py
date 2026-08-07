@@ -13,31 +13,29 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
+
 from django.conf import settings
-from django.conf.urls import include
 from django.contrib import admin
-
-
-try:
-    from django.urls import re_path  # Django >= 4.0
-except ImportError:
-    try:
-        from django.conf.urls import re_path  # Django < 4.0
-    except ImportError:  # Django < 2.0
-        from django.conf.urls import url as re_path
+from django.urls import include, path, re_path
 
 from core.admin import zaibatsu_admin_site
-from core.views import completion_demo
+from core.views import completion_demo, user_autocomplete
 
 
 urlpatterns = [
     re_path(r'^admin/', admin.site.urls),
     re_path(r'^zaibatsu-admin/', zaibatsu_admin_site.urls),
-    re_path(r'^$', completion_demo),
+    path(
+        'autocomplete/user/',
+        user_autocomplete,
+        name='user-autocomplete',
+    ),
+    path('', completion_demo),
 ]
 
 if settings.DEBUG and settings.DJDT:
     import debug_toolbar
+
     urlpatterns = [
-        re_path(r'^__debug__/', include(debug_toolbar.urls)),
+        path('__debug__/', include(debug_toolbar.urls)),
     ] + urlpatterns

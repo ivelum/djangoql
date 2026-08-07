@@ -1,0 +1,150 @@
+[build-system]
+# Babel compiles the gettext .mo catalogs at build time (see _build_meta.py /
+# _translations.py); no GNU gettext / msgfmt binary is needed.
+requires = ["setuptools>=77.0", "babel"]
+build-backend = "_build_meta"
+backend-path = ["."]
+
+[project]
+name = "djangoql-iplweb"
+dynamic = ["version"]
+description = "DjangoQL: Advanced search language for Django (iplweb fork with i18n)"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{name = "Denis Stebunov", email = "support@ivelum.com"}]
+maintainers = [{name = "Michał Pasternak", email = "michal.dtz@gmail.com"}]
+keywords = ["django", "search", "query-language", "admin", "autocomplete"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Natural Language :: English",
+    "Framework :: Django",
+    "Framework :: Django :: 5.2",
+    "Framework :: Django :: 6.0",
+    "Framework :: Django :: 6.1",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+]
+dependencies = [
+    "ply>=3.8",
+]
+
+[project.optional-dependencies]
+dev = [
+    "ruff",
+    "pre-commit",
+    "bumpver",
+    "pytest",
+    "pytest-django",
+    # Babel compiles .po -> .mo for the test run (the .mo files are not in
+    # git); CI calls _translations.compile_catalogs() before pytest.
+    "babel",
+    # Django is a peer dependency (not in [project.dependencies]); pin a
+    # supported version here so the test suite has something to run against.
+    # CI overrides this per matrix entry.
+    "django>=4.2",
+    "testcontainers[postgres]>=4.14.2",
+    "psycopg[binary]>=3.3.4",
+    "mkdocs",
+    "mkdocs-material",
+]
+
+[project.urls]
+Funding = "https://buymeacoffee.com/mpasternak"
+Homepage = "https://github.com/iplweb/djangoql-iplweb"
+Repository = "https://github.com/iplweb/djangoql-iplweb"
+Issues = "https://github.com/iplweb/djangoql-iplweb/issues"
+
+[tool.setuptools]
+packages = [
+    "djangoql",
+    "djangoql.management",
+    "djangoql.management.commands",
+]
+
+[tool.setuptools.dynamic]
+version = {attr = "djangoql.__version__"}
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "test_project.settings"
+# The settings package (test_project.settings) and the test app (core) both
+# live under the outer test_project/ directory.
+pythonpath = ["test_project"]
+testpaths = ["test_project/core/tests"]
+
+[tool.ruff]
+target-version = "py310"
+line-length = 80
+extend-exclude = [
+    "djangoql/parsetab.py",
+    "*/migrations/*",
+    "test_project/manage.py",
+]
+
+[tool.ruff.lint]
+# Mirror the previous flake8 stack so lint coverage is preserved:
+#   E/W/F = pycodestyle + pyflakes, Q = flake8-quotes, T20 = flake8-print,
+#   A = flake8-builtins (A003 ignored, as in the old setup.cfg),
+#   I = import sorting (replaces isort).
+select = ["E", "F", "W", "Q", "T20", "A", "I"]
+ignore = ["A003"]
+
+[tool.ruff.lint.isort]
+# Reproduce the old isort layout: a dedicated DJANGO section between the
+# standard library and third-party imports, two blank lines after imports.
+known-first-party = ["core", "test_project"]
+lines-after-imports = 2
+section-order = [
+    "future",
+    "standard-library",
+    "django",
+    "third-party",
+    "first-party",
+    "local-folder",
+]
+
+[tool.ruff.lint.isort.sections]
+django = ["django"]
+
+[tool.ruff.lint.flake8-quotes]
+# Inline strings are single-quoted throughout (the old flake8-quotes default);
+# multiline strings/docstrings use double quotes (82 vs 2 in the codebase, and
+# required for ruff-format compatibility).
+inline-quotes = "single"
+multiline-quotes = "double"
+
+[tool.ruff.format]
+# The codebase uses single quotes throughout; keep it that way so editing a
+# file doesn't flip every string to double quotes.
+quote-style = "single"
+
+[tool.bumpver]
+current_version = "0.31.2"
+version_pattern = "MAJOR.MINOR.PATCH"
+commit_message = "Bump version {old_version} -> {new_version}"
+commit = true
+tag = true
+push = false
+
+[tool.bumpver.file_patterns]
+"pyproject.toml" = ['current_version = "{version}"']
+"djangoql/__init__.py" = ["__version__ = '{version}'"]
+
+[tool.setuptools.package-data]
+djangoql = [
+    "static/**/*.css",
+    "static/**/*.js",
+    "static/**/*.map",
+    "static/**/*.png",
+    "static/**/*.gif",
+    "templates/**/*.html",
+    "locale/**/*.po",
+    "locale/**/*.mo",
+    "help/**/*.md",
+]

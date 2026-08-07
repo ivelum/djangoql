@@ -4,7 +4,34 @@
 
 node_modules
 test_project/db.sqlite3
+example_project/db.sqlite3
 
 build
 dist
 djangoql.egg-info
+site/
+
+# Compiled gettext catalogs: generated from .po at build time (Babel), not
+# tracked. See _translations.py / _build_meta.py.
+*.mo
+
+.venv/
+uv.lock
+
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+*.egg-info/
+
+# Secrets / credentials (never commit)
+.env
+.env.*
+!.env.example
+!.env.sample
+*.pem
+*.key
+*.p12
+*.pfx
+credentials.json
+service-account*.json

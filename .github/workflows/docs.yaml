@@ -1,0 +1,33 @@
+name: Deploy docs
+
+# Builds the MkDocs site and publishes it to the `gh-pages` branch on every
+# push to master. Enable GitHub Pages once (Settings -> Pages -> Build and
+# deployment -> Deploy from a branch -> gh-pages / root) for it to go live at
+# https://iplweb.github.io/djangoql-iplweb/
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: write  # mkdocs gh-deploy pushes the built site to gh-pages
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # full history so gh-deploy can update gh-pages
+      - name: Install uv
+        uses: astral-sh/setup-uv@f94ec6bedd8674c4426838e6b50417d36b6ab231 # v5.3.1
+      - name: Set up Python
+        run: uv python install 3.12
+      - name: Install dependencies
+        run: uv sync --all-extras
+      - name: Configure git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+      - name: Build and deploy to GitHub Pages
+        run: uv run mkdocs gh-deploy --force --no-history

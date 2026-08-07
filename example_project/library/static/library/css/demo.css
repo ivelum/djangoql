@@ -1,0 +1,201 @@
+/* Showcase styling — deliberately opinionated. This is the example project
+ * "going wild"; none of it ships with DjangoQL. It also recolours the overlay
+ * by overriding the --dql-* custom properties (see the .dql-highlight-backdrop
+ * block near the bottom). */
+
+:root {
+  --bg: #0f1226;
+  --panel: #181c3a;
+  --panel-2: #20264f;
+  --ink: #e7e9f5;
+  --muted: #9aa0c8;
+  --accent: #7c5cff;
+  --accent-2: #00d3a7;
+  --danger: #ff5d73;
+  --amber: #ffb454;
+  --radius: 14px;
+
+  /* DjangoQL token palette — shared by the query-box overlay and the
+     syntax-highlighted "explain counts" labels. */
+  --dql-name: #8be9fd;
+  --dql-operator: #ff79c6;
+  --dql-logical: #ffb454;
+  --dql-string: #50fa7b;
+  --dql-number: #bd93f9;
+  --dql-bool: #bd93f9;
+  --dql-none: #bd93f9;
+  --dql-paren: #9aa0c8;
+  --dql-comma: #9aa0c8;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font: 15px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: var(--ink);
+  background:
+    radial-gradient(1200px 600px at 80% -10%, #2a1f6b 0%, transparent 60%),
+    radial-gradient(900px 500px at -10% 10%, #0c3b4a 0%, transparent 55%),
+    var(--bg);
+  min-height: 100vh;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 28px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(6px);
+}
+.brand { font-weight: 700; letter-spacing: 0.3px; }
+.brand span { color: var(--muted); font-weight: 400; }
+.topbar nav a {
+  color: var(--ink);
+  text-decoration: none;
+  margin-left: 18px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+}
+.topbar nav a:hover { border-color: rgba(255, 255, 255, 0.18); }
+
+main { max-width: 980px; margin: 0 auto; padding: 28px; }
+
+.panel {
+  background: linear-gradient(180deg, var(--panel) 0%, var(--panel-2) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius);
+  padding: 22px 24px;
+  margin-bottom: 22px;
+  box-shadow: 0 18px 50px -28px rgba(0, 0, 0, 0.8);
+}
+h1 { margin: 0 0 6px; font-size: 22px; }
+h2 { margin: 0 0 6px; font-size: 18px; }
+.hint { color: var(--muted); margin: 0 0 16px; }
+.muted { color: var(--muted); font-weight: 400; font-size: 14px; }
+kbd {
+  background: #0c0f24; border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 6px; padding: 1px 6px; font-size: 12px;
+}
+
+/* Query box. The highlight overlay paints coloured tokens on a backdrop *behind*
+   the textarea, so the textarea itself must be transparent for them to show.
+   `#q` is an ID (specificity 1,0,0) and would otherwise outrank the library's
+   `.dql-highlight-input` transparency, hiding the whole backdrop — so re-assert
+   transparency at ID specificity and move the dark box background to the
+   backdrop (see the recolour block below). */
+.dql-highlight { margin-bottom: 14px; }
+#q {
+  width: 100%;
+  resize: vertical;
+  padding: 14px 16px;
+  font: 15px/1.6 'SFMono-Regular', ui-monospace, 'JetBrains Mono', Menlo, monospace;
+  color: var(--ink);
+  background: #0b0e22;
+  border: 1px solid rgba(124, 92, 255, 0.5);
+  border-radius: 12px;
+  outline: none;
+}
+/* When the overlay is active, let the coloured backdrop show through. */
+#q.dql-highlight-input {
+  color: transparent;
+  background: transparent;
+}
+#q:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(124, 92, 255, 0.25); }
+
+.toolbar { display: flex; gap: 10px; }
+button {
+  font: inherit;
+  cursor: pointer;
+  border-radius: 10px;
+  padding: 9px 16px;
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+button:hover { background: rgba(255, 255, 255, 0.12); }
+button.primary {
+  background: linear-gradient(180deg, var(--accent) 0%, #5a3ff0 100%);
+  border-color: transparent; font-weight: 600;
+}
+
+.examples { margin-top: 16px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.examples > span { color: var(--muted); }
+button.example {
+  font-family: ui-monospace, monospace;
+  font-size: 12.5px;
+  padding: 6px 10px;
+  color: var(--accent-2);
+}
+
+.error {
+  margin-top: 14px; padding: 10px 14px; border-radius: 10px;
+  background: rgba(255, 93, 115, 0.12); border: 1px solid var(--danger);
+  color: #ffd3da;
+}
+
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+#results th, #results td {
+  text-align: left; padding: 8px 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+#results th { color: var(--muted); font-weight: 600; }
+
+/* Explain tree */
+.tree, .tree ul { list-style: none; margin: 0; padding-left: 18px; }
+.tree { padding-left: 0; }
+.node { margin: 4px 0; position: relative; }
+.node-count {
+  display: inline-block; min-width: 42px; text-align: right;
+  margin-right: 10px; padding: 1px 8px; border-radius: 999px;
+  font-variant-numeric: tabular-nums; font-size: 12px;
+  background: rgba(255, 255, 255, 0.08); color: var(--muted);
+}
+.node-label { font-family: ui-monospace, monospace; }
+.node.role-killer_and > .node-count { background: rgba(255, 93, 115, 0.25); color: #ffd3da; }
+.node.role-killer_and > .node-label { color: var(--danger); }
+.node.role-dead_or_branch > .node-count { background: rgba(255, 180, 84, 0.22); color: #ffe6c2; }
+.node.role-dead_or_branch > .node-label { color: var(--amber); }
+
+footer {
+  max-width: 980px; margin: 0 auto; padding: 10px 28px 40px;
+  color: var(--muted); font-size: 13px;
+}
+
+/* ---- Recolour the DjangoQL overlay via its CSS variables -------------- */
+.dql-highlight-backdrop {
+  /* Holds the dark box background now that #q is transparent. The token
+     palette is inherited from :root; only input-specific bits live here. */
+  background: #0b0e22;
+  border-radius: 12px;
+  --dql-caret: #ffffff;
+  --dql-error-mark: #ff8a9b;
+  --dql-error-mark-bg: rgba(255, 93, 115, 0.42);
+}
+/* Make the flagged token pop in this (dark) theme. */
+.dql-highlight-backdrop .dql-tok-errormark {
+  color: #fff;
+  text-decoration-thickness: 2px;
+}
+
+/* ---- Restyle the completion popup for this dark theme ----------------- */
+/* completion.css defaults target the light admin (white box, no text colour),
+   so on this page its items would render in our light --ink on white = nearly
+   invisible. base.html loads completion.css *before* demo.css so these win. */
+.djangoql-completion {
+  margin-top: 6px;
+  background: var(--panel-2);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 10px;
+  box-shadow: 0 18px 50px -20px rgba(0, 0, 0, 0.85);
+  overflow: hidden;
+  z-index: 50;
+}
+.djangoql-completion ul { max-height: 280px; }
+.djangoql-completion li { color: var(--ink); padding: 6px 12px; }
+.djangoql-completion li:hover { background: rgba(124, 92, 255, 0.18); color: var(--ink); }
+.djangoql-completion .active { background: var(--accent); color: #fff; }
+.djangoql-completion li i { color: var(--muted); }
+.djangoql-completion .syntax-help { border-top-color: rgba(255, 255, 255, 0.12); }
