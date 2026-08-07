@@ -1,3 +1,10 @@
+unreleased
+----------
+
+* **Added support for Django 6.1** (Python 3.12--3.14). Django 6.1 is now part
+  of the CI test matrix alongside 5.2 LTS and 6.0, and is advertised in the
+  package classifiers. No code changes were required.
+
 0.31.0 (2026-07-11)
 -------------------
 
