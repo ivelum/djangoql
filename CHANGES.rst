@@ -1,9 +1,19 @@
-unreleased
-----------
+0.31.2 (2026-08-07)
+-------------------
 
 * **Added support for Django 6.1** (Python 3.12--3.14). Django 6.1 is now part
   of the CI test matrix alongside 5.2 LTS and 6.0, and is advertised in the
   package classifiers. No code changes were required.
+
+* **Fixed the ``tests-postgres`` CI job, which silently ran against SQLite.**
+  The fixture swapped ``settings.DATABASES``, but the ``default`` connection had
+  already been materialised during ``django.setup()``, so every "PostgreSQL" run
+  actually exercised SQLite. The job now asserts hard on
+  ``connection.settings_dict['ENGINE']`` and additionally asks the server itself
+  via ``SELECT version()``. Four tests that had been overfitted to SQLite's SQL
+  rendering (``UPPER(...) LIKE`` and the time-zone offset handling) were
+  corrected to match PostgreSQL. Tests and CI only -- no changes to the packaged
+  code.
 
 0.31.0 (2026-07-11)
 -------------------
