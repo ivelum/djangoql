@@ -112,6 +112,17 @@ class DjangoQLQuerySetTest(TestCase):
         where_clause = str(qs.query).split('WHERE')[1].strip()
         self.assertEqual('"auth_user"."last_login" IS NULL', where_clause)
 
+    def test_binary_field_query(self):
+        # Just compiling the query used to raise a TypeError, because the
+        # plain str value wasn't converted to bytes before being passed to
+        # the DB driver. We can't assert on the full WHERE clause, since the
+        # binary value is rendered as a non-deterministic memory address.
+        qs = Book.objects.djangoql('binary_content = "hello world"')
+        where_clause = str(qs.query).split('WHERE')[1].strip()
+        self.assertTrue(
+            where_clause.startswith('"core_book"."binary_content" = '),
+        )
+
     def test_datetime_in_query(self):
         qs = apply_search(User.objects.all(), 'last_login in ("2017-01-01")')
         where_clause = str(qs.query).split('WHERE')[1].strip()

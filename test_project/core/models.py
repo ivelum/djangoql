@@ -24,6 +24,7 @@ class Book(models.Model):
     )
     written = models.DateTimeField(default=now)
     is_published = models.BooleanField(default=False)
+    binary_content = models.BinaryField(null=True, blank=True)
     rating = models.FloatField(null=True)
     price = models.DecimalField(max_digits=7, decimal_places=2, null=True)
     content_type = models.ForeignKey(

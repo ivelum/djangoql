@@ -205,6 +205,42 @@ class StrField(DjangoQLField):
             .distinct()
 
 
+class BinaryField(StrField):
+    """
+    Keep type = 'str': the completion widget switches its suggested
+    operators and value quoting on this value, and binary data should be
+    entered/matched the same way regular strings are.
+    """
+    value_types_description = (
+        'strings, matched against the underlying bytes data'
+    )
+
+    def get_lookup_value(self, value):
+        """
+        DjangoQL values are always plain strings, but Django expects
+        bytes-like objects for BinaryField lookups. Passing a plain str
+        through relies on the DB driver to silently coerce it, which
+        psycopg2 tolerated but psycopg3 does not (it raises a TypeError
+        instead), so encode it explicitly here.
+        """
+        value = super(BinaryField, self).get_lookup_value(value)
+        if isinstance(value, list):
+            return [self._to_bytes(v) for v in value]
+        return self._to_bytes(value)
+
+    @staticmethod
+    def _to_bytes(value):
+        return value.encode() if isinstance(value, text_type) else value
+
+    def get_options(self, search):
+        """
+        Binary data has no sensible textual representation, so autocomplete
+        suggestions don't make sense here (and would hit the same
+        str-vs-bytes issue get_lookup_value() works around above).
+        """
+        return []
+
+
 class BoolField(DjangoQLField):
     type = 'bool'
     value_types = [bool]
@@ -437,11 +473,12 @@ class DjangoQLSchema(object):
             models.CharField,
             models.TextField,
             models.UUIDField,
-            models.BinaryField,
             models.GenericIPAddressField,
         )
         if isinstance(field, str_fields):
             return StrField
+        elif isinstance(field, models.BinaryField):
+            return BinaryField
         elif isinstance(field, (models.AutoField, models.IntegerField)):
             return IntField
         elif isinstance(field, (models.BooleanField, models.NullBooleanField)):

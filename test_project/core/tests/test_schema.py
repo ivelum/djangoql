@@ -4,7 +4,7 @@ from django.test import TestCase
 
 from djangoql.exceptions import DjangoQLSchemaError
 from djangoql.parser import DjangoQLParser
-from djangoql.schema import DjangoQLSchema, IntField
+from djangoql.schema import BinaryField, DjangoQLSchema, IntField
 from djangoql.serializers import SuggestionsAPISerializer
 
 from ..models import Book
@@ -93,6 +93,7 @@ class DjangoQLSchemaTest(TestCase):
         custom = serializer.serialize(custom_schema)['models']['core.book']
         self.assertListEqual(list(default.keys()), [
             'author',
+            'binary_content',
             'content_type',
             'genre',
             'id',
@@ -175,3 +176,28 @@ class DjangoQLSchemaTest(TestCase):
                 self.fail("This query should't pass validation: %s" % query)
             except DjangoQLSchemaError:
                 pass
+
+    def test_binary_field_type(self):
+        field = DjangoQLSchema(Book).get_field_instance(Book, 'binary_content')
+        self.assertIsInstance(field, BinaryField)
+
+
+class BinaryFieldTest(TestCase):
+    def setUp(self):
+        self.field = BinaryField(model=Book, name='binary_content')
+
+    def test_get_lookup_value_encodes_str_to_bytes(self):
+        # DjangoQL values are always plain strings, but Django's BinaryField
+        # expects a bytes-like object. Passing a str through relies on the
+        # DB driver to coerce it, which psycopg3 doesn't do (unlike
+        # psycopg2), raising a TypeError instead.
+        self.assertEqual(self.field.get_lookup_value('hello'), b'hello')
+
+    def test_get_lookup_value_encodes_list_items(self):
+        self.assertEqual(
+            self.field.get_lookup_value(['hello', 'world']),
+            [b'hello', b'world'],
+        )
+
+    def test_get_options_returns_nothing(self):
+        self.assertEqual(self.field.get_options('hello'), [])
