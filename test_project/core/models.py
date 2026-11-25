@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
@@ -15,7 +13,11 @@ class Book(models.Model):
         3: 'Other',
     }
 
-    name = models.CharField(max_length=10)  # lol, we're minimalists
+    name = models.CharField(
+        max_length=10,  # lol, we're minimalists
+        verbose_name='Title',
+        help_text='The title of the book',
+    )
     author = models.ForeignKey('auth.User', on_delete=models.CASCADE)
     genre = models.PositiveIntegerField(
         null=True,
@@ -23,6 +25,8 @@ class Book(models.Model):
         choices=GENRES.items(),
     )
     written = models.DateTimeField(default=now)
+    published_date = models.DateField(null=True, blank=True)
+    published_time = models.TimeField(null=True, blank=True)
     is_published = models.BooleanField(default=False)
     rating = models.FloatField(null=True)
     price = models.DecimalField(max_digits=7, decimal_places=2, null=True)

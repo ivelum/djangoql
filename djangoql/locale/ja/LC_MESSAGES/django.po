@@ -1,0 +1,231 @@
+# DjangoQL Japanese translation.
+# Copyright (C) 2026 ivelum and contributors
+# This file is distributed under the same license as the djangoql package.
+#
+# Auto-translated. Review by a native Japanese speaker welcome — open a PR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: djangoql\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-06-04 06:45+0000\n"
+"PO-Revision-Date: 2026-05-13 00:00+0000\n"
+"Language-Team: Japanese\n"
+"Language: ja\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: exceptions.py:15
+#, python-format
+msgid "Line %(line)s, col %(col)s"
+msgstr "%(line)s 行 %(col)s 列"
+
+#: exceptions.py:20
+#, python-format
+msgid "Line %s"
+msgstr "%s 行"
+
+#: extras.py:69
+msgid "times in \"HH:MM[:SS]\" format"
+msgstr "\"HH:MM[:SS]\" 形式の時刻"
+
+#: extras.py:99
+#, python-brace-format
+msgid ""
+"Field \"{field}\" can be compared to times in \"HH:MM[:SS]\" format, but not "
+"to {value}"
+msgstr ""
+"フィールド \"{field}\" は \"HH:MM[:SS]\" 形式の時刻と比較できますが、{value} "
+"とは比較できません"
+
+#: extras.py:224
+msgid "numbers"
+msgstr "数値"
+
+#: extras.py:419
+#, python-brace-format
+msgid ""
+"Relation aggregates are hidden from suggestions: use <relation>__count and "
+"<relation>.<numeric_field>__{{sum,avg,min,max}} — e.g. {examples}."
+msgstr ""
+"リレーションの集計は候補から隠されています。<relation>__count および "
+"<relation>.<numeric_field>__{{sum,avg,min,max}} を使用してください — 例: "
+"{examples}。"
+
+#: extras.py:486
+#, python-brace-format
+msgid ""
+"Date/time parts are hidden too: use <field>__{{year,month,day,hour,...}} — "
+"e.g. {example}."
+msgstr ""
+"日付・時刻の各部分も隠されています。<field>__{{year,month,day,hour,...}} を使"
+"用してください — 例: {example}。"
+
+#: extras.py:702
+#, python-brace-format
+msgid "Field \"{field}\" expects a string value, but got {value}"
+msgstr ""
+"フィールド \"{field}\" は文字列の値を必要としますが、{value} が指定されました"
+
+#: lexer.py:169
+#, python-format
+msgid "Illegal character %s"
+msgstr "不正な文字 %s"
+
+#: parser.py:210
+msgid "Unexpected end of input"
+msgstr "入力が予期せず終了しました"
+
+#: parser.py:216
+#, python-format
+msgid "Syntax error at %s"
+msgstr "%s で構文エラー"
+
+#: schema.py:169
+#, python-format
+msgid "Field %s is not nullable, can't compare it to None"
+msgstr "フィールド %s は null を許可していないため、None と比較できません"
+
+#: schema.py:175
+#, python-brace-format
+msgid ""
+"Field \"{field}\" has \"nullable {field_type}\" type. It can be compared to "
+"{possible_values} or None, but not to {value}"
+msgstr ""
+"フィールド \"{field}\" は \"nullable {field_type}\" 型です。"
+"{possible_values} または None と比較できますが、{value} とは比較できません"
+
+#: schema.py:181
+#, python-brace-format
+msgid ""
+"Field \"{field}\" has \"{field_type}\" type. It can be compared to "
+"{possible_values}, but not to {value}"
+msgstr ""
+"フィールド \"{field}\" は \"{field_type}\" 型です。{possible_values} と比較で"
+"きますが、{value} とは比較できません"
+
+#: schema.py:198
+msgid "integer numbers"
+msgstr "整数"
+
+#: schema.py:210
+msgid "floating point numbers"
+msgstr "浮動小数点数"
+
+#: schema.py:216
+msgid "strings"
+msgstr "文字列"
+
+#: schema.py:236
+msgid "True or False"
+msgstr "True または False"
+
+#: schema.py:242
+msgid "dates in \"YYYY-MM-DD\" format"
+msgstr "\"YYYY-MM-DD\" 形式の日付"
+
+#: schema.py:251
+#, python-brace-format
+msgid ""
+"Field \"{field}\" can be compared to dates in \"YYYY-MM-DD\" format, but not "
+"to {value}"
+msgstr ""
+"フィールド \"{field}\" は \"YYYY-MM-DD\" 形式の日付と比較できますが、{value} "
+"とは比較できません"
+
+#: schema.py:273
+msgid "timestamps in \"YYYY-MM-DD HH:MM\" format"
+msgstr "\"YYYY-MM-DD HH:MM\" 形式のタイムスタンプ"
+
+#: schema.py:282
+#, python-brace-format
+msgid ""
+"Field \"{field}\" can be compared to timestamps in \"YYYY-MM-DD HH:MM\" "
+"format, but not to {value}"
+msgstr ""
+"フィールド \"{field}\" は \"YYYY-MM-DD HH:MM\" 形式のタイムスタンプと比較でき"
+"ますが、{value} とは比較できません"
+
+#: schema.py:356
+msgid "Schema must be initialized with a subclass of Django model"
+msgstr "スキーマは Django モデルのサブクラスで初期化する必要があります"
+
+#: schema.py:360
+msgid "Either include or exclude can be specified, but not both"
+msgstr "include または exclude のどちらか一方のみ指定できます"
+
+#: schema.py:365
+#, python-brace-format
+msgid "{model} can't be used with {schema_class} because it's excluded from it"
+msgstr "{model} は {schema_class} から除外されているため使用できません"
+
+#: schema.py:591
+#, python-brace-format
+msgid "Unknown field: {field}. Did you mean: {suggestions}?"
+msgstr "不明なフィールド: {field}. もしかして: {suggestions}?"
+
+#: schema.py:602
+#, python-brace-format
+msgid "Unknown field: {field}. Possible choices are: {choices}"
+msgstr "不明なフィールド: {field}. 利用可能な選択肢: {choices}"
+
+#: schema.py:649
+#, python-brace-format
+msgid ""
+"Related model {model} can be compared to None only, but not to {value_type}"
+msgstr ""
+"関連モデル {model} は None としか比較できません ({value_type} とは比較できま"
+"せん)"
+
+#: templates/djangoql/empty_breakdown.html:3
+msgid "No results. Where the query runs out of data:"
+msgstr "結果がありません。クエリのどこでデータが尽きたか:"
+
+#: templates/djangoql/empty_breakdown.html:7
+msgid ""
+"Breakdown truncated: the query is too large; only the top-level conditions "
+"were evaluated."
+msgstr ""
+"内訳は省略されました。クエリが大きすぎるため、最上位の条件のみが評価されまし"
+"た。"
+
+#: templates/djangoql/empty_breakdown_node.html:6
+msgid "no data from here on"
+msgstr "ここから先はデータがありません"
+
+#: templates/djangoql/empty_breakdown_node.html:8
+msgid "this branch is empty"
+msgstr "この分岐は空です"
+
+#: templates/djangoql/error_message.html:5
+msgid "DjangoQL syntax help"
+msgstr "DjangoQL 構文ヘルプ"
+
+#: views.py:22
+msgid "page must be an integer starting from 1"
+msgstr "page は 1 以上の整数である必要があります"
+
+#: views.py:54
+msgid "DjangoQL schema is undefined"
+msgstr "DjangoQL スキーマが定義されていません"
+
+#: views.py:56
+msgid "\"field\" parameter is required"
+msgstr "\"field\" パラメータは必須です"
+
+#: views.py:69
+#, python-format
+msgid "Unknown model: %s"
+msgstr "不明なモデル: %s"
+
+#: views.py:72
+#, python-format
+msgid "Unknown field: %s"
+msgstr "不明なフィールド: %s"
+
+#: views.py:78
+#, python-brace-format
+msgid "{model}.{field} doesn't support suggestions"
+msgstr "{model}.{field} は候補表示をサポートしていません"

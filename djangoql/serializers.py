@@ -3,12 +3,16 @@ from collections import OrderedDict
 from .schema import RelationField
 
 
-class DjangoQLSchemaSerializer(object):
+class DjangoQLSchemaSerializer:
     def serialize(self, schema):
         models = {}
         for model_label, fields in schema.models.items():
             models[model_label] = OrderedDict(
-                [(name, self.serialize_field(f)) for name, f in fields.items()],
+                [
+                    (name, self.serialize_field(f))
+                    for name, f in fields.items()
+                    if f.suggested
+                ],
             )
         return {
             'current_model': schema.model_label(schema.current_model),
@@ -23,6 +27,9 @@ class DjangoQLSchemaSerializer(object):
         }
         if isinstance(field, RelationField):
             result['relation'] = field.relation
+        if getattr(field, 'object_reference', False):
+            # Object-picker fields accept only = / != / in / not in.
+            result['object_reference'] = True
         return result
 
     def serialize_field_options(self, field):
@@ -34,7 +41,7 @@ class SuggestionsAPISerializer(DjangoQLSchemaSerializer):
         self.suggestions_api_url = suggestions_api_url
 
     def serialize(self, schema):
-        result = super(SuggestionsAPISerializer, self).serialize(schema)
+        result = super().serialize(schema)
         result['suggestions_api_url'] = self.suggestions_api_url
         return result
 

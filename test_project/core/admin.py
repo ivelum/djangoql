@@ -46,7 +46,7 @@ class BookQLSchema(DjangoQLSchema):
     }
 
     def get_fields(self, model):
-        fields = super(BookQLSchema, self).get_fields(model)
+        fields = super().get_fields(model)
         if model == Book:
             fields += [AuthorField()]
         return fields
@@ -138,7 +138,7 @@ class UserQLSchema(DjangoQLSchema):
     }
 
     def get_fields(self, model):
-        fields = super(UserQLSchema, self).get_fields(model)
+        fields = super().get_fields(model)
         if model == User:
             fields += [UserAgeField(), IntField(name='groups_count')]
         elif model == Book:
@@ -157,7 +157,7 @@ class CustomUserAdmin(DjangoQLSearchMixin, UserAdmin):
     group.short_description = 'Groups'
 
     def get_queryset(self, request):
-        qs = super(CustomUserAdmin, self).get_queryset(request)
+        qs = super().get_queryset(request)
         return qs.\
             annotate(groups_count=Count('groups')).\
             prefetch_related('groups')

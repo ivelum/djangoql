@@ -70,14 +70,14 @@ class DjangoQLLexerTest(TestCase):
             self.assert_output(self.lexer.input(val), [('FLOAT_VALUE', val)])
 
     def test_string_double_quotes(self):
-        for s in ('""', u'""', '"42"', r'"\t\n\u0042 ^"'):
+        for s in ('""', '""', '"42"', r'"\t\n\u0042 ^"'):
             self.assert_output(
                 self.lexer.input(s),
                 [('STRING_VALUE', s.strip('"'))],
             )
 
     def test_string_single_quotes(self):
-        for s in ("''", u"''", "'42'", r"'\t\n\u0042 ^'"):
+        for s in ("''", "''", "'42'", r"'\t\n\u0042 ^'"):
             self.assert_output(
                 self.lexer.input(s),
                 [('STRING_VALUE', s.strip("'"))],

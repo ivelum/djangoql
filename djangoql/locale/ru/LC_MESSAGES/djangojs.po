@@ -1,0 +1,30 @@
+# DjangoQL Russian translation (JavaScript catalog).
+# Copyright (C) 2026 ivelum and contributors
+# This file is distributed under the same license as the djangoql package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: djangoql\n"
+"Report-Msgid-Bugs-To: \n"
+"Language-Team: Russian\n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+
+msgid "is not equal to"
+msgstr "не равно"
+
+msgid "contains"
+msgstr "содержит"
+
+msgid "does not contain"
+msgstr "не содержит"
+
+msgid "Advanced search with Query Language"
+msgstr "Расширенный поиск на языке запросов"
+
+msgid "Syntax Help"
+msgstr "Справка по синтаксису"

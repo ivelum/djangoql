@@ -1,0 +1,91 @@
+{% extends 'library/base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="panel">
+  <h1>Search the library</h1>
+  <p class="hint">
+    Type a DjangoQL query — field and value names auto-complete as you type.
+    <kbd>Enter</kbd> runs it; <kbd>Shift</kbd>+<kbd>Enter</kbd> adds a newline.
+    Relations use <strong>dots</strong>, not Django's <code>__</code>:
+    <code>author.country.name = "Poland"</code>. The <code>author__rel</code>
+    field is an object-picker — it suggests real authors as
+    <code>"Name [id]"</code> and filters by that record.
+  </p>
+
+  <form id="search-form">
+    <textarea id="q" class="djangoql" rows="3"
+      spellcheck="false" autocomplete="off"
+      placeholder='e.g. rating > 4.5 and author.country.name = "Poland"'></textarea>
+    <div class="toolbar">
+      <button type="submit" class="primary">Run</button>
+      <button type="button" id="btn-format">Format</button>
+      <button type="button" id="btn-explain">Explain counts</button>
+    </div>
+  </form>
+
+  <div class="examples">
+    <span>Try:</span>
+    {% for ex in examples %}
+      <button type="button" class="example" data-q="{{ ex }}">{{ ex }}</button>
+    {% endfor %}
+  </div>
+
+  <p id="error" class="error" hidden></p>
+</section>
+
+<section class="panel" id="explain-panel" hidden>
+  <h2>Per-branch record counts</h2>
+  <p class="hint">
+    One <code>count()</code> per sub-expression. A red node is an
+    <em>AND</em> that collapses to zero; an amber node is a dead <em>OR</em>
+    branch.
+  </p>
+  <div id="explain-tree"></div>
+</section>
+
+<section class="panel">
+  <h2>Results <span id="result-count" class="muted"></span></h2>
+  <table id="results">
+    <thead>
+      <tr>
+        <th>Title</th><th>Author</th><th>Publisher</th>
+        <th>Year</th><th>Rating</th><th>Price</th><th>In stock</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</section>
+{% endblock %}
+
+{% block head %}{% endblock %}
+
+{% block scripts %}
+  <script src="{% static 'djangoql/js/completion.js' %}"></script>
+  <script src="{% static 'djangoql/js/multiline.js' %}"></script>
+  <script src="{% static 'djangoql/js/highlight.js' %}"></script>
+  <script src="{% static 'library/js/demo.js' %}"></script>
+  <script>
+    // Field/value auto-completion. Introspections are embedded by the view.
+    DjangoQL.DOMReady(function () {
+      new DjangoQL({
+        introspections: {{ introspections|safe }},
+        selector: 'textarea#q',
+        syntaxHelp: null,
+        autoResize: false,
+        // Enter runs the AJAX search. Without this the widget falls back to
+        // form.submit(), which bypasses our submit handler and reloads the page.
+        onSubmit: function () {
+          var form = document.getElementById('search-form');
+          if (form.requestSubmit) {
+            form.requestSubmit();
+          } else {
+            form.dispatchEvent(
+              new Event('submit', { cancelable: true, bubbles: true })
+            );
+          }
+        }
+      });
+    });
+  </script>
+{% endblock %}

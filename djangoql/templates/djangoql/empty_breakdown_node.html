@@ -1,0 +1,17 @@
+{% load i18n %}
+<li class="djangoql-breakdown-{{ node.role }}">
+  <span class="djangoql-breakdown-text">{{ node.text }}</span>
+  <span class="djangoql-breakdown-count">{{ node.count }}</span>
+  {% if node.role == "killer_and" %}
+    <span class="djangoql-breakdown-flag">{% trans "no data from here on" %}</span>
+  {% elif node.role == "dead_or_branch" %}
+    <span class="djangoql-breakdown-flag">{% trans "this branch is empty" %}</span>
+  {% endif %}
+  {% if node.children %}
+    <ul>
+      {% for child in node.children %}
+        {% include "djangoql/empty_breakdown_node.html" with node=child %}
+      {% endfor %}
+    </ul>
+  {% endif %}
+</li>

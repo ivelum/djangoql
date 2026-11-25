@@ -2,6 +2,7 @@ import json
 
 from django.core.paginator import EmptyPage, Paginator
 from django.http import HttpResponse
+from django.utils.translation import gettext_lazy as _
 from django.views.generic.base import View
 
 
@@ -18,7 +19,7 @@ class SuggestionsAPIView(View):
             field = self.get_field(field_name)
             page_number = int(request.GET.get('page', 1))
             if page_number < 1:
-                raise ValueError('page must be an integer starting from 1')
+                raise ValueError(_('page must be an integer starting from 1'))
             suggestions = self.get_suggestions(field=field, search=search)
         except ValueError as e:
             error = str(e) or e.__class__.__name__
@@ -50,9 +51,9 @@ class SuggestionsAPIView(View):
 
     def get_field(self, field_name):
         if not self.schema:
-            raise ValueError('DjangoQL schema is undefined')
+            raise ValueError(_('DjangoQL schema is undefined'))
         if not field_name:
-            raise ValueError('"field" parameter is required')
+            raise ValueError(_('"field" parameter is required'))
         parts = field_name.split('.')
         field_name = parts.pop()
         if parts:
@@ -65,16 +66,23 @@ class SuggestionsAPIView(View):
             model_label = self.schema.model_label(self.schema.current_model)
         schema_model = self.schema.models.get(model_label)
         if not schema_model:
-            raise ValueError('Unknown model: %s' % model_label)
+            raise ValueError(_('Unknown model: %s') % model_label)
         field_instance = schema_model.get(field_name)
         if not field_instance:
-            raise ValueError('Unknown field: %s' % field_name)
+            raise ValueError(_('Unknown field: %s') % field_name)
         return field_instance
 
     def get_suggestions(self, field, search):
         if not field.suggest_options:
-            raise ValueError("%s.%s doesn't support suggestions" % (
-                field.model._meta.object_name,
-                field.name,
-            ))
+            raise ValueError(
+                _("{model}.{field} doesn't support suggestions").format(
+                    model=field.model._meta.object_name,
+                    field=field.name,
+                ),
+            )
+        # Non-breaking hook: fields that opt into request-aware suggestions
+        # (e.g. AutocompleteField with a url provider) receive the current
+        # request. Base fields don't define set_request and are unaffected.
+        if hasattr(field, 'set_request'):
+            field.set_request(self.request)
         return field.get_options(search)

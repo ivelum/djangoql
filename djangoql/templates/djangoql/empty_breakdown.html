@@ -1,0 +1,10 @@
+{% load i18n %}
+<div class="djangoql-empty-breakdown">
+  <p>{% trans "No results. Where the query runs out of data:" %}</p>
+  <ul class="djangoql-breakdown-tree">{% include "djangoql/empty_breakdown_node.html" with node=node %}</ul>
+  {% if node.truncated %}
+    <p class="djangoql-breakdown-truncated">
+      {% trans "Breakdown truncated: the query is too large; only the top-level conditions were evaluated." %}
+    </p>
+  {% endif %}
+</div>

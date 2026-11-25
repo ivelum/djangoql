@@ -1,0 +1,52 @@
+{% extends 'library/base.html' %}
+
+{% block title %} · Syntax help{% endblock %}
+
+{% block head %}
+  <style>
+    .syntax-help { max-width: 52em; }
+    .syntax-help pre {
+      background: rgba(127, 127, 127, 0.12);
+      padding: 10px 16px;
+      border-radius: 6px;
+      overflow-x: auto;
+    }
+    .syntax-help code {
+      background: rgba(127, 127, 127, 0.14);
+      padding: 0.15em 0.35em;
+      border-radius: 4px;
+    }
+    .syntax-help pre code { background: transparent; padding: 0; }
+    .syntax-help table { margin: 14px 0; }
+    .syntax-help th, .syntax-help td {
+      border: 1px solid rgba(127, 127, 127, 0.3);
+      padding: 6px 10px;
+      text-align: left;
+      vertical-align: top;
+    }
+    .syntax-help img { max-width: 100%; }
+    .lang-switcher { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 16px; }
+    .lang-switcher a { padding: 2px 8px; border-radius: 4px; text-decoration: none; }
+    .lang-switcher a.active { font-weight: 700; text-decoration: underline; }
+  </style>
+{% endblock %}
+
+{% block content %}
+<section class="panel syntax-help">
+  {# Because this project installs `markdown`, the help arrives as compiled    #}
+  {# HTML. Without that library djangoql falls back to raw Markdown in <pre>;  #}
+  {# this page handles both so it mirrors the library's own behaviour.         #}
+  <nav class="lang-switcher" aria-label="Help language">
+    {% for code in languages %}
+      <a href="?lang={{ code }}"
+         class="{% if code == language %}active{% endif %}">{{ code }}</a>
+    {% endfor %}
+  </nav>
+
+  {% if is_html %}
+    {{ body|safe }}
+  {% else %}
+    <pre>{{ body }}</pre>
+  {% endif %}
+</section>
+{% endblock %}

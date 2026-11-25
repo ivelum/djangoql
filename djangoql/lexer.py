@@ -1,4 +1,4 @@
-from __future__ import unicode_literals
+from django.utils.translation import gettext_lazy as _
 
 import ply.lex as lex
 from ply.lex import TOKEN
@@ -6,7 +6,7 @@ from ply.lex import TOKEN
 from .exceptions import DjangoQLLexerError
 
 
-class DjangoQLLexer(object):
+class DjangoQLLexer:
     def __init__(self, **kwargs):
         self._lexer = lex.lex(module=self, **kwargs)
         self.reset()
@@ -55,11 +55,11 @@ class DjangoQLLexer(object):
 
     re_escaped_char = r'\\[\"\'\\/bfnrt]'
     re_escaped_unicode = r'\\u[0-9A-Fa-f]{4}'
-    re_double_quoted_string_char = r'[^\"\\' + re_line_terminators + u']'
+    re_double_quoted_string_char = r'[^\"\\' + re_line_terminators + ']'
     re_double_quoted_string = (r'\"(' + re_escaped_char +
                                '|' + re_escaped_unicode +
                                '|' + re_double_quoted_string_char + r')*\"')
-    re_single_quoted_string_char = r'[^\'\\' + re_line_terminators + u']'
+    re_single_quoted_string_char = r'[^\'\\' + re_line_terminators + ']'
     re_single_quoted_string = (r'\'(' + re_escaped_char +
                                '|' + re_escaped_unicode +
                                '|' + re_single_quoted_string_char + r')*\'')
@@ -166,7 +166,7 @@ class DjangoQLLexer(object):
 
     def t_error(self, t):
         raise DjangoQLLexerError(
-            message='Illegal character %s' % repr(t.value[0]),
+            message=_('Illegal character %s') % repr(t.value[0]),
             value=t.value,
             line=t.lineno,
             column=self.find_column(t),

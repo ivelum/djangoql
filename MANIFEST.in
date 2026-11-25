@@ -1,6 +1,12 @@
-recursive-include djangoql/static *.css *.png *.gif *.js *.map
-recursive-include djangoql/templates *.html
-recursive-include test_project *.py *.html
-include README.rst LICENSE
+# In-tree build backend (referenced by [build-system] backend-path); must be
+# present in the sdist so a wheel can be built from it.
+include _build_meta.py
+include _translations.py
 
-global-exclude .DS_Store __pycache__
+# Translation catalogs: .po are the source (tracked in git); .mo are generated
+# at build time by the backend and are not tracked in git. Ship both so the
+# sdist is self-contained.
+recursive-include djangoql/locale *.po *.mo
+
+# Markdown syntax-help documents: one translated source file per locale.
+recursive-include djangoql/help *.md

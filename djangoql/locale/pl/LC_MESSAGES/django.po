@@ -1,0 +1,230 @@
+# DjangoQL Polish translation.
+# Copyright (C) 2026 ivelum and contributors
+# This file is distributed under the same license as the djangoql package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: djangoql\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-06-04 06:45+0000\n"
+"PO-Revision-Date: 2026-05-13 00:00+0000\n"
+"Language-Team: Polish\n"
+"Language: pl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && "
+"(n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && "
+"n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
+
+#: exceptions.py:15
+#, python-format
+msgid "Line %(line)s, col %(col)s"
+msgstr "Linia %(line)s, kol. %(col)s"
+
+#: exceptions.py:20
+#, python-format
+msgid "Line %s"
+msgstr "Linia %s"
+
+#: extras.py:69
+msgid "times in \"HH:MM[:SS]\" format"
+msgstr "godzinami w formacie \"HH:MM[:SS]\""
+
+#: extras.py:99
+#, python-brace-format
+msgid ""
+"Field \"{field}\" can be compared to times in \"HH:MM[:SS]\" format, but not "
+"to {value}"
+msgstr ""
+"Pole \"{field}\" można porównać z godzinami w formacie \"HH:MM[:SS]\", ale "
+"nie z {value}"
+
+#: extras.py:224
+msgid "numbers"
+msgstr "liczbami"
+
+#: extras.py:419
+#, python-brace-format
+msgid ""
+"Relation aggregates are hidden from suggestions: use <relation>__count and "
+"<relation>.<numeric_field>__{{sum,avg,min,max}} — e.g. {examples}."
+msgstr ""
+"Agregaty relacji są ukryte w podpowiedziach: użyj <relation>__count oraz "
+"<relation>.<numeric_field>__{{sum,avg,min,max}} — np. {examples}."
+
+#: extras.py:486
+#, python-brace-format
+msgid ""
+"Date/time parts are hidden too: use <field>__{{year,month,day,hour,...}} — "
+"e.g. {example}."
+msgstr ""
+"Części daty/czasu również są ukryte: użyj "
+"<field>__{{year,month,day,hour,...}} — np. {example}."
+
+#: extras.py:702
+#, python-brace-format
+msgid "Field \"{field}\" expects a string value, but got {value}"
+msgstr "Pole \"{field}\" oczekuje wartości tekstowej, ale otrzymało {value}"
+
+#: lexer.py:169
+#, python-format
+msgid "Illegal character %s"
+msgstr "Niedozwolony znak %s"
+
+#: parser.py:210
+msgid "Unexpected end of input"
+msgstr "Nieoczekiwany koniec wyrażenia"
+
+#: parser.py:216
+#, python-format
+msgid "Syntax error at %s"
+msgstr "Błąd składni przy %s"
+
+#: schema.py:169
+#, python-format
+msgid "Field %s is not nullable, can't compare it to None"
+msgstr "Pole %s nie może być puste, nie można porównać go z None"
+
+#: schema.py:175
+#, python-brace-format
+msgid ""
+"Field \"{field}\" has \"nullable {field_type}\" type. It can be compared to "
+"{possible_values} or None, but not to {value}"
+msgstr ""
+"Pole \"{field}\" jest typu \"nullable {field_type}\". Można je porównać z "
+"{possible_values} lub z None, ale nie z {value}"
+
+#: schema.py:181
+#, python-brace-format
+msgid ""
+"Field \"{field}\" has \"{field_type}\" type. It can be compared to "
+"{possible_values}, but not to {value}"
+msgstr ""
+"Pole \"{field}\" jest typu \"{field_type}\". Można je porównać z "
+"{possible_values}, ale nie z {value}"
+
+#: schema.py:198
+msgid "integer numbers"
+msgstr "liczbami całkowitymi"
+
+#: schema.py:210
+msgid "floating point numbers"
+msgstr "liczbami zmiennoprzecinkowymi"
+
+#: schema.py:216
+msgid "strings"
+msgstr "łańcuchami znaków"
+
+#: schema.py:236
+msgid "True or False"
+msgstr "wartością True lub False"
+
+#: schema.py:242
+msgid "dates in \"YYYY-MM-DD\" format"
+msgstr "datami w formacie \"YYYY-MM-DD\""
+
+#: schema.py:251
+#, python-brace-format
+msgid ""
+"Field \"{field}\" can be compared to dates in \"YYYY-MM-DD\" format, but not "
+"to {value}"
+msgstr ""
+"Pole \"{field}\" można porównać z datami w formacie \"YYYY-MM-DD\", ale nie "
+"z {value}"
+
+#: schema.py:273
+msgid "timestamps in \"YYYY-MM-DD HH:MM\" format"
+msgstr "znacznikami czasu w formacie \"YYYY-MM-DD HH:MM\""
+
+#: schema.py:282
+#, python-brace-format
+msgid ""
+"Field \"{field}\" can be compared to timestamps in \"YYYY-MM-DD HH:MM\" "
+"format, but not to {value}"
+msgstr ""
+"Pole \"{field}\" można porównać ze znacznikami czasu w formacie \"YYYY-MM-DD "
+"HH:MM\", ale nie z {value}"
+
+#: schema.py:356
+msgid "Schema must be initialized with a subclass of Django model"
+msgstr "Schemat musi być zainicjalizowany podklasą modelu Django"
+
+#: schema.py:360
+msgid "Either include or exclude can be specified, but not both"
+msgstr "Można podać tylko include albo exclude, nie oba naraz"
+
+#: schema.py:365
+#, python-brace-format
+msgid "{model} can't be used with {schema_class} because it's excluded from it"
+msgstr ""
+"{model} nie może być używany z {schema_class}, ponieważ jest z niego "
+"wykluczony"
+
+#: schema.py:591
+#, python-brace-format
+msgid "Unknown field: {field}. Did you mean: {suggestions}?"
+msgstr "Nieznane pole: {field}. Czy chodziło Ci o: {suggestions}?"
+
+#: schema.py:602
+#, python-brace-format
+msgid "Unknown field: {field}. Possible choices are: {choices}"
+msgstr "Nieznane pole: {field}. Dostępne pola: {choices}"
+
+#: schema.py:649
+#, python-brace-format
+msgid ""
+"Related model {model} can be compared to None only, but not to {value_type}"
+msgstr ""
+"Powiązany model {model} można porównać tylko z None, ale nie z {value_type}"
+
+#: templates/djangoql/empty_breakdown.html:3
+msgid "No results. Where the query runs out of data:"
+msgstr "Brak wyników. W którym miejscu zapytania kończą się dane:"
+
+#: templates/djangoql/empty_breakdown.html:7
+msgid ""
+"Breakdown truncated: the query is too large; only the top-level conditions "
+"were evaluated."
+msgstr ""
+"Zestawienie skrócone: zapytanie jest zbyt duże; przeanalizowano tylko "
+"warunki najwyższego poziomu."
+
+#: templates/djangoql/empty_breakdown_node.html:6
+msgid "no data from here on"
+msgstr "od tego miejsca brak danych"
+
+#: templates/djangoql/empty_breakdown_node.html:8
+msgid "this branch is empty"
+msgstr "ta gałąź jest pusta"
+
+#: templates/djangoql/error_message.html:5
+msgid "DjangoQL syntax help"
+msgstr "Pomoc składni DjangoQL"
+
+#: views.py:22
+msgid "page must be an integer starting from 1"
+msgstr "page musi być liczbą całkowitą zaczynającą się od 1"
+
+#: views.py:54
+msgid "DjangoQL schema is undefined"
+msgstr "Schemat DjangoQL nie jest zdefiniowany"
+
+#: views.py:56
+msgid "\"field\" parameter is required"
+msgstr "Parametr \"field\" jest wymagany"
+
+#: views.py:69
+#, python-format
+msgid "Unknown model: %s"
+msgstr "Nieznany model: %s"
+
+#: views.py:72
+#, python-format
+msgid "Unknown field: %s"
+msgstr "Nieznane pole: %s"
+
+#: views.py:78
+#, python-brace-format
+msgid "{model}.{field} doesn't support suggestions"
+msgstr "{model}.{field} nie obsługuje podpowiedzi"

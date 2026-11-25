@@ -1,14 +1,43 @@
-code {
+.djangoql-syntax-help {
+  max-width: 48em;
+}
+
+.djangoql-syntax-help code {
   background-color: rgba(27, 31, 35, 0.05);
   padding: 0.2em;
 }
 
-pre {
+.djangoql-syntax-help pre {
   background-color: rgba(27, 31, 35, 0.05);
   padding: 5px 40px;
   margin: 0 0 10px 0;
+  overflow-x: auto;
 }
 
-table {
+.djangoql-syntax-help pre code {
+  background-color: transparent;
+  padding: 0;
+}
+
+.djangoql-syntax-help table {
   margin: 10px 0;
+  border-collapse: collapse;
+}
+
+.djangoql-syntax-help th,
+.djangoql-syntax-help td {
+  border: 1px solid rgba(27, 31, 35, 0.15);
+  padding: 6px 10px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.djangoql-syntax-help img {
+  max-width: 100%;
+}
+
+/* Raw-Markdown fallback shown when no Markdown compiler is installed. */
+.djangoql-syntax-help-raw {
+  white-space: pre-wrap;
+  word-wrap: break-word;
 }

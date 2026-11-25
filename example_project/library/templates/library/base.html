@@ -1,0 +1,32 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DjangoQL — Query UX showcase{% block title %}{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'djangoql/css/highlight.css' %}">
+  <link rel="stylesheet" href="{% static 'djangoql/css/completion.css' %}">
+  <link rel="stylesheet" href="{% static 'library/css/demo.css' %}">
+  {% block head %}{% endblock %}
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">DjangoQL <span>· Query UX showcase</span></div>
+    <nav>
+      <a href="{% url 'demo' %}">Search demo</a>
+      <a href="{% url 'demo-syntax-help' %}">Syntax help</a>
+      <a href="/admin/">Admin</a>
+    </nav>
+  </header>
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+  <footer>
+    The completion widget, lightweight highlight overlay and tokenizer ship with
+    DjangoQL. The colours and layout on this page are the example project's own
+    choices — the library imposes none of them.
+  </footer>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

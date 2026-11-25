@@ -1,0 +1,30 @@
+# DjangoQL Spanish translation (JavaScript catalog).
+# Copyright (C) 2026 ivelum and contributors
+# This file is distributed under the same license as the djangoql package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: djangoql\n"
+"Report-Msgid-Bugs-To: \n"
+"Language-Team: Spanish\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+
+msgid "is not equal to"
+msgstr "no es igual a"
+
+msgid "contains"
+msgstr "contiene"
+
+msgid "does not contain"
+msgstr "no contiene"
+
+msgid "Advanced search with Query Language"
+msgstr "Búsqueda avanzada con lenguaje de consulta"
+
+msgid "Syntax Help"
+msgstr "Ayuda de sintaxis"

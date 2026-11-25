@@ -1,0 +1,30 @@
+# DjangoQL Japanese translation (JavaScript catalog).
+# Copyright (C) 2026 ivelum and contributors
+# This file is distributed under the same license as the djangoql package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: djangoql\n"
+"Report-Msgid-Bugs-To: \n"
+"Language-Team: Japanese\n"
+"Language: ja\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+
+msgid "is not equal to"
+msgstr "と等しくない"
+
+msgid "contains"
+msgstr "を含む"
+
+msgid "does not contain"
+msgstr "を含まない"
+
+msgid "Advanced search with Query Language"
+msgstr "クエリ言語による高度な検索"
+
+msgid "Syntax Help"
+msgstr "構文ヘルプ"

@@ -1,0 +1,231 @@
+# DjangoQL Russian translation.
+# Copyright (C) 2026 ivelum and contributors
+# This file is distributed under the same license as the djangoql package.
+#
+# Auto-translated. Review by a native Russian speaker welcome — open a PR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: djangoql\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-06-04 06:45+0000\n"
+"PO-Revision-Date: 2026-05-13 00:00+0000\n"
+"Language-Team: Russian\n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
+
+#: exceptions.py:15
+#, python-format
+msgid "Line %(line)s, col %(col)s"
+msgstr "Строка %(line)s, столбец %(col)s"
+
+#: exceptions.py:20
+#, python-format
+msgid "Line %s"
+msgstr "Строка %s"
+
+#: extras.py:69
+msgid "times in \"HH:MM[:SS]\" format"
+msgstr "временем в формате \"HH:MM[:SS]\""
+
+#: extras.py:99
+#, python-brace-format
+msgid ""
+"Field \"{field}\" can be compared to times in \"HH:MM[:SS]\" format, but not "
+"to {value}"
+msgstr ""
+"Поле \"{field}\" можно сравнивать с временем в формате \"HH:MM[:SS]\", но не "
+"с {value}"
+
+#: extras.py:224
+msgid "numbers"
+msgstr "числами"
+
+#: extras.py:419
+#, python-brace-format
+msgid ""
+"Relation aggregates are hidden from suggestions: use <relation>__count and "
+"<relation>.<numeric_field>__{{sum,avg,min,max}} — e.g. {examples}."
+msgstr ""
+"Агрегаты по связям скрыты из подсказок: используйте <relation>__count и "
+"<relation>.<numeric_field>__{{sum,avg,min,max}} — например, {examples}."
+
+#: extras.py:486
+#, python-brace-format
+msgid ""
+"Date/time parts are hidden too: use <field>__{{year,month,day,hour,...}} — "
+"e.g. {example}."
+msgstr ""
+"Части даты/времени тоже скрыты: используйте "
+"<field>__{{year,month,day,hour,...}} — например, {example}."
+
+#: extras.py:702
+#, python-brace-format
+msgid "Field \"{field}\" expects a string value, but got {value}"
+msgstr "Поле \"{field}\" ожидает строковое значение, но получено {value}"
+
+#: lexer.py:169
+#, python-format
+msgid "Illegal character %s"
+msgstr "Недопустимый символ %s"
+
+#: parser.py:210
+msgid "Unexpected end of input"
+msgstr "Неожиданный конец выражения"
+
+#: parser.py:216
+#, python-format
+msgid "Syntax error at %s"
+msgstr "Синтаксическая ошибка в %s"
+
+#: schema.py:169
+#, python-format
+msgid "Field %s is not nullable, can't compare it to None"
+msgstr "Поле %s не допускает значения null, нельзя сравнивать с None"
+
+#: schema.py:175
+#, python-brace-format
+msgid ""
+"Field \"{field}\" has \"nullable {field_type}\" type. It can be compared to "
+"{possible_values} or None, but not to {value}"
+msgstr ""
+"Поле \"{field}\" имеет тип \"nullable {field_type}\". Его можно сравнить с "
+"{possible_values} или с None, но не с {value}"
+
+#: schema.py:181
+#, python-brace-format
+msgid ""
+"Field \"{field}\" has \"{field_type}\" type. It can be compared to "
+"{possible_values}, but not to {value}"
+msgstr ""
+"Поле \"{field}\" имеет тип \"{field_type}\". Его можно сравнить с "
+"{possible_values}, но не с {value}"
+
+#: schema.py:198
+msgid "integer numbers"
+msgstr "целыми числами"
+
+#: schema.py:210
+msgid "floating point numbers"
+msgstr "числами с плавающей точкой"
+
+#: schema.py:216
+msgid "strings"
+msgstr "строками"
+
+#: schema.py:236
+msgid "True or False"
+msgstr "True или False"
+
+#: schema.py:242
+msgid "dates in \"YYYY-MM-DD\" format"
+msgstr "датами в формате \"YYYY-MM-DD\""
+
+#: schema.py:251
+#, python-brace-format
+msgid ""
+"Field \"{field}\" can be compared to dates in \"YYYY-MM-DD\" format, but not "
+"to {value}"
+msgstr ""
+"Поле \"{field}\" можно сравнивать с датами в формате \"YYYY-MM-DD\", но не с "
+"{value}"
+
+#: schema.py:273
+msgid "timestamps in \"YYYY-MM-DD HH:MM\" format"
+msgstr "метками времени в формате \"YYYY-MM-DD HH:MM\""
+
+#: schema.py:282
+#, python-brace-format
+msgid ""
+"Field \"{field}\" can be compared to timestamps in \"YYYY-MM-DD HH:MM\" "
+"format, but not to {value}"
+msgstr ""
+"Поле \"{field}\" можно сравнивать с метками времени в формате \"YYYY-MM-DD "
+"HH:MM\", но не с {value}"
+
+#: schema.py:356
+msgid "Schema must be initialized with a subclass of Django model"
+msgstr "Схема должна быть инициализирована подклассом модели Django"
+
+#: schema.py:360
+msgid "Either include or exclude can be specified, but not both"
+msgstr "Можно указать либо include, либо exclude, но не оба сразу"
+
+#: schema.py:365
+#, python-brace-format
+msgid "{model} can't be used with {schema_class} because it's excluded from it"
+msgstr ""
+"{model} нельзя использовать с {schema_class}, потому что он из неё исключён"
+
+#: schema.py:591
+#, python-brace-format
+msgid "Unknown field: {field}. Did you mean: {suggestions}?"
+msgstr "Неизвестное поле: {field}. Возможно, вы имели в виду: {suggestions}?"
+
+#: schema.py:602
+#, python-brace-format
+msgid "Unknown field: {field}. Possible choices are: {choices}"
+msgstr "Неизвестное поле: {field}. Возможные варианты: {choices}"
+
+#: schema.py:649
+#, python-brace-format
+msgid ""
+"Related model {model} can be compared to None only, but not to {value_type}"
+msgstr ""
+"Связанная модель {model} может быть сравнена только с None, но не с "
+"{value_type}"
+
+#: templates/djangoql/empty_breakdown.html:3
+msgid "No results. Where the query runs out of data:"
+msgstr "Нет результатов. Где у запроса заканчиваются данные:"
+
+#: templates/djangoql/empty_breakdown.html:7
+msgid ""
+"Breakdown truncated: the query is too large; only the top-level conditions "
+"were evaluated."
+msgstr ""
+"Разбор усечён: запрос слишком большой; вычислены только условия верхнего "
+"уровня."
+
+#: templates/djangoql/empty_breakdown_node.html:6
+msgid "no data from here on"
+msgstr "дальше данных нет"
+
+#: templates/djangoql/empty_breakdown_node.html:8
+msgid "this branch is empty"
+msgstr "эта ветвь пуста"
+
+#: templates/djangoql/error_message.html:5
+msgid "DjangoQL syntax help"
+msgstr "Справка по синтаксису DjangoQL"
+
+#: views.py:22
+msgid "page must be an integer starting from 1"
+msgstr "page должно быть целым числом, начиная с 1"
+
+#: views.py:54
+msgid "DjangoQL schema is undefined"
+msgstr "Схема DjangoQL не определена"
+
+#: views.py:56
+msgid "\"field\" parameter is required"
+msgstr "Параметр \"field\" обязателен"
+
+#: views.py:69
+#, python-format
+msgid "Unknown model: %s"
+msgstr "Неизвестная модель: %s"
+
+#: views.py:72
+#, python-format
+msgid "Unknown field: %s"
+msgstr "Неизвестное поле: %s"
+
+#: views.py:78
+#, python-brace-format
+msgid "{model}.{field} doesn't support suggestions"
+msgstr "{model}.{field} не поддерживает подсказки"
