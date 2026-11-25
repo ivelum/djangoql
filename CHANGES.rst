@@ -1,5 +1,5 @@
-unreleased
-----------
+0.31.3 (unreleased)
+-------------------
 
 * **Security: the completion widget no longer interprets suggested text as
   HTML.** Suggestions were rendered with ``innerHTML`` and their text -- field
@@ -13,6 +13,13 @@ unreleased
   ``djangoql/js/completion.js``; integrations that load that file need no
   change. Applications that worked around this by HTML-escaping labels on the
   server should stop doing so, or the entities will show up literally.
+
+* **Releases are published by CI.** Pushing a ``v<version>`` tag runs
+  ``.github/workflows/release.yaml``, which builds the wheel and sdist, checks
+  that the tag matches ``djangoql.__version__`` and that both artifacts carry
+  the compiled catalogs and the committed widget bundle, publishes to PyPI
+  through Trusted Publishing (no API token) and creates the GitHub release.
+  See *Releasing* in ``CONTRIBUTING.md``.
 
 0.31.2 (2026-08-07)
 -------------------

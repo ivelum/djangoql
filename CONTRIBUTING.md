@@ -80,3 +80,44 @@ the pre-commit hook on the lines you change.
 Native-speaker review of the auto-translated locales is very welcome — see the
 [Internationalization section of the README](README.md#internationalization-i18n)
 for how the catalogs are organised.
+
+## Releasing
+
+For maintainers. Releases are cut by pushing a tag; CI does the rest.
+
+1. Make sure `master` is green and holds everything the release should carry.
+   If `completion-widget/` changed, the bundle has to be rebuilt and committed
+   (`NODE_OPTIONS=--openssl-legacy-provider yarn build`) — the release ships
+   `djangoql/static/djangoql/js/completion.js` exactly as it is in git and
+   does not rebuild it.
+2. Bump the version (updates `djangoql/__init__.py` and `pyproject.toml`,
+   without committing):
+
+    ```shell
+    uv run bumpver update --patch --no-commit    # or --minor / --major
+    ```
+
+3. In `CHANGES.rst`, turn the topmost heading into `<version> (<YYYY-MM-DD>)`
+   and keep its underline the same length. The release notes on GitHub are
+   cut from that section.
+4. Commit, tag with a leading `v`, push both:
+
+    ```shell
+    git commit -am "release: 0.31.3"
+    git tag v0.31.3
+    git push origin master v0.31.3
+    ```
+
+Pushing the tag runs `.github/workflows/release.yaml`. It refuses to publish
+when the tag and `djangoql.__version__` disagree, builds the wheel and sdist
+(the build backend compiles the `.mo` catalogs), checks both artifacts,
+uploads them to PyPI and creates the GitHub release.
+
+There is no PyPI token anywhere: the upload uses
+[Trusted Publishing](https://docs.pypi.org/trusted-publishers/). The PyPI
+project `djangoql-iplweb` trusts the repository `iplweb/djangoql-iplweb`, the
+workflow file `release.yaml` and the GitHub environment `pypi`; renaming any of
+the three breaks publishing until PyPI is told about the new name.
+
+`bumpver` is configured with `tag = true`, but its tags have no `v` prefix,
+which is why the steps above pass `--no-commit` and tag by hand.

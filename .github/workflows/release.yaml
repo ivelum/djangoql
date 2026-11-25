@@ -1,0 +1,157 @@
+name: Release
+
+# Publishing is driven by tags: push a `v<version>` tag and this workflow
+# builds the distributions, publishes them to PyPI and opens the GitHub
+# release. See "Releasing" in CONTRIBUTING.md for the full sequence.
+#
+# Authentication is PyPI Trusted Publishing (OIDC) -- there is no API token in
+# this repository and none needs to exist. PyPI is configured to trust exactly
+# this repository, this workflow file (`release.yaml`) and the `pypi`
+# environment below; change any of the three and PyPI will refuse the upload.
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build distributions
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@f94ec6bedd8674c4426838e6b50417d36b6ab231 # v5.3.1
+
+      - name: Set up Python
+        run: uv python install 3.13
+
+      # A tag and the version inside the package can drift apart -- someone
+      # tags v0.31.3 by hand while djangoql/__init__.py still says 0.31.2, and
+      # the upload succeeds under the wrong version. Fail loudly instead.
+      - name: Check the tag matches the packaged version
+        run: |
+          tag="${GITHUB_REF_NAME#v}"
+          pkg=$(uv run --no-project python -c "
+          import pathlib, re
+          src = pathlib.Path('djangoql/__init__.py').read_text()
+          print(re.search(r\"__version__ = '([^']+)'\", src).group(1))
+          ")
+          echo "tag=$tag packaged=$pkg"
+          test "$tag" = "$pkg" || {
+            echo "::error::tag $GITHUB_REF_NAME does not match djangoql.__version__ $pkg"
+            exit 1
+          }
+
+      # The in-tree build backend (_build_meta.py) compiles the .mo catalogs
+      # with Babel before building, so no gettext step is needed here. The
+      # completion widget bundle (djangoql/static/djangoql/js/completion.js)
+      # is committed to git and shipped as it is -- it is NOT rebuilt here.
+      - name: Build
+        run: uv build
+
+      - name: Check metadata renders on PyPI
+        run: uvx twine check dist/*
+
+      # Guard what the two comments above promise: the catalogs really are
+      # compiled, and both artifacts carry the very bundle that is in git.
+      - name: Check the artifacts carry the catalogs and the widget bundle
+        run: |
+          uv run --no-project python - <<'PY'
+          import glob, hashlib, pathlib, sys, tarfile, zipfile
+
+          BUNDLE = "djangoql/static/djangoql/js/completion.js"
+          expected = hashlib.sha256(pathlib.Path(BUNDLE).read_bytes()).hexdigest()
+
+          def check(label, names, read):
+              mo = [n for n in names if n.endswith(".mo")]
+              po = [n for n in names if n.endswith(".po")]
+              print(f"{label}: {len(mo)} .mo, {len(po)} .po")
+              if not po or len(mo) < len(po):
+                  sys.exit(f"::error::{label} ships {len(po)} .po but {len(mo)} .mo")
+              bundles = [n for n in names if n.endswith(BUNDLE)]
+              if len(bundles) != 1:
+                  sys.exit(f"::error::{label} has {len(bundles)} copies of {BUNDLE}")
+              if hashlib.sha256(read(bundles[0])).hexdigest() != expected:
+                  sys.exit(f"::error::{label}: {BUNDLE} differs from the one in git")
+
+          wheel = glob.glob("dist/*.whl")[0]
+          with zipfile.ZipFile(wheel) as z:
+              check(wheel, z.namelist(), z.read)
+
+          sdist = glob.glob("dist/*.tar.gz")[0]
+          with tarfile.open(sdist) as t:
+              check(sdist, t.getnames(), lambda n: t.extractfile(n).read())
+          PY
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+  pypi:
+    name: Publish to PyPI
+    needs: build
+    runs-on: ubuntu-latest
+
+    # Named environment so the trusted-publisher binding on PyPI can be scoped
+    # to it, and so a protection rule can gate uploads if you ever want one.
+    environment:
+      name: pypi
+      url: https://pypi.org/p/djangoql-iplweb
+
+    permissions:
+      id-token: write # required for Trusted Publishing; nothing else needs it
+
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      - name: Publish
+        uses: pypa/gh-action-pypi-publish@release/v1
+
+  github-release:
+    name: Create the GitHub release
+    needs: pypi
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write # required to create the release
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      - name: Create release with the changelog section for this version
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          # Pull just this version's section out of CHANGES.rst: from the
+          # "<version> (<date>)" heading (skipping its underline) up to the
+          # next heading, i.e. the line that precedes the next "----" rule.
+          awk -v v="$version" '
+            !found && index($0, v " (") == 1 { found = 1; skip = 1; next }
+            found && skip { skip = 0; next }
+            found && /^-+$/ { have = 0; exit }
+            found { if (have) print held; held = $0; have = 1 }
+            END { if (have) print held }
+          ' CHANGES.rst > notes.md
+          test -s notes.md || echo "See CHANGES.rst." > notes.md
+          gh release create "$GITHUB_REF_NAME" dist/* \
+            --title "$GITHUB_REF_NAME" \
+            --notes-file notes.md
