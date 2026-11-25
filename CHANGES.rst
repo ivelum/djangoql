@@ -1,3 +1,19 @@
+unreleased
+----------
+
+* **Security: the completion widget no longer interprets suggested text as
+  HTML.** Suggestions were rendered with ``innerHTML`` and their text -- field
+  names and, more importantly, suggested *values* such as the labels returned
+  by ``AutocompleteField`` or by any field with ``suggest_options`` -- was
+  inserted unescaped, as was the prefix typed by the user. A value containing
+  markup was therefore parsed as markup in the browser of whoever opened the
+  completion popup. The widget now escapes the label, the typed prefix and the
+  hint, and only adds its own ``<b>`` (match) and ``<i>`` (hint) elements. The
+  fix lives in ``completion-widget/safe-markup.js`` and is part of the bundled
+  ``djangoql/js/completion.js``; integrations that load that file need no
+  change. Applications that worked around this by HTML-escaping labels on the
+  server should stop doing so, or the entities will show up literally.
+
 0.31.2 (2026-08-07)
 -------------------
 

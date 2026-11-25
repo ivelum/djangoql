@@ -2,6 +2,18 @@ import DjangoQL from 'djangoql-completion';
 
 import 'djangoql-completion/dist/completion.css';
 
+import { suggestionMarkup } from './safe-markup';
+
+// Suggestions are rendered with innerHTML, and upstream's highlight() passes
+// the suggested text through as it is -- including text that came from the
+// database. Replace it with a version that escapes everything it is given (see
+// safe-markup.js). The flag lets an integrator who patched this from outside
+// tell that the widget now does it itself.
+DjangoQL.prototype.highlight = function (text, prefix) {
+  return suggestionMarkup(text, prefix, this.highlightCaseSensitive);
+};
+DjangoQL.prototype.highlight.escapesSuggestions = true;
+
 // Translate the upstream operator hint labels through Django's JS gettext
 // catalog when one is present (the admin loads it via `djangoql-i18n/`). Falls
 // back to the English source string off-admin, where no catalog is loaded.
