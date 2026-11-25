@@ -1,4 +1,4 @@
-0.31.3 (unreleased)
+0.31.3 (2026-11-25)
 -------------------
 
 * **Security: the completion widget no longer interprets suggested text as
