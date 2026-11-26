@@ -32,7 +32,7 @@ jobs:
     if: |
       always() &&
       (needs.notify-build-start.result == 'success' || needs.notify-build-start.result == 'skipped')
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
