@@ -1,3 +1,9 @@
+0.19.2
+------
+
+* Security: bump djangoql-completion to 0.6.1 to fix XSS in completion
+  suggestions
+
 0.19.1
 ------
 
